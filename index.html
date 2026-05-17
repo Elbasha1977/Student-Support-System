@@ -1,0 +1,2475 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>نظام النقاط والتحفيز المدرسي</title>
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Tahoma, Arial;
+}
+
+body {
+    background: linear-gradient(135deg, #dbeafe, #c7d2fe);
+    padding: 20px;
+}
+
+.container {
+    max-width: 1400px;
+    margin: auto;
+}
+
+.logo-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.school-logo {
+    max-width: 100%;
+    height: auto;
+    max-height: 150px;
+    border-radius: 20px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+    transition: transform 0.3s;
+}
+
+.school-logo:hover {
+    transform: scale(1.02);
+}
+
+.header {
+    background: white;
+    border-radius: 25px;
+    padding: 25px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.header-top {
+    text-align: right;
+}
+
+.header-top h1 {
+    color: #4338ca;
+    margin-bottom: 8px;
+    font-size: 28px;
+}
+
+.header-top p {
+    color: #555;
+    font-size: 16px;
+}
+
+.selected-class-badge {
+    background: linear-gradient(135deg, #4338ca, #8b5cf6);
+    color: white;
+    padding: 8px 20px;
+    border-radius: 30px;
+    display: inline-block;
+    margin-top: 10px;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.header-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.button-row {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.btn {
+    padding: 10px 16px;
+    border: none;
+    border-radius: 16px;
+    color: white;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: bold;
+    transition: 0.3s;
+    min-width: 115px;
+    text-align: center;
+    white-space: nowrap;
+}
+
+.btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+}
+
+.select-class-btn { background: #8b5cf6; }
+.add-class-btn { background: #10b981; }
+.add-student { background: #4338ca; }
+.delete-student-btn { background: #e74c3c; }
+.add-points { background: #16a34a; }
+.deduct-points { background: #dc2626; }
+.warning-btn { background: #ea580c; }
+.surprise-btn { background: #e91e63; animation: pulse 2s infinite; }
+.students-points-btn { background: #8b5cf6; }
+.edit-prizes-btn { background: #8b5cf6; }
+.upload-photos-btn { background: #06b6d4; }
+.refresh-btn { background: #0284c7; }
+.reset-btn { background: #7c2d12; }
+.about-btn { background: #3b82f6; }
+.certificates-btn { background: #b8860b; }
+.backup-btn { background: #f59e0b; }
+.restore-btn { background: #ef4444; }
+
+@keyframes pulse {
+    0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(233,30,99,0.7); }
+    70% { transform: scale(1.02); box-shadow: 0 0 0 12px rgba(233,30,99,0); }
+    100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(233,30,99,0); }
+}
+
+.stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.card {
+    background: white;
+    border-radius: 20px;
+    padding: 20px;
+    text-align: center;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+}
+
+.card h2 {
+    font-size: 36px;
+    margin-bottom: 8px;
+}
+
+.card p {
+    font-size: 16px;
+    color: #555;
+}
+
+.section {
+    background: white;
+    border-radius: 25px;
+    padding: 25px;
+    margin-top: 25px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+}
+
+.section-title {
+    font-size: 28px;
+    margin-bottom: 25px;
+    color: #4338ca;
+}
+
+.honor-board {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+}
+
+.student-box {
+    background: linear-gradient(135deg, #fef9c3, #fef3c7);
+    border: 2px solid #facc15;
+    border-radius: 25px;
+    padding: 25px;
+    text-align: center;
+    transition: 0.3s;
+}
+
+.student-box:hover {
+    transform: translateY(-5px);
+}
+
+.student-box .emoji {
+    font-size: 55px;
+    margin-bottom: 12px;
+}
+
+.student-box h3 {
+    margin-bottom: 8px;
+    color: #222;
+    font-size: 22px;
+}
+
+.student-box .points {
+    font-size: 42px;
+    color: #4338ca;
+    font-weight: bold;
+    margin-top: 12px;
+}
+
+.table-container {
+    overflow-x: auto;
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.table th {
+    background: #4338ca;
+    color: white;
+    padding: 12px;
+    font-size: 16px;
+}
+
+.table td {
+    padding: 12px;
+    border-bottom: 1px solid #ddd;
+    font-size: 14px;
+}
+
+.table tr:hover {
+    background: #f8fafc;
+}
+
+.table th:first-child {
+    text-align: center;
+    width: 80px;
+}
+.table th:nth-child(2) {
+    text-align: right;
+    padding-right: 30px;
+}
+.table th:nth-child(3) {
+    text-align: center;
+    width: 120px;
+}
+.table th:nth-child(4) {
+    text-align: center;
+    width: 100px;
+}
+
+.table td:first-child {
+    text-align: center;
+}
+.table td:nth-child(2) {
+    text-align: right;
+    padding-right: 30px;
+    font-weight: bold;
+}
+.table td:nth-child(3) {
+    text-align: center;
+}
+.table td:nth-child(4) {
+    text-align: center;
+    font-weight: bold;
+}
+
+.level {
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: bold;
+    display: inline-block;
+}
+
+.level-legendary {
+    background: #22c55e;
+    color: white;
+}
+
+.level-excellent {
+    background: #eab308;
+    color: white;
+}
+
+.level-active {
+    background: #3b82f6;
+    color: white;
+}
+
+.level-beginner {
+    background: #ef4444;
+    color: white;
+}
+
+.level-warning {
+    background: #f97316;
+    color: white;
+}
+
+.flex-box {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 25px;
+}
+
+.list-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    border-radius: 15px;
+    margin-bottom: 12px;
+    font-size: 16px;
+}
+
+.green {
+    background: #f0fdf4;
+    border: 1px solid #bbf7d0;
+}
+
+.red {
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+}
+
+.footer {
+    text-align: center;
+    margin-top: 30px;
+    padding: 25px;
+    background: white;
+    border-radius: 25px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+}
+
+.copyright {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+}
+
+.developer-image {
+    width: 85px;
+    height: 85px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 4px solid #4338ca;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    transition: transform 0.3s, border-color 0.3s;
+    cursor: pointer;
+}
+
+.developer-image:hover {
+    transform: scale(1.1);
+    border-color: #e91e63;
+}
+
+.developer-name {
+    font-size: 22px;
+    font-weight: bold;
+    background: linear-gradient(135deg, #4338ca, #e91e63);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.copyright-text {
+    font-size: 15px;
+    color: #666;
+}
+
+.copyright-text span {
+    color: #e91e63;
+    font-size: 18px;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.7);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background: white;
+    border-radius: 30px;
+    padding: 25px;
+    max-width: 500px;
+    width: 90%;
+    max-height: 85vh;
+    overflow-y: auto;
+    animation: slideIn 0.3s ease;
+    direction: rtl;
+}
+
+.modal-content.large {
+    max-width: 600px;
+}
+
+.modal-content.image-modal {
+    max-width: 90%;
+    width: auto;
+    background: transparent;
+    box-shadow: none;
+    padding: 0;
+}
+
+.modal-content.image-modal img {
+    max-width: 100%;
+    max-height: 85vh;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    border: 4px solid white;
+}
+
+.modal-content.edit-prizes {
+    max-width: 500px;
+}
+
+@keyframes slideIn {
+    from { transform: translateY(-50px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+.modal-content h2 {
+    color: #e91e63;
+    margin-bottom: 20px;
+    font-size: 28px;
+    text-align: center;
+}
+
+.modal-content .prize {
+    font-size: 55px;
+    margin: 20px 0;
+}
+
+.modal-content .student-name {
+    font-size: 32px;
+    color: #e91e63;
+    font-weight: bold;
+    margin: 15px 0;
+}
+
+.modal-content .prize-details {
+    font-size: 24px;
+    color: #16a34a;
+    font-weight: bold;
+    background: #f0fdf4;
+    padding: 15px;
+    border-radius: 20px;
+}
+
+.modal-content .student-photo {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin: 15px auto;
+    border: 4px solid #d4af37;
+    display: block;
+}
+
+.select-group {
+    margin: 20px 0;
+}
+
+.select-group select {
+    width: 100%;
+    padding: 15px;
+    font-size: 18px;
+    border: 2px solid #ddd;
+    border-radius: 15px;
+    background: white;
+    cursor: pointer;
+    text-align: center;
+}
+
+.select-group label {
+    display: block;
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: #4338ca;
+}
+
+.multi-select-group {
+    margin: 20px 0;
+    max-height: 300px;
+    overflow-y: auto;
+    border: 2px solid #ddd;
+    border-radius: 15px;
+    padding: 10px;
+}
+
+.multi-select-group label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px;
+    margin: 5px 0;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.multi-select-group label:hover {
+    background: #f3f4f6;
+}
+
+.multi-select-group input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+}
+
+.multi-select-group .student-name {
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.multi-select-group .student-points {
+    font-size: 14px;
+    color: #666;
+    margin-right: auto;
+}
+
+.textarea-group {
+    margin: 20px 0;
+}
+
+.textarea-group label {
+    display: block;
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: #4338ca;
+}
+
+.textarea-group textarea {
+    width: 100%;
+    padding: 15px;
+    font-size: 16px;
+    border: 2px solid #ddd;
+    border-radius: 15px;
+    resize: vertical;
+    font-family: Tahoma, Arial;
+}
+
+.prize-input-group {
+    margin: 20px 0;
+    padding: 15px;
+    border-radius: 20px;
+    background: #f8fafc;
+}
+
+.prize-input-group label {
+    display: block;
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: #4338ca;
+}
+
+.prize-input-group input {
+    width: 100%;
+    padding: 12px;
+    font-size: 18px;
+    border: 2px solid #ddd;
+    border-radius: 15px;
+    text-align: center;
+}
+
+.close-modal {
+    background: #4338ca;
+    color: white;
+    border: none;
+    padding: 12px 32px;
+    border-radius: 25px;
+    font-size: 18px;
+    cursor: pointer;
+    margin-top: 20px;
+    transition: 0.3s;
+    margin: 10px;
+}
+
+.close-modal:hover {
+    transform: scale(1.05);
+    background: #e91e63;
+}
+
+.confirm-btn {
+    background: #16a34a;
+}
+
+.confirm-btn:hover {
+    background: #15803d;
+}
+
+.cancel-btn {
+    background: #6b7280;
+}
+
+.cancel-btn:hover {
+    background: #4b5563;
+}
+
+.save-prizes {
+    background: #16a34a;
+}
+
+.save-prizes:hover {
+    background: #15803d;
+}
+
+.upload-area {
+    margin: 20px 0;
+    padding: 20px;
+    border: 2px dashed #ddd;
+    border-radius: 20px;
+    text-align: center;
+}
+
+.upload-area label {
+    display: block;
+    margin-bottom: 10px;
+    font-weight: bold;
+    color: #4338ca;
+}
+
+.upload-area input {
+    width: 100%;
+    padding: 10px;
+}
+
+.preview-image {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-top: 10px;
+}
+
+.students-table-modal {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+}
+
+.students-table-modal th {
+    background: #4338ca;
+    color: white;
+    padding: 12px;
+    font-size: 16px;
+    position: sticky;
+    top: 0;
+}
+
+.students-table-modal td {
+    padding: 10px;
+    border-bottom: 1px solid #e5e7eb;
+    font-size: 16px;
+}
+
+.students-table-modal tr:hover {
+    background: #f3f4f6;
+}
+
+.legend {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 15px;
+    margin: 20px 0;
+    padding: 15px;
+    background: #f8fafc;
+    border-radius: 20px;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+}
+
+.legend-color {
+    width: 20px;
+    height: 20px;
+    border-radius: 10px;
+}
+
+@media(max-width: 900px) {
+    .button-row { gap: 8px; }
+    .btn { padding: 8px 12px; font-size: 11px; min-width: 100px; }
+    .flex-box { grid-template-columns: 1fr; }
+}
+
+@media(max-width: 700px) {
+    .button-row { flex-direction: column; align-items: center; }
+    .btn { width: 95%; min-width: unset; white-space: normal; }
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+    <div class="logo-container">
+        <img src="https://i.postimg.cc/tRm07wZF/MOTTO.png" alt="شعار المدرسة" class="school-logo">
+    </div>
+
+    <div class="header">
+        <div class="header-top">
+            <h1>نظام النقاط والتحفيز المدرسي</h1>
+            <p>لوحة تحفيزية لرفع مستوى السلوك والتفاعل بين الطلاب</p>
+            <div id="selectedClassDisplay" class="selected-class-badge"></div>
+        </div>
+
+        <div class="header-buttons">
+            <div class="button-row">
+                <button class="btn select-class-btn" id="selectClassBtn">📚 اختيار الصف</button>
+                <button class="btn add-class-btn" id="addClassBtn">📋 إضافة صف</button>
+                <button class="btn add-student" id="addStudentBtn">➕ إضافة طالب</button>
+                <button class="btn delete-student-btn" id="deleteStudentBtn">🗑️ حذف طالب</button>
+                <button class="btn add-points" id="addPointsBtn">⭐ إضافة نقاط</button>
+                <button class="btn deduct-points" id="deductPointsBtn">🔻 خصم نقاط</button>
+            </div>
+            <div class="button-row">
+                <button class="btn warning-btn" id="warningBtn">⚠️ إعطاء إنذار</button>
+                <button class="btn surprise-btn" id="surpriseBtn">🎁 صندوق المفاجآت</button>
+                <button class="btn students-points-btn" id="studentsPointsBtn">📊 نقاط الطلاب</button>
+                <button class="btn edit-prizes-btn" id="editPrizesBtn">🏆 تغيير الجوائز</button>
+                <button class="btn upload-photos-btn" id="uploadPhotosBtn">📸 صور الفائقين</button>
+                <button class="btn backup-btn" id="backupBtn">💾 نسخ احتياطي</button>
+                <button class="btn restore-btn" id="restoreBtn">📂 استعادة نسخة</button>
+                <button class="btn refresh-btn" id="refreshBtn">🔄 تحديث</button>
+                <button class="btn reset-btn" id="resetBtn">⚠️ إعادة ضبط</button>
+                <button class="btn about-btn" id="aboutBtn">ℹ️ عن المطور</button>
+                <button class="btn certificates-btn" id="certificatesBtn">🏆 شهادات التقدير</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="stats">
+        <div class="card"><h2 id="totalStudents">0</h2><p>إجمالي الطلاب</p></div>
+        <div class="card"><h2 id="totalPoints">0</h2><p>إجمالي النقاط</p></div>
+        <div class="card"><h2 id="topStudents">0</h2><p>الطلاب المتميزون</p></div>
+        <div class="card"><h2 id="negativeStudents">0</h2><p>طلاب نقاطهم بالسالب</p></div>
+    </div>
+
+    <div class="section">
+        <h2 class="section-title">🏆 لوحة الشرف</h2>
+        <div class="honor-board" id="honorBoard"></div>
+    </div>
+
+    <div class="section table-container">
+        <h2 class="section-title">📊 ترتيب الطلاب</h2>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>الترتيب</th>
+                    <th>اسم الطالب</th>
+                    <th>المستوى</th>
+                    <th>النقاط</th>
+                </tr>
+            </thead>
+            <tbody id="studentsTableBody"></tbody>
+        </table>
+    </div>
+
+    <div class="flex-box">
+        <div class="section">
+            <h2 class="section-title" style="color:#16a34a">✅ النقاط الإيجابية</h2>
+            <div class="list-item green"><span>📚 حضور مبكر</span><strong>+5</strong></div>
+            <div class="list-item green"><span>📖 حل الواجب</span><strong>+10</strong></div>
+            <div class="list-item green"><span>🗣️ مشاركة ممتازة</span><strong>+15</strong></div>
+            <div class="list-item green"><span>🌟 سلوك ممتاز</span><strong>+20</strong></div>
+            <div class="list-item green"><span>📘 اكتمال كتاب التدريبات (Workbook)</span><strong>+75</strong></div>
+            <div class="list-item green"><span>📝 الحصول على الدرجة النهائية في التقييم</span><strong>+50</strong></div>
+            <div class="list-item green"><span>🏆 الحصول على الدرجة النهائية في الامتحان</span><strong>+100</strong></div>
+            <div class="list-item green"><span>🤫 عدم مقاطعة المعلم أثناء الحصة والشرح</span><strong>+150</strong></div>
+            <div class="list-item green"><span>🙋 طلب الاذن دائما قبل التحدث أو المشاركة</span><strong>+140</strong></div>
+            <div class="list-item green"><span>🚫 عدم تكرار طلب الخروج من الحصة</span><strong>+150</strong></div>
+            <div class="list-item green"><span>👥 الالتزام بعمل المجموعات أو الثنائيات أو العمل الفردي</span><strong>+140</strong></div>
+        </div>
+        <div class="section">
+            <h2 class="section-title" style="color:#dc2626">❌ النقاط السلبية</h2>
+            <div class="list-item red"><span>⏰ تأخير</span><strong>-5</strong></div>
+            <div class="list-item red"><span>📖 عدم حل الواجب</span><strong>-10</strong></div>
+            <div class="list-item red"><span>🔊 إزعاج</span><strong>-15</strong></div>
+            <div class="list-item red"><span>⚠️ سلوك سيء</span><strong>-25</strong></div>
+            <div class="list-item red"><span>📘 عدم اكتمال كتاب التدريبات (Workbook)</span><strong>-75</strong></div>
+            <div class="list-item red"><span>📝 عدم الحصول على الدرجة النهائية في التقييم</span><strong>-50</strong></div>
+            <div class="list-item red"><span>🏆 عدم الحصول على الدرجة النهائية في الامتحان</span><strong>-100</strong></div>
+            <div class="list-item red"><span>🗣️ مقاطعة المعلم أثناء الحصة والشرح</span><strong>-150</strong></div>
+            <div class="list-item red"><span>🙅 التحدث أو المشاركة بدون إذن</span><strong>-140</strong></div>
+            <div class="list-item red"><span>🚻 تكرار طلب الخروج من الحصة</span><strong>-150</strong></div>
+            <div class="list-item red"><span>👥 عدم الالتزام بعمل المجموعات أو الثنائيات أو العمل الفردي</span><strong>-140</strong></div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <div class="copyright">
+            <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Abdelbaset Atia" class="developer-image" id="developerImage">
+            <div class="developer-name">Abdelbaset Atia</div>
+            <div class="copyright-text">© 2026 جميع الحقوق محفوظة | <span>❤️</span> تصميم وتطوير</div>
+        </div>
+    </div>
+</div>
+
+<!-- مودال اختيار الصف -->
+<div id="selectClassModal" class="modal">
+    <div class="modal-content">
+        <h2>📚 اختر الصف</h2>
+        <div class="select-group">
+            <select id="classSelect">
+                <option value="">-- اختر الصف --</option>
+                <option value="السادس 1">السادس 1</option>
+                <option value="السادس 2">السادس 2</option>
+                <option value="السادس 3">السادس 3</option>
+                <option value="السادس 4">السادس 4</option>
+                <option value="السادس 5">السادس 5</option>
+                <option value="السادس 6">السادس 6</option>
+                <option value="السادس 7">السادس 7</option>
+            </select>
+        </div>
+        <button class="close-modal confirm-btn" id="saveClassBtn">💾 حفظ وفتح الصف</button>
+        <button class="close-modal cancel-btn" id="cancelClassBtn">إلغاء</button>
+    </div>
+</div>
+
+<!-- مودال إضافة صف (لصق أسماء) -->
+<div id="addClassModal" class="modal">
+    <div class="modal-content large">
+        <h2>📋 إضافة طلاب لصف: <span id="classNameForAdd"></span></h2>
+        <div class="textarea-group">
+            <label>📝 أدخل أسماء الطلاب (كل اسم في سطر)</label>
+            <textarea id="studentsNamesInput" rows="10" placeholder="مثال:\nأحمد محمد\nمحمد خالد\nسارة أحمد\nفاطمة علي"></textarea>
+            <p style="color:#666; font-size:12px; margin-top:10px;">💡 نصيحة: يمكنك نسخ الأسماء من Excel أو Word وسيتم التعرف عليها تلقائياً</p>
+        </div>
+        <button class="close-modal confirm-btn" id="saveClassStudentsBtn">💾 حفظ الطلاب</button>
+        <button class="close-modal cancel-btn" id="cancelAddClassBtn">إلغاء</button>
+    </div>
+</div>
+
+<!-- مودال حذف طالب -->
+<div id="deleteStudentModal" class="modal">
+    <div class="modal-content">
+        <h2>🗑️ حذف طالب</h2>
+        <div class="select-group">
+            <select id="deleteStudentSelect">
+                <option value="">-- اختر طالب للحذف --</option>
+            </select>
+        </div>
+        <button class="close-modal confirm-btn" id="confirmDeleteBtn">🗑️ تأكيد الحذف</button>
+        <button class="close-modal cancel-btn" id="cancelDeleteBtn">إلغاء</button>
+    </div>
+</div>
+
+<!-- مودال اختيار طالب متعدد للعمليات -->
+<div id="multiSelectModal" class="modal">
+    <div class="modal-content large">
+        <h2 id="multiSelectTitle">📝 اختر الطلاب</h2>
+        <div class="multi-select-group" id="multiSelectList"></div>
+        <button class="close-modal confirm-btn" id="confirmMultiSelectBtn">تأكيد</button>
+        <button class="close-modal cancel-btn" id="cancelMultiSelectBtn">إلغاء</button>
+    </div>
+</div>
+
+<!-- مودال اختيار طالب متعدد للشهادة -->
+<div id="certificateStudentsModal" class="modal">
+    <div class="modal-content large">
+        <h2>🎓 اختر الطلاب لطباعة الشهادة</h2>
+        <div class="multi-select-group" id="certificateStudentsList"></div>
+        <div class="select-group" style="margin-top: 15px;">
+            <label>🏆 اختر نوع الشهادة</label>
+            <select id="certificateTypeSelect">
+                <option value="">-- اختر نوع الشهادة --</option>
+                <option value="0">🏆 شهادة 1 - ذهبية (ذهبية فاخرة)</option>
+                <option value="1">🥈 شهادة 2 - فضية (فضية أنيقة)</option>
+                <option value="2">🥉 شهادة 3 - برونزية (برونزية دافئة)</option>
+                <option value="3">🌿 شهادة 4 - خضراء (خضراء منعشة)</option>
+                <option value="4">💙 شهادة 5 - زرقاء (زرقاء هادئة)</option>
+                <option value="5">❤️ شهادة 6 - حمراء (حمراء قوية)</option>
+                <option value="6">💜 شهادة 7 - بنفسجية (بنفسجية ملكية)</option>
+                <option value="7">🌸 شهادة 8 - وردية (وردية ناعمة)</option>
+                <option value="8">🧡 شهادة 9 - برتقالية (برتقالية مفعمة بالحيوية)</option>
+                <option value="9">💚 شهادة 10 - فيروزية (فيروزية منعشة)</option>
+            </select>
+        </div>
+        <button class="close-modal confirm-btn" id="confirmCertificateStudentsBtn">🖨️ طباعة الشهادات</button>
+        <button class="close-modal cancel-btn" id="cancelCertificateStudentsBtn">إلغاء</button>
+    </div>
+</div>
+
+<!-- مودال اختيار النقاط -->
+<div id="pointsModal" class="modal">
+    <div class="modal-content">
+        <h2 id="pointsModalTitle">⭐ اختر عدد النقاط</h2>
+        <div class="select-group">
+            <select id="pointsSelect">
+                <option value="">-- اختر عدد النقاط --</option>
+            </select>
+        </div>
+        <button class="close-modal confirm-btn" id="confirmPointsBtn">تأكيد</button>
+        <button class="close-modal cancel-btn" id="cancelPointsBtn">إلغاء</button>
+    </div>
+</div>
+
+<!-- مودال اختيار الإنذار -->
+<div id="warningModal" class="modal">
+    <div class="modal-content">
+        <h2>⚠️ اختر نوع الإنذار</h2>
+        <div class="select-group">
+            <select id="warningSelect">
+                <option value="">-- اختر نوع الإنذار --</option>
+                <option value="1">📌 تأخير (-5 نقاط)</option>
+                <option value="2">📌 إزعاج (-10 نقاط)</option>
+                <option value="3">📌 عدم حل الواجب (-15 نقاط)</option>
+                <option value="4">📌 سلوك سيء (-25 نقاط)</option>
+                <option value="5">📌 عدم اكتمال كتاب التدريبات (-75)</option>
+                <option value="6">📌 عدم الحصول على الدرجة النهائية في التقييم (-50)</option>
+                <option value="7">📌 عدم الحصول على الدرجة النهائية في الامتحان (-100)</option>
+                <option value="8">📌 مقاطعة المعلم أثناء الحصة والشرح (-150)</option>
+                <option value="9">📌 التحدث بدون إذن (-140)</option>
+                <option value="10">📌 تكرار طلب الخروج (-150)</option>
+                <option value="11">📌 عدم الالتزام بالعمل الجماعي (-140)</option>
+            </select>
+        </div>
+        <button class="close-modal confirm-btn" id="confirmWarningBtn">تأكيد</button>
+        <button class="close-modal cancel-btn" id="cancelWarningBtn">إلغاء</button>
+    </div>
+</div>
+
+<!-- مودال تغيير الجوائز -->
+<div id="editPrizesModal" class="modal">
+    <div class="modal-content edit-prizes">
+        <h2>🏆 تغيير الجوائز لصف: <span id="currentClassForPrizes"></span></h2>
+        <div class="prize-input-group">
+            <label>🥇 جائزة المركز الأول</label>
+            <input type="text" id="prize1Input" placeholder="مثال: 20 ريالات">
+        </div>
+        <div class="prize-input-group">
+            <label>🥈 جائزة المركز الثاني</label>
+            <input type="text" id="prize2Input" placeholder="مثال: 10 ريالات">
+        </div>
+        <div class="prize-input-group">
+            <label>🥉 جائزة المركز الثالث</label>
+            <input type="text" id="prize3Input" placeholder="مثال: 5 ريالات">
+        </div>
+        <button class="close-modal save-prizes" id="savePrizesBtn">💾 حفظ التغييرات</button>
+        <button class="close-modal cancel-btn" id="cancelPrizesBtn">إلغاء</button>
+    </div>
+</div>
+
+<!-- مودال رفع صور الطلاب الفائقين -->
+<div id="uploadPhotosModal" class="modal">
+    <div class="modal-content" style="max-width: 600px;">
+        <h2>📸 رفع صور الطلاب الفائقين لصف: <span id="currentClassForPhotos"></span></h2>
+        <div class="upload-area">
+            <label>🥇 صورة المركز الأول</label>
+            <input type="file" id="photo1Input" accept="image/*">
+            <div id="preview1" style="text-align:center;"></div>
+        </div>
+        <div class="upload-area">
+            <label>🥈 صورة المركز الثاني</label>
+            <input type="file" id="photo2Input" accept="image/*">
+            <div id="preview2" style="text-align:center;"></div>
+        </div>
+        <div class="upload-area">
+            <label>🥉 صورة المركز الثالث</label>
+            <input type="file" id="photo3Input" accept="image/*">
+            <div id="preview3" style="text-align:center;"></div>
+        </div>
+        <div style="display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;">
+            <button class="close-modal confirm-btn" id="savePhotosBtn">💾 حفظ الصور</button>
+            <button class="close-modal cancel-btn" id="cancelPhotosBtn">إلغاء</button>
+        </div>
+    </div>
+</div>
+
+<!-- مودال عرض نقاط الطلاب -->
+<div id="studentsPointsModal" class="modal">
+    <div class="modal-content" style="max-width: 800px;">
+        <h2>📊 قائمة طلاب صف: <span id="currentClassForPoints"></span></h2>
+        <div class="legend">
+            <div class="legend-item"><div class="legend-color" style="background:#22c55e;"></div><span>أسطوري (500+)</span></div>
+            <div class="legend-item"><div class="legend-color" style="background:#eab308;"></div><span>متميز (300-499)</span></div>
+            <div class="legend-item"><div class="legend-color" style="background:#3b82f6;"></div><span>نشيط (100-299)</span></div>
+            <div class="legend-item"><div class="legend-color" style="background:#ef4444;"></div><span>مبتدئ (0-99)</span></div>
+            <div class="legend-item"><div class="legend-color" style="background:#f97316;"></div><span>تحذير (أقل من 0)</span></div>
+        </div>
+        <div style="overflow-x: auto; max-height: 500px;">
+            <table class="students-table-modal">
+                <thead>
+                    <tr>
+                        <th>الترتيب</th>
+                        <th>اسم الطالب</th>
+                        <th>المستوى</th>
+                        <th>النقاط</th>
+                    </tr>
+                </thead>
+                <tbody id="studentsPointsTableBody"></tbody>
+            </table>
+        </div>
+        <button class="close-modal" id="closeStudentsPointsModalBtn">إغلاق</button>
+    </div>
+</div>
+
+<!-- مودال استعادة النسخة -->
+<div id="restoreModal" class="modal">
+    <div class="modal-content">
+        <h2>📂 استعادة نسخة احتياطية</h2>
+        <div class="select-group">
+            <label>اختر ملف النسخة الاحتياطية (.json)</label>
+            <input type="file" id="restoreFileInput" accept=".json">
+        </div>
+        <button class="close-modal confirm-btn" id="confirmRestoreBtn">استعادة</button>
+        <button class="close-modal cancel-btn" id="cancelRestoreBtn">إلغاء</button>
+    </div>
+</div>
+
+<div id="prizeModal" class="modal">
+    <div class="modal-content">
+        <h2>🎁 صندوق المفاجآت 🎁</h2>
+        <div id="modalMessage"></div>
+        <button class="close-modal" id="closePrizeModalBtn">إغلاق</button>
+    </div>
+</div>
+
+<div id="imageModal" class="modal">
+    <div class="modal-content image-modal">
+        <img id="aboutImage" src="" alt="About Developer">
+        <button class="close-modal" id="closeImageModalBtn">إغلاق</button>
+    </div>
+</div>
+
+<script>
+// ==================== البيانات ====================
+let allClassesData = {};
+let currentClass = "";
+let tempStudentIds = [];
+let currentAction = null;
+let classPrizes = {};
+
+const classNames = ["السادس 1", "السادس 2", "السادس 3", "السادس 4", "السادس 5", "السادس 6", "السادس 7"];
+
+// ألوان الشهادات العشرة
+const certificateColors = [
+    { name: "شهادة 1 - ذهبية", borderColor: "#d4af37", bgStart: "#fffef7", bgEnd: "#fff9e8", borderDouble: "#d4af37", accentColor: "#b8860b", textColor: "#c27f2e" },
+    { name: "شهادة 2 - فضية", borderColor: "#c0c0c0", bgStart: "#f5f5f5", bgEnd: "#efefef", borderDouble: "#c0c0c0", accentColor: "#808080", textColor: "#696969" },
+    { name: "شهادة 3 - برونزية", borderColor: "#cd7f32", bgStart: "#fdf5e6", bgEnd: "#faf0e6", borderDouble: "#cd7f32", accentColor: "#8b4513", textColor: "#8b4513" },
+    { name: "شهادة 4 - خضراء", borderColor: "#2ecc71", bgStart: "#e8f8f0", bgEnd: "#d5f5e3", borderDouble: "#2ecc71", accentColor: "#27ae60", textColor: "#1e8449" },
+    { name: "شهادة 5 - زرقاء", borderColor: "#3498db", bgStart: "#e8f4fd", bgEnd: "#d6eaf8", borderDouble: "#3498db", accentColor: "#2980b9", textColor: "#2471a3" },
+    { name: "شهادة 6 - حمراء", borderColor: "#e74c3c", bgStart: "#fdedec", bgEnd: "#fadbd8", borderDouble: "#e74c3c", accentColor: "#c0392b", textColor: "#a93226" },
+    { name: "شهادة 7 - بنفسجية", borderColor: "#9b59b6", bgStart: "#f4ecf7", bgEnd: "#e8daef", borderDouble: "#9b59b6", accentColor: "#8e44ad", textColor: "#7d3c98" },
+    { name: "شهادة 8 - وردية", borderColor: "#e84393", bgStart: "#fde9f2", bgEnd: "#fad4e6", borderDouble: "#e84393", accentColor: "#c44569", textColor: "#b03a5b" },
+    { name: "شهادة 9 - برتقالية", borderColor: "#f39c12", bgStart: "#fef5e7", bgEnd: "#fdebd0", borderDouble: "#f39c12", accentColor: "#e67e22", textColor: "#d35400" },
+    { name: "شهادة 10 - فيروزية", borderColor: "#1abc9c", bgStart: "#e8f8f5", bgEnd: "#d1f2eb", borderDouble: "#1abc9c", accentColor: "#16a085", textColor: "#117a65" }
+];
+
+// قائمة النقاط الإيجابية
+const positivePoints = [
+    { name: "📚 حضور مبكر", points: 5 },
+    { name: "📖 حل الواجب", points: 10 },
+    { name: "🗣️ مشاركة ممتازة", points: 15 },
+    { name: "🌟 سلوك ممتاز", points: 20 },
+    { name: "📘 اكتمال كتاب التدريبات (Workbook)", points: 75 },
+    { name: "📝 الحصول على الدرجة النهائية في التقييم", points: 50 },
+    { name: "🏆 الحصول على الدرجة النهائية في الامتحان", points: 100 },
+    { name: "🤫 عدم مقاطعة المعلم أثناء الحصة والشرح", points: 150 },
+    { name: "🙋 طلب الاذن دائما قبل التحدث أو المشاركة", points: 140 },
+    { name: "🚫 عدم تكرار طلب الخروج من الحصة", points: 150 },
+    { name: "👥 الالتزام بعمل المجموعات أو الثنائيات أو العمل الفردي", points: 140 }
+];
+
+// قائمة النقاط السلبية
+const negativePoints = [
+    { name: "⏰ تأخير", points: -5 },
+    { name: "📖 عدم حل الواجب", points: -10 },
+    { name: "🔊 إزعاج", points: -15 },
+    { name: "⚠️ سلوك سيء", points: -25 },
+    { name: "📘 عدم اكتمال كتاب التدريبات (Workbook)", points: -75 },
+    { name: "📝 عدم الحصول على الدرجة النهائية في التقييم", points: -50 },
+    { name: "🏆 عدم الحصول على الدرجة النهائية في الامتحان", points: -100 },
+    { name: "🗣️ مقاطعة المعلم أثناء الحصة والشرح", points: -150 },
+    { name: "🙅 التحدث أو المشاركة بدون إذن", points: -140 },
+    { name: "🚻 تكرار طلب الخروج من الحصة", points: -150 },
+    { name: "👥 عدم الالتزام بعمل المجموعات أو الثنائيات أو العمل الفردي", points: -140 }
+];
+
+function initializeClassData(className) {
+    if (!allClassesData[className]) {
+        if (className === "السادس 1") {
+            allClassesData[className] = {
+                students: [
+                    {name:'أحمد محمد', points:520},
+                    {name:'محمد خالد', points:480},
+                    {name:'خالد علي', points:430},
+                    {name:'سعيد سالم', points:150},
+                    {name:'عمر حسن', points:50},
+                    {name:'ناصر راشد', points:-10}
+                ],
+                photos: { photo1: null, photo2: null, photo3: null }
+            };
+        } else {
+            allClassesData[className] = {
+                students: [],
+                photos: { photo1: null, photo2: null, photo3: null }
+            };
+        }
+    }
+    if (!classPrizes[className]) {
+        classPrizes[className] = {
+            first: "10 ريالات",
+            second: "5 ريالات",
+            third: "حلويات"
+        };
+    }
+}
+
+// تحميل البيانات
+const savedData = localStorage.getItem('allClassesData');
+if(savedData) {
+    try {
+        const parsed = JSON.parse(savedData);
+        if(parsed) allClassesData = parsed;
+    } catch(e) {}
+}
+
+const savedPrizes = localStorage.getItem('classPrizes');
+if(savedPrizes) {
+    try {
+        const parsed = JSON.parse(savedPrizes);
+        if(parsed) classPrizes = parsed;
+    } catch(e) {}
+}
+
+classNames.forEach(className => {
+    if(!allClassesData[className]) {
+        initializeClassData(className);
+    }
+    if(!classPrizes[className]) {
+        classPrizes[className] = { first: "10 ريالات", second: "5 ريالات", third: "حلويات" };
+    }
+});
+
+const savedClass = localStorage.getItem('currentClass');
+if(savedClass && classNames.includes(savedClass)) {
+    currentClass = savedClass;
+} else {
+    currentClass = "السادس 1";
+}
+document.getElementById('selectedClassDisplay').innerHTML = `📚 الصف الحالي: ${currentClass}`;
+
+function saveAllData() {
+    localStorage.setItem('allClassesData', JSON.stringify(allClassesData));
+    localStorage.setItem('currentClass', currentClass);
+    localStorage.setItem('classPrizes', JSON.stringify(classPrizes));
+}
+
+function getCurrentStudents() {
+    if(!allClassesData[currentClass]) {
+        allClassesData[currentClass] = { students: [], photos: { photo1: null, photo2: null, photo3: null } };
+    }
+    return allClassesData[currentClass].students;
+}
+
+function getCurrentPhotos() {
+    if(!allClassesData[currentClass]) {
+        allClassesData[currentClass] = { students: [], photos: { photo1: null, photo2: null, photo3: null } };
+    }
+    return allClassesData[currentClass].photos;
+}
+
+function getCurrentPrizes() {
+    if(!classPrizes[currentClass]) {
+        classPrizes[currentClass] = { first: "10 ريالات", second: "5 ريالات", third: "حلويات" };
+    }
+    return classPrizes[currentClass];
+}
+
+function saveCurrentStudents(students) {
+    if(!allClassesData[currentClass]) {
+        allClassesData[currentClass] = { students: [], photos: { photo1: null, photo2: null, photo3: null } };
+    }
+    allClassesData[currentClass].students = students;
+    saveAllData();
+}
+
+function saveCurrentPhotos(photos) {
+    if(!allClassesData[currentClass]) {
+        allClassesData[currentClass] = { students: [], photos: { photo1: null, photo2: null, photo3: null } };
+    }
+    allClassesData[currentClass].photos = photos;
+    saveAllData();
+}
+
+function saveCurrentPrizes(prizes) {
+    classPrizes[currentClass] = prizes;
+    saveAllData();
+}
+
+function getLevel(points){
+    if(points >= 500) return 'أسطوري';
+    if(points >= 300) return 'متميز';
+    if(points >= 100) return 'نشيط';
+    if(points >= 0) return 'مبتدئ';
+    return 'تحذير';
+}
+
+function getLevelClass(level) {
+    switch(level) {
+        case 'أسطوري': return 'level-legendary';
+        case 'متميز': return 'level-excellent';
+        case 'نشيط': return 'level-active';
+        case 'مبتدئ': return 'level-beginner';
+        case 'تحذير': return 'level-warning';
+        default: return 'level-beginner';
+    }
+}
+
+function updateDashboard(){
+    const students = getCurrentStudents();
+    document.getElementById('totalStudents').innerText = students.length;
+    let total = 0; 
+    students.forEach(s => total += s.points);
+    document.getElementById('totalPoints').innerText = total;
+    document.getElementById('topStudents').innerText = students.filter(s => s.points >= 300).length;
+    document.getElementById('negativeStudents').innerText = students.filter(s => s.points < 0).length;
+}
+
+function renderHonorBoard(){
+    const students = getCurrentStudents();
+    const sorted = [...students].sort((a,b) => b.points - a.points);
+    const topThree = sorted.slice(0,3);
+    const medals = ['🥇', '🥈', '🥉'];
+    const honorBoardDiv = document.getElementById('honorBoard');
+    
+    if(topThree.length === 0){ 
+        honorBoardDiv.innerHTML = '<div class="student-box">🏅 لا يوجد طلاب</div>'; 
+        return; 
+    }
+    
+    let html = '';
+    for(let i=0; i<topThree.length; i++) {
+        html += `<div class="student-box">
+                    <div class="emoji">${medals[i]}</div>
+                    <h3>${topThree[i].name}</h3>
+                    <div class="points">${topThree[i].points}</div>
+                    <p>نقطة</p>
+                </div>`;
+    }
+    honorBoardDiv.innerHTML = html;
+}
+
+function renderStudents(){
+    const students = getCurrentStudents();
+    students.sort((a,b) => b.points - a.points);
+    
+    const tbody = document.getElementById('studentsTableBody');
+    tbody.innerHTML = '';
+    
+    if(students.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="4" style="text-align:center">🚫 لا يوجد طلاب في هذا الصف<\/td><\/tr>';
+    } else {
+        for(let i=0; i<students.length; i++) {
+            const student = students[i];
+            const level = getLevel(student.points);
+            const levelClass = getLevelClass(level);
+            tbody.innerHTML += `
+                <tr>
+                    <td style="text-align:center; font-weight:bold;">#${i+1}</td>
+                    <td style="text-align:right; padding-right:30px; font-weight:bold;">${student.name}</td>
+                    <td style="text-align:center;"><span class="level ${levelClass}">${level}</span></td>
+                    <td style="text-align:center; font-weight:bold;">${student.points}</td>
+                </tr>
+            `;
+        }
+    }
+    
+    renderHonorBoard();
+    updateDashboard();
+}
+
+function renderStudentsPointsModal() {
+    const students = getCurrentStudents();
+    const sorted = [...students].sort((a,b) => b.points - a.points);
+    const tbody = document.getElementById('studentsPointsTableBody');
+    tbody.innerHTML = '';
+    
+    if(sorted.length === 0) {
+        tbody.innerHTML = '<td><td colspan="4" style="text-align:center">🚫 لا يوجد طلاب في هذا الصف<\/td><\/tr>';
+    } else {
+        for(let i=0; i<sorted.length; i++) {
+            const student = sorted[i];
+            const level = getLevel(student.points);
+            let bgColor = '';
+            let textColor = 'white';
+            
+            if(student.points >= 500) {
+                bgColor = '#22c55e';
+                textColor = 'white';
+            } else if(student.points >= 300) {
+                bgColor = '#eab308';
+                textColor = 'white';
+            } else if(student.points >= 100) {
+                bgColor = '#3b82f6';
+                textColor = 'white';
+            } else if(student.points >= 0) {
+                bgColor = '#ef4444';
+                textColor = 'white';
+            } else {
+                bgColor = '#f97316';
+                textColor = 'white';
+            }
+            
+            tbody.innerHTML += `
+                <tr>
+                    <td style="text-align:center; font-weight:bold;">#${i+1}</td>
+                    <td style="text-align:right; padding-right:30px; font-weight:bold;">${student.name}</td>
+                    <td style="background:${bgColor}; color:${textColor}; padding:5px 12px; border-radius:20px; text-align:center; font-weight:bold;">${level}</td>
+                    <td style="text-align:center; font-weight:bold;">${student.points}</td>
+                </tr>
+            `;
+        }
+    }
+}
+
+function updateDeleteStudentSelect() {
+    const students = getCurrentStudents();
+    const select = document.getElementById('deleteStudentSelect');
+    if(select) {
+        select.innerHTML = '<option value="">-- اختر طالب للحذف --</option>';
+        students.forEach((student, index) => {
+            const option = document.createElement('option');
+            option.value = index;
+            option.textContent = `${student.name} (${student.points} نقطة)`;
+            select.appendChild(option);
+        });
+    }
+}
+
+// ==================== دوال اختيار متعدد للعمليات ====================
+function showMultiSelectModal(title, action) {
+    const students = getCurrentStudents();
+    if(students.length === 0) {
+        alert('⚠️ لا يوجد طلاب في هذا الصف');
+        return;
+    }
+    
+    currentAction = action;
+    document.getElementById('multiSelectTitle').innerHTML = title;
+    
+    const container = document.getElementById('multiSelectList');
+    container.innerHTML = '';
+    
+    students.forEach((student, index) => {
+        const label = document.createElement('label');
+        label.innerHTML = `
+            <input type="checkbox" value="${index}">
+            <span class="student-name">${student.name}</span>
+            <span class="student-points">(${student.points} نقطة)</span>
+        `;
+        container.appendChild(label);
+    });
+    
+    document.getElementById('multiSelectModal').style.display = 'flex';
+}
+
+function closeMultiSelectModal() {
+    document.getElementById('multiSelectModal').style.display = 'none';
+}
+
+function getSelectedStudents() {
+    const checkboxes = document.querySelectorAll('#multiSelectList input[type="checkbox"]:checked');
+    const selectedIds = [];
+    checkboxes.forEach(cb => {
+        selectedIds.push(parseInt(cb.value));
+    });
+    return selectedIds;
+}
+
+// ==================== دوال اختيار متعدد للشهادة ====================
+function showCertificateStudentsModal() {
+    const students = getCurrentStudents();
+    if(students.length === 0) {
+        alert('⚠️ لا يوجد طلاب في هذا الصف');
+        return;
+    }
+    
+    const container = document.getElementById('certificateStudentsList');
+    container.innerHTML = '';
+    
+    students.forEach((student, index) => {
+        const label = document.createElement('label');
+        label.innerHTML = `
+            <input type="checkbox" value="${index}">
+            <span class="student-name">${student.name}</span>
+            <span class="student-points">(${student.points} نقطة)</span>
+        `;
+        container.appendChild(label);
+    });
+    
+    document.getElementById('certificateTypeSelect').value = "";
+    document.getElementById('certificateStudentsModal').style.display = 'flex';
+}
+
+function closeCertificateStudentsModal() {
+    document.getElementById('certificateStudentsModal').style.display = 'none';
+}
+
+function getSelectedStudentsForCertificate() {
+    const checkboxes = document.querySelectorAll('#certificateStudentsList input[type="checkbox"]:checked');
+    const selectedIds = [];
+    checkboxes.forEach(cb => {
+        selectedIds.push(parseInt(cb.value));
+    });
+    return selectedIds;
+}
+
+function printCertificatesForStudents() {
+    const selectedIds = getSelectedStudentsForCertificate();
+    const certificateType = document.getElementById('certificateTypeSelect').value;
+    
+    if(selectedIds.length === 0) {
+        alert('❌ الرجاء اختيار طالب واحد على الأقل');
+        return;
+    }
+    
+    if(certificateType === "" || certificateType === null) {
+        alert('❌ الرجاء اختيار نوع الشهادة');
+        return;
+    }
+    
+    const students = getCurrentStudents();
+    const colorIndex = parseInt(certificateType);
+    const colorInfo = certificateColors[colorIndex];
+    
+    if(confirm(`⚠️ سيتم فتح ${selectedIds.length} نافذة شهادة (${colorInfo.name}). هل تريد المتابعة؟`)) {
+        
+        for(let i = 0; i < selectedIds.length; i++) {
+            const student = students[selectedIds[i]];
+            
+            setTimeout(() => {
+                generateCertificateForStudent(colorIndex, student.name);
+            }, i * 300);
+        }
+        
+        alert(`✅ جاري فتح ${selectedIds.length} شهادة (${colorInfo.name}) للطباعة`);
+        closeCertificateStudentsModal();
+    }
+}
+
+function generateCertificateForStudent(certificateIndex, studentName) {
+    const colors = certificateColors[certificateIndex];
+    const certificateWindow = window.open('', '_blank');
+    
+    if (!certificateWindow) {
+        alert('❌ يرجى السماح للنافذة المنبثقة في المتصفح');
+        return;
+    }
+    
+    certificateWindow.document.write(`<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>شهادة تقدير - ${colors.name}</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            font-family: 'Amiri', 'Segoe UI', 'Tahoma', 'Traditional Arabic', serif;
+            padding: 20px;
+        }
+        .certificate-wrapper {
+            background: white;
+            width: 1100px;
+            max-width: 100%;
+            box-shadow: 0 20px 35px rgba(0,0,0,0.3);
+            margin: 20px auto;
+            border-radius: 15px;
+            overflow: hidden;
+        }
+        .certificate {
+            background: linear-gradient(135deg, ${colors.bgStart} 0%, ${colors.bgEnd} 100%);
+            padding: 25px 50px 35px 50px;
+            border: 15px double ${colors.borderDouble};
+            position: relative;
+            box-shadow: 0 0 0 2px ${colors.borderColor} inset, 0 0 0 6px ${colors.bgEnd} inset;
+        }
+        .corner-decoration {
+            position: absolute;
+            font-size: 35px;
+            color: ${colors.borderColor};
+            opacity: 0.6;
+            z-index: 1;
+        }
+        .corner-tl { top: 10px; right: 15px; }
+        .corner-tr { top: 10px; left: 15px; transform: rotate(90deg); }
+        .corner-bl { bottom: 10px; right: 15px; transform: rotate(-90deg); }
+        .corner-br { bottom: 10px; left: 15px; transform: rotate(180deg); }
+        .educational-icons {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+            opacity: 0.7;
+            z-index: 1;
+        }
+        .edu-right { right: 8px; }
+        .edu-left { left: 8px; }
+        .edu-icon { font-size: 38px; text-align: center; filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.2)); }
+        .floating-icons {
+            position: absolute;
+            opacity: 0.12;
+            z-index: 0;
+        }
+        .icon1 { top: 15%; left: 8%; font-size: 70px; transform: rotate(-15deg); }
+        .icon2 { bottom: 12%; right: 6%; font-size: 65px; transform: rotate(10deg); }
+        .icon3 { top: 45%; right: 12%; font-size: 55px; }
+        .icon4 { bottom: 35%; left: 10%; font-size: 80px; }
+        .verse {
+            text-align: center;
+            font-size: 20px;
+            color: ${colors.accentColor};
+            margin: 5px 0 10px;
+            font-family: 'Amiri', 'Traditional Arabic', serif;
+            background: rgba(${parseInt(colors.borderColor.slice(1,3),16)}, ${parseInt(colors.borderColor.slice(3,5),16)}, ${parseInt(colors.borderColor.slice(5,7),16)}, 0.15);
+            padding: 8px 20px;
+            border-radius: 50px;
+            display: inline-block;
+            position: relative;
+            z-index: 2;
+        }
+        .verse-text { font-size: 22px; font-weight: bold; color: ${colors.accentColor}; }
+        .verse-reference { font-size: 16px; color: ${colors.textColor}; margin-right: 10px; }
+        .logo-section {
+            text-align: center;
+            margin-bottom: 10px;
+            border-bottom: 3px solid ${colors.borderColor};
+            padding-bottom: 10px;
+            background: linear-gradient(90deg, transparent, ${colors.bgEnd}, transparent);
+            position: relative;
+            z-index: 2;
+        }
+        .school-logo {
+            max-width: 100%;
+            height: auto;
+            max-height: 110px;
+            width: auto;
+            display: block;
+            margin: 0 auto;
+            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1));
+        }
+        .header h1 {
+            font-size: 52px;
+            color: ${colors.accentColor};
+            text-align: center;
+            font-weight: bold;
+            margin: 5px 0;
+            font-family: 'Amiri', serif;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+            position: relative;
+            z-index: 2;
+        }
+        .subtitle {
+            text-align: center;
+            font-size: 22px;
+            color: ${colors.textColor};
+            border-top: 2px solid ${colors.borderColor};
+            border-bottom: 2px solid ${colors.borderColor};
+            display: inline-block;
+            padding: 6px 25px;
+            margin: 0 auto 15px;
+            background: rgba(${parseInt(colors.borderColor.slice(1,3),16)}, ${parseInt(colors.borderColor.slice(3,5),16)}, ${parseInt(colors.borderColor.slice(5,7),16)}, 0.1);
+            position: relative;
+            z-index: 2;
+        }
+        .body-text {
+            text-align: center;
+            font-size: 22px;
+            color: #2c3e2f;
+            margin: 15px 0;
+            line-height: 1.7;
+            position: relative;
+            z-index: 2;
+        }
+        .recipient-name {
+            font-size: 40px;
+            font-weight: bold;
+            color: ${colors.textColor};
+            text-decoration: underline;
+            text-decoration-thickness: 2px;
+            text-underline-offset: 12px;
+            margin: 15px 0;
+            font-family: 'Amiri', serif;
+        }
+        .description {
+            font-size: 21px;
+            margin: 12px 0 8px;
+            color: #2c3e2f;
+        }
+        .reason {
+            font-size: 21px;
+            font-weight: bold;
+            background: linear-gradient(135deg, ${colors.bgEnd}, ${colors.bgStart});
+            display: inline-block;
+            padding: 6px 22px;
+            border-radius: 50px;
+            margin: 12px 0;
+            color: ${colors.accentColor};
+            border: 1px solid ${colors.borderColor};
+        }
+        .signature-area {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            margin-top: 35px;
+            padding: 20px 15px 10px 15px;
+            border-top: 2px dashed ${colors.borderColor};
+            background: linear-gradient(180deg, transparent, rgba(${parseInt(colors.borderColor.slice(1,3),16)}, ${parseInt(colors.borderColor.slice(3,5),16)}, ${parseInt(colors.borderColor.slice(5,7),16)}, 0.05));
+            position: relative;
+            z-index: 2;
+        }
+        .signature-area::before {
+            content: "❦";
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 25px;
+            color: ${colors.borderColor};
+            background: ${colors.bgStart};
+            padding: 0 15px;
+        }
+        .signature {
+            text-align: center;
+            position: relative;
+        }
+        .signature::before {
+            content: "✿";
+            position: absolute;
+            top: -22px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 18px;
+            color: ${colors.borderColor};
+            opacity: 0.7;
+        }
+        .signature .line {
+            width: 100%;
+            max-width: 180px;
+            border-bottom: 2px solid #333;
+            margin: 10px auto;
+        }
+        .signature .name {
+            font-size: 17px;
+            font-weight: bold;
+            color: #2c3e2f;
+            margin-top: 6px;
+        }
+        .signature .title {
+            font-size: 15px;
+            color: ${colors.textColor};
+            margin-top: 4px;
+            font-weight: bold;
+        }
+        .date {
+            text-align: center;
+            font-size: 17px;
+            margin-top: 25px;
+            color: #5e5e5e;
+            padding-top: 12px;
+            border-top: 1px solid ${colors.borderColor};
+            position: relative;
+            z-index: 2;
+        }
+        .controls-section, .print-btn {
+            display: block;
+        }
+        .controls-section {
+            background: linear-gradient(135deg, ${colors.bgEnd}, ${colors.bgStart});
+            padding: 20px;
+            border-top: 2px solid ${colors.borderColor};
+            text-align: center;
+        }
+        .print-btn {
+            display: block;
+            width: 240px;
+            margin: 15px auto 20px;
+            padding: 12px 22px;
+            background: linear-gradient(135deg, ${colors.accentColor}, ${colors.textColor});
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            font-family: inherit;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        .print-btn:hover { transform: translateY(-2px); }
+        @media print {
+            .controls-section, .print-btn { display: none !important; }
+            body { background: white !important; padding: 0 !important; margin: 0 !important; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+            .certificate-wrapper { box-shadow: none !important; margin: 0 !important; padding: 0 !important; width: 100% !important; max-width: 100% !important; page-break-after: avoid !important; page-break-inside: avoid !important; break-inside: avoid !important; }
+            .certificate { border: 12px double ${colors.borderDouble} !important; padding: 20px 40px 30px 40px !important; page-break-inside: avoid !important; break-inside: avoid !important; height: auto !important; min-height: 0 !important; background: ${colors.bgStart} !important; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; margin: 0 auto !important; width: 100% !important; }
+            html, body { height: auto !important; overflow: visible !important; }
+            .header h1, .subtitle, .recipient-name, .reason, .verse-text, .verse-reference, .signature .title, .date, .corner-decoration, .edu-icon, .floating-icons { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+            @page { size: A4; margin: 1.2cm; }
+        }
+        @media (max-width: 900px) {
+            .certificate { padding: 20px 35px; }
+            .header h1 { font-size: 42px; }
+            .recipient-name { font-size: 34px; }
+            .edu-icon { font-size: 30px; }
+        }
+        @media (max-width: 700px) {
+            .signature-area { grid-template-columns: 1fr; gap: 25px; }
+            .edu-right, .edu-left { display: none; }
+        }
+        .verse-container { text-align: center; margin: 5px 0; position: relative; z-index: 2; }
+    </style>
+</head>
+<body>
+<div class="certificate-wrapper">
+    <div class="certificate">
+        <div class="corner-decoration corner-tl">❀</div>
+        <div class="corner-decoration corner-tr">❀</div>
+        <div class="corner-decoration corner-bl">❀</div>
+        <div class="corner-decoration corner-br">❀</div>
+        <div class="educational-icons edu-right">
+            <div class="edu-icon">📚</div><div class="edu-icon">✏️</div>
+            <div class="edu-icon">📖</div><div class="edu-icon">🧑‍🎓</div>
+        </div>
+        <div class="educational-icons edu-left">
+            <div class="edu-icon">✏️</div><div class="edu-icon">📘</div>
+            <div class="edu-icon">🧑‍🏫</div><div class="edu-icon">📚</div>
+        </div>
+        <div class="floating-icons icon1">📚</div>
+        <div class="floating-icons icon2">✏️</div>
+        <div class="floating-icons icon3">🧑‍🎓</div>
+        <div class="floating-icons icon4">📖</div>
+        <div class="verse-container">
+            <div class="verse">
+                <span class="verse-text">﴿ وَقُل رَّبِّ زِدْنِي عِلْمًا ﴾</span>
+                <span class="verse-reference">(سورة طه، الآية 114)</span>
+            </div>
+        </div>
+        <div class="logo-section">
+            <img src="https://i.postimg.cc/tRm07wZF/MOTTO.png" 
+                 alt="شعار المدرسة" 
+                 class="school-logo"
+                 onerror="this.onerror=null; this.alt='شعار المدرسة';">
+        </div>
+        <div class="header">
+            <h1>شهادة تقدير</h1>
+            <div style="text-align: center;"><span class="subtitle">★ تقديراً وامتناناً ★</span></div>
+        </div>
+        <div class="body-text">
+            <p>تُمنح هذه الشهادة إلى الطالب</p>
+            <div class="recipient-name" id="recipientName">${studentName}</div>
+            <div class="description">نظير جهوده المتميزة وعطائه المستمر</div>
+            <div class="reason" id="reasonText">التفوق والتميز الدراسي</div>
+            <p style="margin-top: 18px;">مقدمين له جزيل الشكر والتقدير على ما بذله من إخلاص وتميز، سائلين الله له دوام النجاح والتفوق.</p>
+        </div>
+        <div class="signature-area">
+            <div class="signature"><div class="line"></div><div class="name" id="teacherName">أ.عبدالباسط عطية</div><div class="title">معلم اللغة الإنجليزية</div></div>
+            <div class="signature"><div class="line"></div><div class="name" id="coordinatorName">أ.إسماعيل هارون</div><div class="title">منسق اللغة الإنجليزية</div></div>
+            <div class="signature"><div class="line"></div><div class="name" id="academicViceName">أ.خالد المري</div><div class="title">النائب الأكاديمي</div></div>
+        </div>
+        <div class="date">التاريخ: <span id="certDate">15 مايو 2026</span></div>
+        <div style="text-align: center; margin-top: 12px; font-size: 16px; color: ${colors.borderColor}; opacity: 0.5;">✿ ✤ ✿</div>
+    </div>
+    <div class="controls-section">
+        <h3 style="color:${colors.accentColor}; margin-bottom: 15px;">✍️ تخصيص الشهادة</h3>
+        <div style="display: flex; flex-wrap: wrap; gap: 12px; justify-content: center;">
+            <div><label>اسم الطالب: </label><input type="text" id="inputName" value="${studentName}"></div>
+            <div><label>سبب التكريم: </label><input type="text" id="inputReason" value="التفوق والتميز الدراسي"></div>
+            <div><label>معلم الإنجليزية: </label><input type="text" id="inputTeacher" value="أ.عبدالباسط عطية"></div>
+            <div><label>منسق الإنجليزية: </label><input type="text" id="inputCoordinator" value="أ.إسماعيل هارون"></div>
+            <div><label>النائب الأكاديمي: </label><input type="text" id="inputAcademicVice" value="أ.خالد المري"></div>
+            <div><label>التاريخ: </label><input type="text" id="inputDate" value="15 مايو 2026"></div>
+            <button id="updateBtn" style="background:${colors.accentColor}; color:white; border:none; padding:10px 20px; border-radius:25px; cursor:pointer;">تحديث</button>
+        </div>
+    </div>
+    <button class="print-btn" onclick="window.print();">🖨️ طباعة الشهادة</button>
+</div>
+<script>
+    var updateBtn = document.getElementById('updateBtn');
+    if(updateBtn) {
+        updateBtn.addEventListener('click', function() {
+            var inputName = document.getElementById('inputName');
+            var inputReason = document.getElementById('inputReason');
+            var inputDate = document.getElementById('inputDate');
+            var inputTeacher = document.getElementById('inputTeacher');
+            var inputCoordinator = document.getElementById('inputCoordinator');
+            var inputAcademicVice = document.getElementById('inputAcademicVice');
+            if(inputName) document.getElementById('recipientName').innerText = inputName.value || 'الاسم الكامل';
+            if(inputReason) document.getElementById('reasonText').innerText = inputReason.value || 'العمل الجاد';
+            if(inputDate) document.getElementById('certDate').innerText = inputDate.value || 'تاريخ التكريم';
+            if(inputTeacher) document.getElementById('teacherName').innerText = inputTeacher.value || 'اسم المعلم';
+            if(inputCoordinator) document.getElementById('coordinatorName').innerText = inputCoordinator.value || 'اسم المنسق';
+            if(inputAcademicVice) document.getElementById('academicViceName').innerText = inputAcademicVice.value || 'اسم النائب الأكاديمي';
+        });
+    }
+<\/script>
+</body>
+</html>`);
+    certificateWindow.document.close();
+}
+
+// ==================== دوال حذف طالب ====================
+function showDeleteStudentModal() {
+    const students = getCurrentStudents();
+    if(students.length === 0) {
+        alert('⚠️ لا يوجد طلاب في هذا الصف');
+        return;
+    }
+    updateDeleteStudentSelect();
+    document.getElementById('deleteStudentModal').style.display = 'flex';
+}
+
+function closeDeleteStudentModal() {
+    document.getElementById('deleteStudentModal').style.display = 'none';
+}
+
+function deleteStudent() {
+    const select = document.getElementById('deleteStudentSelect');
+    const selectedValue = select.value;
+    
+    if(selectedValue === "" || selectedValue === null) {
+        alert('❌ الرجاء اختيار طالب للحذف');
+        return;
+    }
+    
+    const studentIndex = parseInt(selectedValue);
+    const students = getCurrentStudents();
+    const studentName = students[studentIndex].name;
+    
+    if(confirm(`⚠️ هل أنت متأكد من حذف الطالب ${studentName}؟`)) {
+        students.splice(studentIndex, 1);
+        saveCurrentStudents(students);
+        renderStudents();
+        alert(`✅ تم حذف الطالب ${studentName} بنجاح`);
+        closeDeleteStudentModal();
+    }
+}
+
+// ==================== دوال إضافة صف ====================
+function showAddClassModal() {
+    document.getElementById('classNameForAdd').innerText = currentClass;
+    document.getElementById('studentsNamesInput').value = '';
+    document.getElementById('addClassModal').style.display = 'flex';
+}
+
+function closeAddClassModal() {
+    document.getElementById('addClassModal').style.display = 'none';
+}
+
+function saveClassStudents() {
+    const textarea = document.getElementById('studentsNamesInput');
+    const namesText = textarea.value;
+    
+    if(!namesText.trim()) {
+        alert('❌ الرجاء إدخال أسماء الطلاب');
+        return;
+    }
+    
+    let lines = namesText.split(/\r?\n/);
+    const names = lines.filter(line => line.trim().length > 0).map(line => line.trim());
+    
+    if(names.length === 0) {
+        alert('❌ لم يتم العثور على أسماء صالحة');
+        return;
+    }
+    
+    const newStudents = names.map(name => ({ name: name, points: 0 }));
+    const students = getCurrentStudents();
+    students.push(...newStudents);
+    saveCurrentStudents(students);
+    renderStudents();
+    
+    alert(`✅ تم إضافة ${names.length} طالب بنجاح إلى صف ${currentClass}`);
+    closeAddClassModal();
+}
+
+// ==================== دوال تغيير الجوائز ====================
+function showEditPrizesModal() {
+    const prizes = getCurrentPrizes();
+    document.getElementById('currentClassForPrizes').innerText = currentClass;
+    document.getElementById('prize1Input').value = prizes.first;
+    document.getElementById('prize2Input').value = prizes.second;
+    document.getElementById('prize3Input').value = prizes.third;
+    document.getElementById('editPrizesModal').style.display = 'flex';
+}
+
+function closeEditPrizesModal() {
+    document.getElementById('editPrizesModal').style.display = 'none';
+}
+
+function savePrizesChanges() {
+    const newPrize1 = document.getElementById('prize1Input').value.trim();
+    const newPrize2 = document.getElementById('prize2Input').value.trim();
+    const newPrize3 = document.getElementById('prize3Input').value.trim();
+    
+    const prizes = getCurrentPrizes();
+    if(newPrize1) prizes.first = newPrize1;
+    if(newPrize2) prizes.second = newPrize2;
+    if(newPrize3) prizes.third = newPrize3;
+    
+    saveCurrentPrizes(prizes);
+    closeEditPrizesModal();
+    alert('✅ تم حفظ الجوائز الجديدة لصف ' + currentClass + ' بنجاح!');
+}
+
+// ==================== دوال النسخ الاحتياطي ====================
+function backupData() {
+    const backupData = {
+        allClassesData: allClassesData,
+        classPrizes: classPrizes,
+        version: "1.0",
+        date: new Date().toLocaleString('ar-EG')
+    };
+    
+    const dataStr = JSON.stringify(backupData, null, 2);
+    const blob = new Blob([dataStr], {type: "application/json"});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `backup_${currentClass}_${new Date().toISOString().slice(0,19)}.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    alert('✅ تم إنشاء نسخة احتياطية بنجاح!');
+}
+
+function showRestoreModal() {
+    document.getElementById('restoreModal').style.display = 'flex';
+}
+
+function closeRestoreModal() {
+    document.getElementById('restoreModal').style.display = 'none';
+}
+
+function restoreData(file) {
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        try {
+            const backupData = JSON.parse(e.target.result);
+            
+            if (backupData.allClassesData) {
+                allClassesData = backupData.allClassesData;
+            }
+            if (backupData.classPrizes) {
+                classPrizes = backupData.classPrizes;
+            }
+            
+            classNames.forEach(className => {
+                if(!allClassesData[className]) {
+                    initializeClassData(className);
+                }
+                if(!classPrizes[className]) {
+                    classPrizes[className] = { first: "10 ريالات", second: "5 ريالات", third: "حلويات" };
+                }
+            });
+            
+            saveAllData();
+            renderStudents();
+            alert('✅ تم استعادة النسخة الاحتياطية بنجاح!');
+            closeRestoreModal();
+        } catch(error) {
+            alert('❌ خطأ: الملف غير صالح أو تالف');
+        }
+    };
+    reader.readAsText(file);
+}
+
+// ==================== دوال صور الفائقين ====================
+function showUploadPhotosModal() {
+    const photos = getCurrentPhotos();
+    const className = currentClass;
+    document.getElementById('currentClassForPhotos').innerText = className;
+    
+    if(photos.photo1) {
+        document.getElementById('preview1').innerHTML = `<img src="${photos.photo1}" class="preview-image">`;
+    } else {
+        document.getElementById('preview1').innerHTML = '';
+    }
+    if(photos.photo2) {
+        document.getElementById('preview2').innerHTML = `<img src="${photos.photo2}" class="preview-image">`;
+    } else {
+        document.getElementById('preview2').innerHTML = '';
+    }
+    if(photos.photo3) {
+        document.getElementById('preview3').innerHTML = `<img src="${photos.photo3}" class="preview-image">`;
+    } else {
+        document.getElementById('preview3').innerHTML = '';
+    }
+    
+    document.getElementById('uploadPhotosModal').style.display = 'flex';
+}
+
+function closeUploadPhotosModal() {
+    document.getElementById('uploadPhotosModal').style.display = 'none';
+}
+
+function handlePhotoUpload(inputId, photoKey, previewDivId) {
+    const input = document.getElementById(inputId);
+    const file = input.files[0];
+    if(file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const photos = getCurrentPhotos();
+            photos[photoKey] = e.target.result;
+            saveCurrentPhotos(photos);
+            document.getElementById(previewDivId).innerHTML = `<img src="${e.target.result}" class="preview-image">`;
+            alert(`✅ تم رفع الصورة بنجاح للصف ${currentClass}`);
+        };
+        reader.readAsDataURL(file);
+    }
+}
+
+function saveAllPhotos() {
+    alert('✅ تم حفظ صور الصف ' + currentClass + ' بنجاح!');
+    closeUploadPhotosModal();
+}
+
+// ==================== دوال العمليات على الطلاب ====================
+function showPointsModal(isAdd) {
+    const pointsSelect = document.getElementById('pointsSelect');
+    pointsSelect.innerHTML = '<option value="">-- اختر عدد النقاط --</option>';
+    
+    const pointsList = isAdd ? positivePoints : negativePoints;
+    const title = isAdd ? '⭐ إضافة نقاط' : '🔻 خصم نقاط';
+    document.getElementById('pointsModalTitle').innerText = title;
+    
+    pointsList.forEach(item => {
+        const option = document.createElement('option');
+        option.value = item.points;
+        option.textContent = `${item.name} (${item.points > 0 ? '+' : ''}${item.points} نقطة)`;
+        pointsSelect.appendChild(option);
+    });
+    
+    document.getElementById('pointsModal').style.display = 'flex';
+}
+
+function closePointsModal() {
+    document.getElementById('pointsModal').style.display = 'none';
+}
+
+function showWarningModal() {
+    document.getElementById('warningModal').style.display = 'flex';
+}
+
+function closeWarningModal() {
+    document.getElementById('warningModal').style.display = 'none';
+}
+
+function applyPointsToStudents(points, isAdd) {
+    const selectedIds = getSelectedStudents();
+    if(selectedIds.length === 0) {
+        alert('❌ الرجاء اختيار طالب واحد على الأقل');
+        return false;
+    }
+    
+    const students = getCurrentStudents();
+    const actualPoints = isAdd ? Math.abs(points) : -Math.abs(points);
+    
+    selectedIds.forEach(id => {
+        students[id].points += actualPoints;
+    });
+    
+    saveCurrentStudents(students);
+    renderStudents();
+    
+    let message = '';
+    if(selectedIds.length === 1) {
+        message = `✅ تم ${isAdd ? 'إضافة' : 'خصم'} ${Math.abs(points)} نقطة ${isAdd ? 'ل' : 'من'} الطالب ${students[selectedIds[0]].name}`;
+    } else {
+        message = `✅ تم ${isAdd ? 'إضافة' : 'خصم'} ${Math.abs(points)} نقطة لـ ${selectedIds.length} طلاب`;
+    }
+    alert(message);
+    return true;
+}
+
+function applyWarningToStudents(points, warningName) {
+    const selectedIds = getSelectedStudents();
+    if(selectedIds.length === 0) {
+        alert('❌ الرجاء اختيار طالب واحد على الأقل');
+        return false;
+    }
+    
+    const students = getCurrentStudents();
+    
+    selectedIds.forEach(id => {
+        students[id].points -= Math.abs(points);
+    });
+    
+    saveCurrentStudents(students);
+    renderStudents();
+    
+    let message = '';
+    if(selectedIds.length === 1) {
+        message = `🔔 تم إعطاء إنذار (${warningName}) وخصم ${Math.abs(points)} نقطة من الطالب ${students[selectedIds[0]].name}`;
+    } else {
+        message = `🔔 تم إعطاء إنذار (${warningName}) وخصم ${Math.abs(points)} نقطة لـ ${selectedIds.length} طلاب`;
+    }
+    alert(message);
+    return true;
+}
+
+// ==================== دوال المودالات الأخرى ====================
+function showSelectClassModal() {
+    const select = document.getElementById('classSelect');
+    if(select) select.value = currentClass;
+    document.getElementById('selectClassModal').style.display = 'flex';
+}
+
+function closeSelectClassModal() {
+    document.getElementById('selectClassModal').style.display = 'none';
+}
+
+function saveSelectedClass() {
+    const select = document.getElementById('classSelect');
+    const newClass = select.value;
+    if(newClass) {
+        currentClass = newClass;
+        localStorage.setItem('currentClass', currentClass);
+        document.getElementById('selectedClassDisplay').innerHTML = `📚 الصف الحالي: ${currentClass}`;
+        renderStudents();
+        alert(`✅ تم التبديل إلى صف ${currentClass}`);
+    } else {
+        alert('❌ الرجاء اختيار صف');
+    }
+    closeSelectClassModal();
+}
+
+function showStudentsPointsModal() {
+    document.getElementById('currentClassForPoints').innerText = currentClass;
+    renderStudentsPointsModal();
+    document.getElementById('studentsPointsModal').style.display = 'flex';
+}
+
+function closeStudentsPointsModal() {
+    document.getElementById('studentsPointsModal').style.display = 'none';
+}
+
+function showPrizeMessageWithPhoto(studentName, prize, prizeIcon, prizeDetails, rank) {
+    const photos = getCurrentPhotos();
+    let photoHtml = '';
+    if(rank === 1 && photos.photo1) {
+        photoHtml = `<img src="${photos.photo1}" class="student-photo">`;
+    } else if(rank === 2 && photos.photo2) {
+        photoHtml = `<img src="${photos.photo2}" class="student-photo">`;
+    } else if(rank === 3 && photos.photo3) {
+        photoHtml = `<img src="${photos.photo3}" class="student-photo">`;
+    } else {
+        photoHtml = `<div class="prize">${prizeIcon}</div>`;
+    }
+    
+    const modalMessage = document.getElementById('modalMessage');
+    modalMessage.innerHTML = `${photoHtml}
+                              <div class="student-name">🎉 ${studentName} 🎉</div>
+                              <div class="prize-details">${prizeDetails}</div>
+                              <p style="margin-top:15px;">مبروك! استلم جائزتك ${prize}</p>`;
+    document.getElementById('prizeModal').style.display = 'flex';
+}
+
+function closePrizeModal() { 
+    document.getElementById('prizeModal').style.display = 'none'; 
+}
+
+function closeImageModal() { 
+    document.getElementById('imageModal').style.display = 'none'; 
+}
+
+function fullSystemReset() {
+    if(confirm('⚠️ تحذير: إعادة ضبط النظام بالكامل؟ سيتم حذف جميع بيانات جميع الصفوف واستعادة البيانات الافتراضية.')){
+        classNames.forEach(className => {
+            if (className === "السادس 1") {
+                allClassesData[className] = {
+                    students: [
+                        {name:'أحمد محمد', points:520},
+                        {name:'محمد خالد', points:480},
+                        {name:'خالد علي', points:430},
+                        {name:'سعيد سالم', points:150},
+                        {name:'عمر حسن', points:50},
+                        {name:'ناصر راشد', points:-10}
+                    ],
+                    photos: { photo1: null, photo2: null, photo3: null }
+                };
+            } else {
+                allClassesData[className] = {
+                    students: [],
+                    photos: { photo1: null, photo2: null, photo3: null }
+                };
+            }
+            classPrizes[className] = { first: "10 ريالات", second: "5 ريالات", third: "حلويات" };
+        });
+        saveAllData();
+        renderStudents();
+        alert('✅ تم إعادة ضبط النظام بنجاح!');
+    }
+}
+
+function showAboutDeveloper() { 
+    document.getElementById('aboutImage').src = 'https://i.postimg.cc/26qZkK9g/my-Motto.png'; 
+    document.getElementById('imageModal').style.display = 'flex'; 
+}
+
+// ==================== تهيئة الصفحة والأحداث ====================
+document.addEventListener('DOMContentLoaded', function() {
+    renderStudents();
+    
+    const developerImage = document.getElementById('developerImage');
+    const savedImage = localStorage.getItem('developerImage');
+    if(savedImage && developerImage) developerImage.src = savedImage;
+    
+    if(developerImage) {
+        developerImage.addEventListener('click', function() {
+            const imageUrl = prompt('أدخل رابط صورتك الدائرية:');
+            if(imageUrl && imageUrl.trim() !== '') {
+                developerImage.src = imageUrl;
+                localStorage.setItem('developerImage', imageUrl);
+                alert('✅ تم تحديث صورة المطور!');
+            }
+        });
+    }
+    
+    // أحداث الصف
+    document.getElementById('selectClassBtn').onclick = showSelectClassModal;
+    document.getElementById('saveClassBtn').onclick = saveSelectedClass;
+    document.getElementById('cancelClassBtn').onclick = closeSelectClassModal;
+    
+    // أحداث إضافة صف
+    document.getElementById('addClassBtn').onclick = showAddClassModal;
+    document.getElementById('saveClassStudentsBtn').onclick = saveClassStudents;
+    document.getElementById('cancelAddClassBtn').onclick = closeAddClassModal;
+    
+    // أحداث حذف طالب
+    document.getElementById('deleteStudentBtn').onclick = showDeleteStudentModal;
+    document.getElementById('confirmDeleteBtn').onclick = deleteStudent;
+    document.getElementById('cancelDeleteBtn').onclick = closeDeleteStudentModal;
+    
+    // أحداث النسخ الاحتياطي
+    document.getElementById('backupBtn').onclick = backupData;
+    document.getElementById('restoreBtn').onclick = showRestoreModal;
+    document.getElementById('confirmRestoreBtn').onclick = function() {
+        const fileInput = document.getElementById('restoreFileInput');
+        if(fileInput.files.length > 0) {
+            restoreData(fileInput.files[0]);
+        } else {
+            alert('❌ الرجاء اختيار ملف النسخة الاحتياطية');
+        }
+    };
+    document.getElementById('cancelRestoreBtn').onclick = closeRestoreModal;
+    
+    // أحداث تغيير الجوائز
+    document.getElementById('editPrizesBtn').onclick = showEditPrizesModal;
+    document.getElementById('savePrizesBtn').onclick = savePrizesChanges;
+    document.getElementById('cancelPrizesBtn').onclick = closeEditPrizesModal;
+    
+    // أحداث صور الفائقين
+    document.getElementById('uploadPhotosBtn').onclick = showUploadPhotosModal;
+    document.getElementById('photo1Input').addEventListener('change', function() { handlePhotoUpload('photo1Input', 'photo1', 'preview1'); });
+    document.getElementById('photo2Input').addEventListener('change', function() { handlePhotoUpload('photo2Input', 'photo2', 'preview2'); });
+    document.getElementById('photo3Input').addEventListener('change', function() { handlePhotoUpload('photo3Input', 'photo3', 'preview3'); });
+    document.getElementById('savePhotosBtn').onclick = saveAllPhotos;
+    document.getElementById('cancelPhotosBtn').onclick = closeUploadPhotosModal;
+    
+    // زر إضافة طالب فردي
+    document.getElementById('addStudentBtn').onclick = function(){
+        let name = prompt('📝 أدخل اسم الطالب'); 
+        if(!name || !name.trim()) return;
+        let points = parseInt(prompt('⭐ أدخل النقاط الابتدائية (0 إذا لم ترغب)')) || 0;
+        const students = getCurrentStudents();
+        students.push({name:name.trim(), points:points});
+        saveCurrentStudents(students);
+        renderStudents();
+        alert(`✅ تمت إضافة الطالب ${name} إلى صف ${currentClass}`);
+    };
+    
+    // أزرار العمليات (اختيار متعدد)
+    document.getElementById('addPointsBtn').onclick = function() { 
+        showMultiSelectModal('⭐ اختر الطلاب لإضافة نقاط', 'add');
+    };
+    document.getElementById('deductPointsBtn').onclick = function() { 
+        showMultiSelectModal('🔻 اختر الطلاب لخصم نقاط', 'deduct');
+    };
+    document.getElementById('warningBtn').onclick = function() { 
+        showMultiSelectModal('⚠️ اختر الطلاب لإعطاء إنذار', 'warning');
+    };
+    
+    // تأكيد اختيار متعدد للعمليات
+    document.getElementById('confirmMultiSelectBtn').onclick = function() {
+        const selectedCount = getSelectedStudents().length;
+        if(selectedCount === 0) {
+            alert('❌ الرجاء اختيار طالب واحد على الأقل');
+            return;
+        }
+        closeMultiSelectModal();
+        
+        if(currentAction === 'add') {
+            showPointsModal(true);
+        } else if(currentAction === 'deduct') {
+            showPointsModal(false);
+        } else if(currentAction === 'warning') {
+            showWarningModal();
+        }
+    };
+    
+    document.getElementById('cancelMultiSelectBtn').onclick = function() {
+        closeMultiSelectModal();
+        currentAction = null;
+    };
+    
+    // تأكيد النقاط
+    document.getElementById('confirmPointsBtn').onclick = function() {
+        const pointsSelect = document.getElementById('pointsSelect');
+        const points = parseInt(pointsSelect.value);
+        
+        if(isNaN(points) || points === 0) {
+            alert('❌ الرجاء اختيار نوع النقاط');
+            return;
+        }
+        
+        const isAdd = document.getElementById('pointsModalTitle').innerText.includes('إضافة');
+        const success = applyPointsToStudents(points, isAdd);
+        
+        if(success) {
+            closePointsModal();
+            currentAction = null;
+        }
+    };
+    
+    document.getElementById('cancelPointsBtn').onclick = function() {
+        closePointsModal();
+        currentAction = null;
+    };
+    
+    // تأكيد الإنذار
+    document.getElementById('confirmWarningBtn').onclick = function() {
+        const warningSelect = document.getElementById('warningSelect');
+        const warningValue = warningSelect.value;
+        
+        if(!warningValue || warningValue === "") {
+            alert('❌ الرجاء اختيار نوع الإنذار');
+            return;
+        }
+        
+        let points = 0, warningName = '';
+        const warningMap = {
+            '1': { points: 5, name: 'تأخير' },
+            '2': { points: 10, name: 'إزعاج' },
+            '3': { points: 15, name: 'عدم حل الواجب' },
+            '4': { points: 25, name: 'سلوك سيء' },
+            '5': { points: 75, name: 'عدم اكتمال كتاب التدريبات' },
+            '6': { points: 50, name: 'عدم الحصول على الدرجة النهائية في التقييم' },
+            '7': { points: 100, name: 'عدم الحصول على الدرجة النهائية في الامتحان' },
+            '8': { points: 150, name: 'مقاطعة المعلم أثناء الحصة والشرح' },
+            '9': { points: 140, name: 'التحدث بدون إذن' },
+            '10': { points: 150, name: 'تكرار طلب الخروج' },
+            '11': { points: 140, name: 'عدم الالتزام بالعمل الجماعي' }
+        };
+        
+        if(warningMap[warningValue]) {
+            points = warningMap[warningValue].points;
+            warningName = warningMap[warningValue].name;
+        }
+        
+        const success = applyWarningToStudents(points, warningName);
+        
+        if(success) {
+            closeWarningModal();
+            currentAction = null;
+        }
+    };
+    
+    document.getElementById('cancelWarningBtn').onclick = function() {
+        closeWarningModal();
+        currentAction = null;
+    };
+    
+    // شهادات التقدير - اختيار متعدد للطلاب
+    document.getElementById('certificatesBtn').onclick = showCertificateStudentsModal;
+    document.getElementById('confirmCertificateStudentsBtn').onclick = printCertificatesForStudents;
+    document.getElementById('cancelCertificateStudentsBtn').onclick = closeCertificateStudentsModal;
+    
+    // صندوق المفاجآت
+    document.getElementById('surpriseBtn').onclick = function(){
+        const students = getCurrentStudents();
+        if(students.length === 0){ 
+            alert('⚠️ لا يوجد طلاب في صف ' + currentClass); 
+            return; 
+        }
+        const sorted = [...students].sort((a,b) => b.points - a.points);
+        const prizes = getCurrentPrizes();
+        let num = prompt(`🎁 صندوق المفاجآت لصف ${currentClass} 🎁\n\n1️⃣ - المركز الأول (${prizes.first})\n2️⃣ - المركز الثاني (${prizes.second})\n3️⃣ - المركز الثالث (${prizes.third})`);
+        if(num === '1' && sorted[0]) {
+            showPrizeMessageWithPhoto(sorted[0].name, prizes.first, '💰 💵', `🏆 جائزة المركز الأول<br>🎁 ${prizes.first}`, 1);
+        }
+        else if(num === '2' && sorted[1]) {
+            showPrizeMessageWithPhoto(sorted[1].name, prizes.second, '💵 💰', `🥈 جائزة المركز الثاني<br>🎁 ${prizes.second}`, 2);
+        }
+        else if(num === '3' && sorted[2]) {
+            showPrizeMessageWithPhoto(sorted[2].name, prizes.third, '🍬 🍭', `🥉 جائزة المركز الثالث<br>🎁 ${prizes.third}`, 3);
+        }
+        else alert('❌ اختيار غير صحيح أو لا يوجد طالب في هذا المركز');
+    };
+    
+    // نقاط الطلاب
+    document.getElementById('studentsPointsBtn').onclick = function() { 
+        showStudentsPointsModal(); 
+    };
+    
+    // تحديث
+    document.getElementById('refreshBtn').onclick = function(){ 
+        renderStudents(); 
+        alert('🔄 تم تحديث لوحة التحكم'); 
+    };
+    
+    // إعادة ضبط
+    document.getElementById('resetBtn').onclick = fullSystemReset;
+    document.getElementById('aboutBtn').onclick = showAboutDeveloper;
+    
+    // إغلاق المودالات
+    document.getElementById('closePrizeModalBtn').onclick = closePrizeModal;
+    document.getElementById('closeImageModalBtn').onclick = closeImageModal;
+    document.getElementById('closeStudentsPointsModalBtn').onclick = closeStudentsPointsModal;
+    
+    // إغلاق المودالات عند النقر خارجها
+    window.onclick = function(e) { 
+        if(e.target == document.getElementById('selectClassModal')) closeSelectClassModal();
+        if(e.target == document.getElementById('addClassModal')) closeAddClassModal();
+        if(e.target == document.getElementById('deleteStudentModal')) closeDeleteStudentModal();
+        if(e.target == document.getElementById('editPrizesModal')) closeEditPrizesModal();
+        if(e.target == document.getElementById('multiSelectModal')) closeMultiSelectModal();
+        if(e.target == document.getElementById('certificateStudentsModal')) closeCertificateStudentsModal();
+        if(e.target == document.getElementById('pointsModal')) closePointsModal();
+        if(e.target == document.getElementById('warningModal')) closeWarningModal();
+        if(e.target == document.getElementById('prizeModal')) closePrizeModal(); 
+        if(e.target == document.getElementById('imageModal')) closeImageModal();
+        if(e.target == document.getElementById('studentsPointsModal')) closeStudentsPointsModal();
+        if(e.target == document.getElementById('uploadPhotosModal')) closeUploadPhotosModal();
+        if(e.target == document.getElementById('restoreModal')) closeRestoreModal();
+    };
+});
+</script>
+</body>
+</html>
