@@ -127,6 +127,9 @@ body {
 .certificates-btn { background: #b8860b; }
 .backup-btn { background: #f59e0b; }
 .restore-btn { background: #ef4444; }
+.students-levels-btn { background: #8b5cf6; }
+.division-btn { background: #10b981; }
+.group-scores-btn { background: #f59e0b; }
 
 @keyframes pulse {
     0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(233,30,99,0.7); }
@@ -742,6 +745,9 @@ body {
                 <button class="btn students-points-btn" id="studentsPointsBtn">📊 نقاط الطلاب</button>
                 <button class="btn edit-prizes-btn" id="editPrizesBtn">🏆 تغيير الجوائز</button>
                 <button class="btn upload-photos-btn" id="uploadPhotosBtn">📸 صور الفائقين</button>
+                <button class="btn students-levels-btn" id="studentsLevelsBtn">📊 مستويات الطلاب</button>
+                <button class="btn division-btn" id="divisionBtn">🔀 تقسيم الطلاب</button>
+                <button class="btn group-scores-btn" id="groupScoresBtn">🏆 درجات المجموعات</button>
                 <button class="btn backup-btn" id="backupBtn">💾 نسخ احتياطي</button>
                 <button class="btn restore-btn" id="restoreBtn">📂 استعادة نسخة</button>
                 <button class="btn refresh-btn" id="refreshBtn">🔄 تحديث</button>
@@ -812,7 +818,7 @@ body {
 
     <div class="footer">
         <div class="copyright">
-            <img src="https://i.postimg.cc/h4dPn3tR/my-picture.jpg" alt="Abdelbaset Atia" class="developer-image" id="developerImage">
+            <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Abdelbaset Atia" class="developer-image" id="developerImage">
             <div class="developer-name">Abdelbaset Atia</div>
             <div class="copyright-text">© 2026 جميع الحقوق محفوظة | <span>❤️</span> تصميم وتطوير</div>
         </div>
@@ -1028,6 +1034,29 @@ body {
         </div>
         <button class="close-modal confirm-btn" id="confirmRestoreBtn">استعادة</button>
         <button class="close-modal cancel-btn" id="cancelRestoreBtn">إلغاء</button>
+    </div>
+</div>
+
+<!-- مودال مستويات الطلاب -->
+<div id="levelsModal" class="modal">
+    <div class="modal-content" style="max-width: 600px; width: 90%;">
+        <h2 id="levelsModalTitle">📊 مستويات الطلاب</h2>
+        <div style="max-height: 500px; overflow-y: auto;">
+            <table style="width: 100%; border-collapse: collapse;">
+                <thead>
+                    <tr style="background: #4338ca; color: white;">
+                        <th style="padding: 10px;">#</th>
+                        <th style="padding: 10px; text-align: right;">اسم الطالب</th>
+                        <th style="padding: 10px;">المستوى</th>
+                    </tr>
+                </thead>
+                <tbody id="levelsTableBody"></tbody>
+            </table>
+        </div>
+        <div style="display: flex; justify-content: center; gap: 10px; margin-top: 20px;">
+            <button class="close-modal confirm-btn" id="saveLevelsBtn">💾 حفظ المستويات</button>
+            <button class="close-modal cancel-btn" id="closeLevelsBtn">إلغاء</button>
+        </div>
     </div>
 </div>
 
@@ -1273,7 +1302,7 @@ function renderStudents(){
     tbody.innerHTML = '';
     
     if(students.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="4" style="text-align:center">🚫 لا يوجد طلاب في هذا الصف<\/td><\/tr>';
+        tbody.innerHTML = '<td><td colspan="4" style="text-align:center">🚫 لا يوجد طلاب في هذا الصف</td></tr>';
     } else {
         for(let i=0; i<students.length; i++) {
             const student = students[i];
@@ -1301,7 +1330,7 @@ function renderStudentsPointsModal() {
     tbody.innerHTML = '';
     
     if(sorted.length === 0) {
-        tbody.innerHTML = '<td><td colspan="4" style="text-align:center">🚫 لا يوجد طلاب في هذا الصف<\/td><\/tr>';
+        tbody.innerHTML = '<tr><td colspan="4" style="text-align:center">🚫 لا يوجد طلاب في هذا الصف</td></tr>';
     } else {
         for(let i=0; i<sorted.length; i++) {
             const student = sorted[i];
@@ -2050,6 +2079,346 @@ function saveAllPhotos() {
     closeUploadPhotosModal();
 }
 
+// ==================== دوال مستويات الطلاب ====================
+let studentLevels = {};
+
+const savedLevels = localStorage.getItem('studentLevels');
+if(savedLevels) {
+    try {
+        studentLevels = JSON.parse(savedLevels);
+    } catch(e) {}
+}
+
+function saveStudentLevels() {
+    localStorage.setItem('studentLevels', JSON.stringify(studentLevels));
+}
+
+function showLevelsModal() {
+    const students = getCurrentStudents();
+    if(students.length === 0) {
+        alert('⚠️ لا يوجد طلاب في هذا الصف');
+        return;
+    }
+    
+    if(!studentLevels[currentClass]) {
+        studentLevels[currentClass] = {};
+    }
+    
+    document.getElementById('levelsModalTitle').innerHTML = `📊 مستويات الطلاب - ${currentClass}`;
+    
+    const tbody = document.getElementById('levelsTableBody');
+    tbody.innerHTML = '';
+    
+    students.forEach((student, index) => {
+        const currentLevel = studentLevels[currentClass][student.name] || '';
+        const row = tbody.insertRow();
+        row.innerHTML = `
+            <td style="text-align: center; padding: 8px;">${index + 1}</td>
+            <td style="text-align: right; padding: 8px; font-weight: bold;">${student.name}</td>
+            <td style="text-align: center; padding: 8px;">
+                <select class="level-select" data-name="${student.name}" style="padding: 8px; border-radius: 10px; border: 1px solid #ddd;">
+                    <option value="">-- اختر المستوى --</option>
+                    <option value="ممتاز" ${currentLevel === 'ممتاز' ? 'selected' : ''}>🌟 ممتاز</option>
+                    <option value="جيد جدا" ${currentLevel === 'جيد جدا' ? 'selected' : ''}>⭐ جيد جدا</option>
+                    <option value="جيد" ${currentLevel === 'جيد' ? 'selected' : ''}>✅ جيد</option>
+                    <option value="مقبول" ${currentLevel === 'مقبول' ? 'selected' : ''}>📖 مقبول</option>
+                    <option value="ضعيف" ${currentLevel === 'ضعيف' ? 'selected' : ''}>⚠️ ضعيف</option>
+                </select>
+            </td>
+        `;
+    });
+    
+    document.getElementById('levelsModal').style.display = 'flex';
+}
+
+function closeLevelsModal() {
+    document.getElementById('levelsModal').style.display = 'none';
+}
+
+function saveLevelsData() {
+    const selects = document.querySelectorAll('#levelsTableBody .level-select');
+    selects.forEach(select => {
+        const studentName = select.getAttribute('data-name');
+        const level = select.value;
+        if(level) {
+            studentLevels[currentClass][studentName] = level;
+        } else {
+            delete studentLevels[currentClass][studentName];
+        }
+    });
+    saveStudentLevels();
+    alert('✅ تم حفظ مستويات الطلاب بنجاح!');
+    closeLevelsModal();
+}
+
+// ==================== دوال تقسيم الطلاب ====================
+let groupScores = {};
+
+const savedGroupScores = localStorage.getItem('groupScores');
+if(savedGroupScores) {
+    try {
+        groupScores = JSON.parse(savedGroupScores);
+    } catch(e) {}
+}
+
+function showDivisionOptions() {
+    const students = getCurrentStudents();
+    if(students.length === 0) {
+        alert('⚠️ لا يوجد طلاب في هذا الصف');
+        return;
+    }
+    
+    if(!studentLevels[currentClass] || Object.keys(studentLevels[currentClass]).length === 0) {
+        alert('⚠️ الرجاء تحديد مستويات الطلاب أولاً من زر "مستويات الطلاب"');
+        return;
+    }
+    
+    const modalContent = `
+        <h2>🔀 تقسيم الطلاب - ${currentClass}</h2>
+        <div style="display: flex; flex-direction: column; gap: 15px; margin: 20px 0;">
+            <button class="close-modal confirm-btn" id="pairDivisionBtn" style="background: #8b5cf6;">👥 تقسيم ثنائي (أزواج)</button>
+            <button class="close-modal confirm-btn" id="groupDivisionBtn" style="background: #10b981;">👥 تقسيم مجموعات</button>
+        </div>
+        <button class="close-modal cancel-btn" id="cancelDivisionBtn">إلغاء</button>
+    `;
+    
+    const modal = document.createElement('div');
+    modal.id = 'divisionModal';
+    modal.className = 'modal';
+    modal.style.display = 'flex';
+    modal.innerHTML = `<div class="modal-content" style="max-width: 400px;">${modalContent}</div>`;
+    document.body.appendChild(modal);
+    
+    document.getElementById('pairDivisionBtn').onclick = function() {
+        modal.remove();
+        createPairGroups();
+    };
+    
+    document.getElementById('groupDivisionBtn').onclick = function() {
+        modal.remove();
+        askNumberOfGroups();
+    };
+    
+    document.getElementById('cancelDivisionBtn').onclick = function() {
+        modal.remove();
+    };
+}
+
+function createPairGroups() {
+    const students = getCurrentStudents();
+    const levels = studentLevels[currentClass] || {};
+    
+    const levelOrder = { 'ممتاز': 5, 'جيد جدا': 4, 'جيد': 3, 'مقبول': 2, 'ضعيف': 1 };
+    const sortedStudents = [...students].sort((a, b) => {
+        const levelA = levels[a.name] || 'ضعيف';
+        const levelB = levels[b.name] || 'ضعيف';
+        return levelOrder[levelB] - levelOrder[levelA];
+    });
+    
+    const pairs = [];
+    for(let i = 0; i < sortedStudents.length; i += 2) {
+        const pair = [sortedStudents[i]];
+        if(i + 1 < sortedStudents.length) {
+            pair.push(sortedStudents[i + 1]);
+        }
+        pairs.push(pair);
+    }
+    
+    showGroupsDisplay(pairs, 'ثنائيات');
+}
+
+function askNumberOfGroups() {
+    const modalContent = `
+        <h2>🔢 عدد المجموعات</h2>
+        <div class="select-group">
+            <label>📊 كم مجموعة تريد؟</label>
+            <input type="number" id="groupCountInput" min="2" max="10" value="4" style="width: 100%; padding: 12px; font-size: 18px; border-radius: 15px; border: 2px solid #ddd; text-align: center;">
+        </div>
+        <div style="display: flex; justify-content: center; gap: 10px;">
+            <button class="close-modal confirm-btn" id="confirmGroupCountBtn">تأكيد</button>
+            <button class="close-modal cancel-btn" id="cancelGroupCountBtn">إلغاء</button>
+        </div>
+    `;
+    
+    const modal = document.createElement('div');
+    modal.id = 'groupCountModal';
+    modal.className = 'modal';
+    modal.style.display = 'flex';
+    modal.innerHTML = `<div class="modal-content" style="max-width: 400px;">${modalContent}</div>`;
+    document.body.appendChild(modal);
+    
+    document.getElementById('confirmGroupCountBtn').onclick = function() {
+        const groupCount = parseInt(document.getElementById('groupCountInput').value);
+        if(isNaN(groupCount) || groupCount < 2) {
+            alert('❌ الرجاء إدخال عدد صحيح أكبر من 1');
+            return;
+        }
+        modal.remove();
+        createGroups(groupCount);
+    };
+    
+    document.getElementById('cancelGroupCountBtn').onclick = function() {
+        modal.remove();
+    };
+}
+
+function createGroups(groupCount) {
+    const students = getCurrentStudents();
+    const levels = studentLevels[currentClass] || {};
+    
+    const levelOrder = { 'ممتاز': 5, 'جيد جدا': 4, 'جيد': 3, 'مقبول': 2, 'ضعيف': 1 };
+    const sortedStudents = [...students].sort((a, b) => {
+        const levelA = levels[a.name] || 'ضعيف';
+        const levelB = levels[b.name] || 'ضعيف';
+        return levelOrder[levelB] - levelOrder[levelA];
+    });
+    
+    const groups = Array(groupCount).fill().map(() => []);
+    let groupIndex = 0;
+    
+    for(let i = 0; i < sortedStudents.length; i++) {
+        groups[groupIndex % groupCount].push(sortedStudents[i]);
+        groupIndex++;
+    }
+    
+    showGroupsDisplay(groups, 'مجموعات');
+}
+
+function showGroupsDisplay(groups, type) {
+    const groupKey = `${currentClass}_${type}_${Date.now()}`;
+    if(!groupScores[groupKey]) {
+        groupScores[groupKey] = {};
+        groups.forEach((group, idx) => {
+            groupScores[groupKey][idx] = groupScores[groupKey][idx] || 0;
+        });
+    }
+    
+    let groupsHtml = '';
+    groups.forEach((group, idx) => {
+        const studentsList = group.map(s => s.name).join(' - ');
+        const currentScore = groupScores[groupKey][idx] || 0;
+        groupsHtml += `
+            <div style="border: 2px solid #e5e7eb; border-radius: 15px; padding: 15px; margin-bottom: 15px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+                    <div>
+                        <span style="font-weight: bold; font-size: 18px; color: #4338ca;">${type === 'ثنائيات' ? 'الزوج' : 'المجموعة'} ${idx + 1}</span>
+                        <div style="margin-top: 8px; font-size: 14px; color: #555;">👥 ${studentsList}</div>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <label style="font-weight: bold;">⭐ الدرجة:</label>
+                        <input type="number" class="group-score-input" data-group-idx="${idx}" value="${currentScore}" style="width: 80px; padding: 8px; border-radius: 10px; border: 1px solid #ddd; text-align: center;">
+                    </div>
+                </div>
+            </div>
+        `;
+    });
+    
+    const modalContent = `
+        <h2>📊 ${type === 'ثنائيات' ? 'تقسيم الطلاب إلى ثنائيات' : 'تقسيم الطلاب إلى مجموعات'}</h2>
+        <div style="max-height: 500px; overflow-y: auto; margin: 20px 0;">
+            ${groupsHtml}
+        </div>
+        <div style="display: flex; justify-content: center; gap: 10px;">
+            <button class="close-modal confirm-btn" id="saveGroupsScoresBtn">💾 حفظ الدرجات</button>
+            <button class="close-modal cancel-btn" id="closeGroupsDisplayBtn">إغلاق</button>
+        </div>
+    `;
+    
+    const modal = document.createElement('div');
+    modal.id = 'groupsDisplayModal';
+    modal.className = 'modal';
+    modal.style.display = 'flex';
+    modal.innerHTML = `<div class="modal-content" style="max-width: 700px; width: 90%;">${modalContent}</div>`;
+    document.body.appendChild(modal);
+    
+    document.getElementById('saveGroupsScoresBtn').onclick = function() {
+        const inputs = document.querySelectorAll('#groupsDisplayModal .group-score-input');
+        inputs.forEach(input => {
+            const groupIdx = parseInt(input.getAttribute('data-group-idx'));
+            const score = parseInt(input.value) || 0;
+            groupScores[groupKey][groupIdx] = score;
+        });
+        localStorage.setItem('groupScores', JSON.stringify(groupScores));
+        alert('✅ تم حفظ درجات المجموعات بنجاح!');
+        modal.remove();
+    };
+    
+    document.getElementById('closeGroupsDisplayBtn').onclick = function() {
+        modal.remove();
+    };
+    
+    window.onclick = function(e) {
+        if(e.target === modal) modal.remove();
+    };
+}
+
+// ==================== دوال درجات المجموعات ====================
+function showGroupScores() {
+    const relevantKeys = Object.keys(groupScores).filter(key => key.startsWith(currentClass));
+    
+    if(relevantKeys.length === 0) {
+        alert('⚠️ لا توجد درجات مجموعات محفوظة لهذا الصف');
+        return;
+    }
+    
+    let allGroupsHtml = '';
+    let allScores = [];
+    
+    relevantKeys.forEach(key => {
+        const parts = key.split('_');
+        const type = parts[1] === 'ثنائيات' ? 'ثنائيات' : 'مجموعات';
+        const scores = groupScores[key];
+        allGroupsHtml += `<h3 style="color: #4338ca; margin-top: 20px;">📌 ${type}</h3>`;
+        
+        Object.keys(scores).forEach(groupIdx => {
+            const score = scores[groupIdx];
+            allScores.push({ type, groupIdx: parseInt(groupIdx) + 1, score });
+            allGroupsHtml += `
+                <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px; border-bottom: 1px solid #e5e7eb;">
+                    <span style="font-weight: bold;">${type === 'ثنائيات' ? 'الزوج' : 'المجموعة'} ${parseInt(groupIdx) + 1}</span>
+                    <span style="background: ${score >= 80 ? '#22c55e' : score >= 60 ? '#eab308' : '#ef4444'}; color: white; padding: 5px 15px; border-radius: 20px;">${score} نقطة</span>
+                </div>
+            `;
+        });
+    });
+    
+    const sortedScores = [...allScores].sort((a, b) => b.score - a.score);
+    let rankingHtml = '<h3 style="color: #e91e63; margin-top: 20px;">🏆 ترتيب المجموعات</h3>';
+    sortedScores.forEach((item, idx) => {
+        const medal = idx === 0 ? '🥇' : idx === 1 ? '🥈' : idx === 2 ? '🥉' : '📌';
+        rankingHtml += `
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px; border-bottom: 1px solid #e5e7eb;">
+                <span>${medal} ${item.type === 'ثنائيات' ? 'الزوج' : 'المجموعة'} ${item.groupIdx}</span>
+                <span style="font-weight: bold; color: #4338ca;">${item.score} نقطة</span>
+            </div>
+        `;
+    });
+    
+    const modalContent = `
+        <h2>📊 درجات المجموعات - ${currentClass}</h2>
+        <div style="max-height: 500px; overflow-y: auto; margin: 20px 0;">
+            ${allGroupsHtml}
+            ${rankingHtml}
+        </div>
+        <button class="close-modal confirm-btn" id="closeGroupScoresBtn">إغلاق</button>
+    `;
+    
+    const modal = document.createElement('div');
+    modal.id = 'groupScoresModal';
+    modal.className = 'modal';
+    modal.style.display = 'flex';
+    modal.innerHTML = `<div class="modal-content" style="max-width: 500px;">${modalContent}</div>`;
+    document.body.appendChild(modal);
+    
+    document.getElementById('closeGroupScoresBtn').onclick = function() {
+        modal.remove();
+    };
+    
+    window.onclick = function(e) {
+        if(e.target === modal) modal.remove();
+    };
+}
+
 // ==================== دوال العمليات على الطلاب ====================
 function showPointsModal(isAdd) {
     const pointsSelect = document.getElementById('pointsSelect');
@@ -2406,7 +2775,14 @@ document.addEventListener('DOMContentLoaded', function() {
         currentAction = null;
     };
     
-    // شهادات التقدير - اختيار متعدد للطلاب
+    // أزرار المستويات والتقسيم
+    document.getElementById('studentsLevelsBtn').onclick = showLevelsModal;
+    document.getElementById('saveLevelsBtn').onclick = saveLevelsData;
+    document.getElementById('closeLevelsBtn').onclick = closeLevelsModal;
+    document.getElementById('divisionBtn').onclick = showDivisionOptions;
+    document.getElementById('groupScoresBtn').onclick = showGroupScores;
+    
+    // شهادات التقدير
     document.getElementById('certificatesBtn').onclick = showCertificateStudentsModal;
     document.getElementById('confirmCertificateStudentsBtn').onclick = printCertificatesForStudents;
     document.getElementById('cancelCertificateStudentsBtn').onclick = closeCertificateStudentsModal;
@@ -2468,6 +2844,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if(e.target == document.getElementById('studentsPointsModal')) closeStudentsPointsModal();
         if(e.target == document.getElementById('uploadPhotosModal')) closeUploadPhotosModal();
         if(e.target == document.getElementById('restoreModal')) closeRestoreModal();
+        if(e.target == document.getElementById('levelsModal')) closeLevelsModal();
     };
 });
 </script>
