@@ -24,6 +24,7 @@ body {
 .container {
     max-width: 1400px;
     margin: auto;
+    display: block;
 }
 
 .logo-container {
@@ -173,7 +174,6 @@ body {
     flex-wrap: wrap;
 }
 
-/* تنسيق القوائم المنسدلة - حل نهائي */
 .row1 {
     display: flex;
     justify-content: center;
@@ -258,7 +258,6 @@ body {
     border-bottom: none;
 }
 
-/* ألوان مختلفة لكل قائمة */
 .dropdown:nth-child(1) .dropdown-btn { background: linear-gradient(135deg, #8b5cf6, #6d28d9); }
 .dropdown:nth-child(2) .dropdown-btn { background: linear-gradient(135deg, #10b981, #047857); }
 .dropdown:nth-child(3) .dropdown-btn { background: linear-gradient(135deg, #f59e0b, #d97706); }
@@ -267,7 +266,6 @@ body {
 .dropdown:nth-child(6) .dropdown-btn { background: linear-gradient(135deg, #0d9488, #0f766e); }
 .dropdown:nth-child(7) .dropdown-btn { background: linear-gradient(135deg, #6b7280, #4b5563); }
 
-/* زر المطور المباشر */
 .developer-direct-btn {
     background: linear-gradient(135deg, #e91e63, #c2185b);
     color: white;
@@ -291,7 +289,6 @@ body {
     background: linear-gradient(135deg, #c2185b, #ad1457);
 }
 
-/* عرض الصف الحالي - لون ذهبي مميز */
 .current-class-display {
     background: linear-gradient(135deg, #d4af37, #b8860b);
     color: white;
@@ -1776,7 +1773,6 @@ body {
     text-align: center;
 }
 
-/* تنسيق جدول الحالات المرضية */
 .medical-table {
     width: 100%;
     border-collapse: collapse;
@@ -1823,6 +1819,84 @@ body {
     font-weight: normal;
 }
 
+/* أنماط صفحة تسجيل الدخول */
+.login-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #1e293b, #0f172a);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10000;
+    font-family: Tahoma, Arial, sans-serif;
+}
+
+.login-card {
+    background: white;
+    border-radius: 30px;
+    padding: 40px;
+    width: 90%;
+    max-width: 450px;
+    text-align: center;
+    box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+    animation: slideIn 0.5s ease;
+}
+
+.login-card h2 {
+    color: #4338ca;
+    margin-bottom: 10px;
+}
+
+.login-card input {
+    width: 100%;
+    padding: 15px;
+    margin: 15px 0;
+    border: 2px solid #e2e8f0;
+    border-radius: 20px;
+    font-size: 16px;
+    text-align: center;
+    direction: ltr;
+}
+
+.login-card button {
+    background: linear-gradient(135deg, #4338ca, #8b5cf6);
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 30px;
+    font-size: 18px;
+    cursor: pointer;
+    width: 100%;
+    font-weight: bold;
+}
+
+.login-card .error {
+    color: #e74c3c;
+    margin-top: 10px;
+    font-size: 14px;
+}
+
+.login-card .success {
+    color: #22c55e;
+    margin-top: 10px;
+    font-size: 14px;
+}
+
+.admin-panel {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid #ddd;
+    font-size: 12px;
+}
+
+.admin-panel a {
+    color: #4338ca;
+    text-decoration: none;
+}
+
 @media print {
     body * {
         visibility: hidden;
@@ -1842,6 +1916,9 @@ body {
         display: none !important;
     }
     button {
+        display: none !important;
+    }
+    .login-overlay {
         display: none !important;
     }
 }
@@ -1936,14 +2013,12 @@ body {
         </div>
 
         <div class="header-buttons">
-            <!-- عرض الصف الحالي بشكل منفصل - لون ذهبي -->
             <div style="display: flex; justify-content: center; margin-bottom: 15px;">
                 <div class="current-class-display">
                     <span>📚</span> الصف الحالي: <span id="currentClassDisplayText"></span>
                 </div>
             </div>
 
-            <!-- صف القوائم الأول (3 قوائم) -->
             <div class="row1">
                 <div class="dropdown">
                     <button class="dropdown-btn">📋 إدارة الصفوف <span>▼</span></button>
@@ -1973,7 +2048,6 @@ body {
                 </div>
             </div>
 
-            <!-- صف القوائم الثاني (5 قوائم) -->
             <div class="row2">
                 <div class="dropdown">
                     <button class="dropdown-btn">⭐ النقاط <span>▼</span></button>
@@ -2017,11 +2091,9 @@ body {
                     </div>
                 </div>
 
-                <!-- زر المطور المباشر (بدون قائمة منسدلة) -->
                 <button class="developer-direct-btn" id="aboutBtnDirect">👨‍💻 عن المطور</button>
             </div>
 
-            <!-- الأزرار الأصلية (مخفية لكنها تعمل) -->
             <div class="button-row" style="display: none;">
                 <button class="btn select-class-btn" id="selectClassBtn">📚 اختيار الصف</button>
                 <button class="btn add-class-btn" id="addClassBtn">📋 إضافة صف</button>
@@ -2078,7 +2150,7 @@ body {
                 </tr>
             </thead>
             <tbody id="studentsTableBody"></tbody>
-        </table>
+         </table>
     </div>
 
     <div class="flex-box">
@@ -2119,7 +2191,7 @@ body {
     </div>
 </div>
 
-<!-- مودال الحالات المرضية - إضافة -->
+<!-- المودالات -->
 <div id="medicalConditionsModal" class="modal">
     <div class="modal-content medical-modal">
         <h2>🏥 تسجيل حالة مرضية</h2>
@@ -2145,7 +2217,6 @@ body {
     </div>
 </div>
 
-<!-- مودال عرض الحالات المرضية -->
 <div id="viewMedicalModal" class="modal">
     <div class="modal-content view-medical-modal">
         <h2>📋 سجل الحالات المرضية - صف: <span id="medicalClassName"></span></h2>
@@ -2170,7 +2241,6 @@ body {
     </div>
 </div>
 
-<!-- بقية المودالات (نفس الكود السابق) -->
 <div id="selectClassModal" class="modal"><div class="modal-content"><h2>📚 اختر الصف</h2><div class="select-group"><select id="classSelect"><option value="">-- اختر الصف --</option><option value="السادس 1">السادس 1</option><option value="السادس 2">السادس 2</option><option value="السادس 3">السادس 3</option><option value="السادس 4">السادس 4</option><option value="السادس 5">السادس 5</option><option value="السادس 6">السادس 6</option><option value="السادس 7">السادس 7</option></select></div><button class="close-modal confirm-btn" id="saveClassBtn">💾 حفظ وفتح الصف</button><button class="close-modal cancel-btn" id="cancelClassBtn">إلغاء</button></div></div>
 
 <div id="parentContactModal" class="modal"><div class="modal-content large"><h2>📞 التواصل مع ولي الأمر - صف: <span id="currentClassForContact"></span></h2><div class="bulk-input-area"><h3>🚀 إدخال سريع - نسخ ولصق من إكسل</h3><div class="textarea-group"><label>📱 أرقام الهواتف (كل رقم في سطر)</label><textarea id="bulkPhonesInput" rows="3"></textarea></div><div class="textarea-group"><label>📧 البريد الإلكتروني (كل بريد في سطر)</label><textarea id="bulkEmailsInput" rows="3"></textarea></div><div class="bulk-buttons"><button class="bulk-btn" id="applyBulkPhonesBtn">📱 تطبيق الأرقام</button><button class="bulk-btn" id="applyBulkEmailsBtn">📧 تطبيق البريد</button><button class="bulk-btn" id="applyBothBulkBtn">✨ تطبيق الكل</button></div></div><div style="overflow-x: auto; max-height: 55vh;"><table class="parent-contact-table"><thead><tr><th>👨‍🎓 اسم الطالب</th><th>📞 بيانات التواصل</th></tr></thead><tbody id="parentContactTableBody"></tbody></table></div><div style="display: flex; justify-content: center; gap: 15px; margin-top: 20px;"><button class="close-modal confirm-btn" id="saveParentContactsBtn">💾 حفظ جميع البيانات</button><button class="close-modal cancel-btn" id="closeParentContactBtn">إغلاق</button></div></div></div>
@@ -2224,6 +2294,267 @@ body {
 <div id="rewardsShopModal" class="modal"><div class="modal-content large" style="max-width: 1100px;"><h2>🏅 مكتبة الجوائز الرقمية</h2><div class="student-points-display" id="studentPointsDisplay"><h3>👨‍🎓 <span id="currentStudentName"></span></h3><div class="points-value">⭐ <span id="currentStudentPoints"></span> نقطة</div><div class="points-value" style="font-size:18px; margin-top:5px;">🏆 <span id="totalRewardsCount"></span> جائزة محصلة</div></div><div id="ownedRewardsDisplay" class="owned-badges"></div><div id="messageArea"></div><div class="reward-category"><div class="category-title category-badges">🎖️ الشارات (Badges)</div><div class="rewards-grid" id="badgesGrid"></div></div><div class="reward-category"><div class="category-title category-cups">🏆 الكؤوس الافتراضية</div><div class="rewards-grid" id="cupsGrid"></div></div><div class="reward-category"><div class="category-title category-stars">🌟 نجوم ومكافآت</div><div class="rewards-grid" id="starsGrid"></div></div><div class="reward-category"><div class="category-title category-medals">🎖️ أوسمة إضافية</div><div class="rewards-grid" id="medalsGrid"></div></div><div class="reward-category"><div class="category-title category-store">🛍️ المتجر الافتراضي - استبدل نقاطك بجوائز</div><div class="rewards-grid" id="storeGrid"></div></div><div style="display: flex; justify-content: center; gap: 15px; margin-top: 20px;"><button class="close-modal cancel-btn" id="closeRewardsModalBtn">إغلاق</button></div></div></div>
 
 <script>
+// ============= نظام تسجيل الدخول بالبريد @education.qa =============
+(function() {
+    const STORAGE_KEY = 'school_users_approved';
+    const PENDING_KEY = 'school_pending_requests';
+    const ADMIN_CODE = 'Anhs7293@';
+    
+    let approvedUsers = [];
+    
+    function loadData() {
+        const saved = localStorage.getItem(STORAGE_KEY);
+        if (saved) {
+            try {
+                approvedUsers = JSON.parse(saved);
+            } catch(e) { approvedUsers = []; }
+        }
+        
+        // 🔴 قم بتغيير هذا البريد إلى بريدك الإلكتروني الحقيقي (يجب أن ينتهي بـ @education.qa)
+        const adminEmail = 'a.atia1201@education.qa';
+        if (!approvedUsers.includes(adminEmail) && adminEmail !== 'your.email@education.qa') {
+            approvedUsers.push(adminEmail);
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(approvedUsers));
+        }
+    }
+    
+    function saveApprovedUsers() {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(approvedUsers));
+    }
+    
+    function addPendingRequest(email) {
+        let pending = localStorage.getItem(PENDING_KEY);
+        let requests = pending ? JSON.parse(pending) : [];
+        if (!requests.includes(email)) {
+            requests.push(email);
+            localStorage.setItem(PENDING_KEY, JSON.stringify(requests));
+        }
+    }
+    
+    function getPendingRequests() {
+        const pending = localStorage.getItem(PENDING_KEY);
+        return pending ? JSON.parse(pending) : [];
+    }
+    
+    function approveRequest(email) {
+        if (!approvedUsers.includes(email)) {
+            approvedUsers.push(email);
+            saveApprovedUsers();
+        }
+        let pending = getPendingRequests();
+        pending = pending.filter(e => e !== email);
+        localStorage.setItem(PENDING_KEY, JSON.stringify(pending));
+        return true;
+    }
+    
+    function rejectRequest(email) {
+        let pending = getPendingRequests();
+        pending = pending.filter(e => e !== email);
+        localStorage.setItem(PENDING_KEY, JSON.stringify(pending));
+    }
+    
+    function isValidEmail(email) {
+        return email && email.toLowerCase().endsWith('@education.qa');
+    }
+    
+    function isApproved(email) {
+        return approvedUsers.includes(email);
+    }
+    
+    function showLoginScreen() {
+        const container = document.querySelector('.container');
+        if (container) container.style.display = 'none';
+        
+        const overlay = document.createElement('div');
+        overlay.className = 'login-overlay';
+        overlay.id = 'loginOverlay';
+        overlay.innerHTML = `
+            <div class="login-card">
+                <h2>📚 نظام النقاط والتحفيز المدرسي</h2>
+                <p style="color:#666; margin-bottom:20px;">يرجى تسجيل الدخول بحسابك التعليمي</p>
+                <input type="email" id="loginEmail" placeholder="example@education.qa" dir="ltr">
+                <input type="password" id="loginPassword" placeholder="كلمة المرور (اختياري)">
+                <button id="loginBtn">🔐 دخول</button>
+                <div id="loginMessage" class="error"></div>
+                <div class="admin-panel">
+                    <a href="#" id="adminLink">👨‍💼 لوحة المدير (للمعلم فقط)</a>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(overlay);
+        
+        document.getElementById('loginBtn').onclick = () => {
+            const email = document.getElementById('loginEmail').value.trim();
+            const msgDiv = document.getElementById('loginMessage');
+            
+            if (!email) {
+                msgDiv.innerText = '❌ الرجاء إدخال البريد الإلكتروني';
+                return;
+            }
+            
+            if (!isValidEmail(email)) {
+                msgDiv.innerText = '❌ البريد غير مسموح! يجب أن ينتهي بـ @education.qa';
+                return;
+            }
+            
+            if (isApproved(email)) {
+                msgDiv.innerText = '✅ مرحباً بك... جاري التحميل';
+                msgDiv.style.color = '#22c55e';
+                localStorage.setItem('current_logged_user', email);
+                setTimeout(() => {
+                    overlay.remove();
+                    if (container) container.style.display = 'block';
+                    // تهيئة البيانات بعد تسجيل الدخول
+                    if (typeof initAllData === 'function') initAllData();
+                    if (typeof renderStudents === 'function') renderStudents();
+                    if (typeof updateDateTimeDisplay === 'function') updateDateTimeDisplay();
+                }, 500);
+            } else {
+                addPendingRequest(email);
+                msgDiv.innerText = '⏳ حسابك غير مفعل! تم إرسال طلب التفعيل إلى المدير. سيتم تفعيله قريباً.';
+                msgDiv.style.color = '#f59e0b';
+            }
+        };
+        
+        document.getElementById('adminLink').onclick = (e) => {
+            e.preventDefault();
+            const password = prompt('🔐 أدخل كلمة مرور المدير:');
+            if (password !== ADMIN_CODE) {
+                alert('❌ كلمة مرور خاطئة');
+                return;
+            }
+            
+            const pending = getPendingRequests();
+            const approved = [...approvedUsers];
+            
+            let html = `
+                <div style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.95); z-index:10001; display:flex; justify-content:center; align-items:center;">
+                    <div style="background:white; border-radius:30px; padding:30px; max-width:600px; width:90%; max-height:80vh; overflow-y:auto; direction:rtl;">
+                        <h2 style="color:#4338ca; text-align:center;">👨‍💼 لوحة تحكم المدير</h2>
+                        <h3>⏳ طلبات التفعيل المعلقة (${pending.length})</h3>
+                        ${pending.length === 0 ? '<p style="color:green;">✅ لا توجد طلبات معلقة</p>' : ''}
+                        <div id="pendingList">
+                            ${pending.map(email => `
+                                <div style="background:#f1f5f9; padding:15px; margin:10px 0; border-radius:15px; display:flex; justify-content:space-between; align-items:center;">
+                                    <span>📧 ${email}</span>
+                                    <div>
+                                        <button onclick="window.approvePending('${email}')" style="background:#22c55e; color:white; border:none; padding:8px 15px; border-radius:20px; cursor:pointer; margin-left:5px;">✅ قبول</button>
+                                        <button onclick="window.rejectPending('${email}')" style="background:#ef4444; color:white; border:none; padding:8px 15px; border-radius:20px; cursor:pointer;">❌ رفض</button>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                        <h3 style="margin-top:20px;">✅ المستخدمون المصرح لهم (${approved.length})</h3>
+                        <div style="background:#f0fdf4; padding:15px; border-radius:15px; max-height:200px; overflow-y:auto;">
+                            ${approved.map(email => `<div>📧 ${email}</div>`).join('') || '<div>لا يوجد</div>'}
+                        </div>
+                        <button id="closeAdminBtn" style="background:#4338ca; color:white; border:none; padding:12px 25px; border-radius:25px; margin-top:20px; width:100%; cursor:pointer;">إغلاق</button>
+                    </div>
+                </div>
+            `;
+            
+            const adminDiv = document.createElement('div');
+            adminDiv.id = 'tempAdminPanel';
+            adminDiv.innerHTML = html;
+            document.body.appendChild(adminDiv);
+            
+            document.getElementById('closeAdminBtn').onclick = () => adminDiv.remove();
+        };
+    }
+    
+    window.approvePending = function(email) {
+        approveRequest(email);
+        alert(`✅ تم تفعيل حساب ${email}`);
+        document.getElementById('tempAdminPanel')?.remove();
+        const password = prompt('🔐 أدخل كلمة مرور المدير:');
+        if (password === ADMIN_CODE) {
+            const pending = getPendingRequests();
+            const approved = [...approvedUsers];
+            let html = `
+                <div style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.95); z-index:10001; display:flex; justify-content:center; align-items:center;">
+                    <div style="background:white; border-radius:30px; padding:30px; max-width:600px; width:90%; max-height:80vh; overflow-y:auto; direction:rtl;">
+                        <h2 style="color:#4338ca; text-align:center;">👨‍💼 لوحة تحكم المدير</h2>
+                        <h3>⏳ طلبات التفعيل المعلقة (${pending.length})</h3>
+                        ${pending.length === 0 ? '<p style="color:green;">✅ لا توجد طلبات معلقة</p>' : ''}
+                        <div id="pendingList">
+                            ${pending.map(email => `
+                                <div style="background:#f1f5f9; padding:15px; margin:10px 0; border-radius:15px; display:flex; justify-content:space-between; align-items:center;">
+                                    <span>📧 ${email}</span>
+                                    <div>
+                                        <button onclick="window.approvePending('${email}')" style="background:#22c55e; color:white; border:none; padding:8px 15px; border-radius:20px; cursor:pointer; margin-left:5px;">✅ قبول</button>
+                                        <button onclick="window.rejectPending('${email}')" style="background:#ef4444; color:white; border:none; padding:8px 15px; border-radius:20px; cursor:pointer;">❌ رفض</button>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                        <h3 style="margin-top:20px;">✅ المستخدمون المصرح لهم (${approved.length})</h3>
+                        <div style="background:#f0fdf4; padding:15px; border-radius:15px; max-height:200px; overflow-y:auto;">
+                            ${approved.map(email => `<div>📧 ${email}</div>`).join('') || '<div>لا يوجد</div>'}
+                        </div>
+                        <button id="closeAdminBtn" style="background:#4338ca; color:white; border:none; padding:12px 25px; border-radius:25px; margin-top:20px; width:100%; cursor:pointer;">إغلاق</button>
+                    </div>
+                </div>
+            `;
+            const adminDiv2 = document.createElement('div');
+            adminDiv2.id = 'tempAdminPanel2';
+            adminDiv2.innerHTML = html;
+            document.body.appendChild(adminDiv2);
+            document.getElementById('closeAdminBtn').onclick = () => adminDiv2.remove();
+        }
+    };
+    
+    window.rejectPending = function(email) {
+        rejectRequest(email);
+        alert(`❌ تم رفض طلب ${email}`);
+        document.getElementById('tempAdminPanel')?.remove();
+        const password = prompt('🔐 أدخل كلمة مرور المدير:');
+        if (password === ADMIN_CODE) {
+            const pending = getPendingRequests();
+            const approved = [...approvedUsers];
+            let html = `
+                <div style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.95); z-index:10001; display:flex; justify-content:center; align-items:center;">
+                    <div style="background:white; border-radius:30px; padding:30px; max-width:600px; width:90%; max-height:80vh; overflow-y:auto; direction:rtl;">
+                        <h2 style="color:#4338ca; text-align:center;">👨‍💼 لوحة تحكم المدير</h2>
+                        <h3>⏳ طلبات التفعيل المعلقة (${pending.length})</h3>
+                        ${pending.length === 0 ? '<p style="color:green;">✅ لا توجد طلبات معلقة</p>' : ''}
+                        <div id="pendingList">
+                            ${pending.map(email => `
+                                <div style="background:#f1f5f9; padding:15px; margin:10px 0; border-radius:15px; display:flex; justify-content:space-between; align-items:center;">
+                                    <span>📧 ${email}</span>
+                                    <div>
+                                        <button onclick="window.approvePending('${email}')" style="background:#22c55e; color:white; border:none; padding:8px 15px; border-radius:20px; cursor:pointer; margin-left:5px;">✅ قبول</button>
+                                        <button onclick="window.rejectPending('${email}')" style="background:#ef4444; color:white; border:none; padding:8px 15px; border-radius:20px; cursor:pointer;">❌ رفض</button>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                        <h3 style="margin-top:20px;">✅ المستخدمون المصرح لهم (${approved.length})</h3>
+                        <div style="background:#f0fdf4; padding:15px; border-radius:15px; max-height:200px; overflow-y:auto;">
+                            ${approved.map(email => `<div>📧 ${email}</div>`).join('') || '<div>لا يوجد</div>'}
+                        </div>
+                        <button id="closeAdminBtn" style="background:#4338ca; color:white; border:none; padding:12px 25px; border-radius:25px; margin-top:20px; width:100%; cursor:pointer;">إغلاق</button>
+                    </div>
+                </div>
+            `;
+            const adminDiv2 = document.createElement('div');
+            adminDiv2.id = 'tempAdminPanel2';
+            adminDiv2.innerHTML = html;
+            document.body.appendChild(adminDiv2);
+            document.getElementById('closeAdminBtn').onclick = () => adminDiv2.remove();
+        }
+    };
+    
+    loadData();
+    
+    const currentUser = localStorage.getItem('current_logged_user');
+    if (!currentUser || !isApproved(currentUser)) {
+        showLoginScreen();
+    } else {
+        const container = document.querySelector('.container');
+        if (container) container.style.display = 'block';
+    }
+})();
+
 // ==================== البيانات الأساسية ====================
 let allClassesData = {};
 let currentClass = "";
@@ -2235,17 +2566,15 @@ let groupScores = {};
 let dailyTrackerData = {};
 let violationsData = {};
 let studentRewards = {};
-let medicalConditions = {}; // تخزين الحالات المرضية { "الصف": { "اسم الطالب": { condition: "النص", date: "التاريخ" } } }
+let medicalConditions = {};
 let currentMessageStudent = null;
 let currentMessageType = null;
 let currentMessageEmotion = null;
 let rollingInterval = null;
 let audioContext = null;
 let currentComprehensiveStudent = null;
-let currentComprehensiveReportData = null;
 let currentRewardStudent = null;
 
-// ==================== نظام صندوق المفاجآت المتطور ====================
 let monthlyPoints = {};
 let availablePrizesCount = 5;
 
@@ -2303,7 +2632,6 @@ function consumePrize() {
     }
 }
 
-// ==================== دوال الحالات المرضية ====================
 function initializeMedicalConditions() {
     const savedMedical = localStorage.getItem('medicalConditions');
     if (savedMedical) {
@@ -2332,7 +2660,6 @@ function showMedicalConditionsModal() {
         select.innerHTML += `<option value="${student.name.replace(/'/g, "\\'")}">${student.name} ${existing ? '✓' : ''}</option>`;
     });
     
-    // مسح الحقول
     document.getElementById('medicalConditionText').value = '';
     document.getElementById('medicalFacilitiesText').value = '';
     
@@ -2364,6 +2691,7 @@ function saveMedicalCondition() {
     alert(`✅ تم تسجيل الحالة المرضية للطالب ${studentName}`);
     closeMedicalModal();
 }
+
 function showViewMedicalModal() {
     if(!medicalConditions[currentClass]) medicalConditions[currentClass] = {};
     
@@ -2383,7 +2711,7 @@ function showViewMedicalModal() {
                 <td style="text-align:center;">✅ ${data.facilities || 'لم يتم تحديد تسهيلات'}<\/td>
                 <td style="text-align:center;">📅 ${data.date}<br>🕐 ${data.time}<\/td>
                 <td style="text-align:center;"><button class="delete-medical-btn" onclick="deleteMedicalCondition('${studentName.replace(/'/g, "\\'")}')">🗑️ حذف<\/button><\/td>
-            </table>`;
+            <\/tr>`;
         });
     }
     
@@ -2400,12 +2728,11 @@ function deleteMedicalCondition(studentName) {
             delete medicalConditions[currentClass][studentName];
             saveMedicalConditions();
             alert(`✅ تم حذف الحالة المرضية للطالب ${studentName}`);
-            showViewMedicalModal(); // تحديث الجدول
+            showViewMedicalModal();
         }
     }
 }
 
-// ==================== التاريخ والوقت ====================
 function updateDateTimeDisplay() {
     const now = new Date();
     const optionsDate = { year: 'numeric', month: 'long', day: 'numeric' };
@@ -2430,8 +2757,6 @@ function updateCurrentClassDisplayText() {
         displaySpan.innerText = currentClass;
     }
 }
-
-// ==================== نهاية نظام صندوق المفاجآت ====================
 
 const classNames = ["السادس 1", "السادس 2", "السادس 3", "السادس 4", "السادس 5", "السادس 6", "السادس 7"];
 const VIOLATION_POINTS = 100;
@@ -3053,7 +3378,7 @@ function printReport() {
     const originalTitle = document.title;
     document.title = `تقرير_الطالب_${document.getElementById('reportStudentName').innerText.replace(/[^a-zA-Z0-9]/g, '_')}`;
     const printWindow = window.open('', '_blank');
-    printWindow.document.write(`<!DOCTYPE html><html dir="rtl"><head><meta charset="UTF-8"><title>تقرير الطالب</title><style>...</style></head><body>${printContent.innerHTML}</body></html>`);
+    printWindow.document.write(`<!DOCTYPE html><html dir="rtl"><head><meta charset="UTF-8"><title>تقرير الطالب</title><style>body{font-family:Tahoma,Arial;padding:20px} .report-header{text-align:center} .report-student-name{font-size:28px;color:#0d9488;text-align:center}</style></head><body>${printContent.innerHTML}</body></html>`);
     printWindow.document.close();
     printWindow.print();
     document.title = originalTitle;
@@ -3160,7 +3485,7 @@ function printViolationsReport() {
     const studentName = document.getElementById('violationsStudentName').innerText.replace('👨‍🎓 ', '').split(' (')[0];
     const violations = violationsData[currentClass]?.[studentName] || [];
     const printWindow = window.open('', '_blank');
-    printWindow.document.write(`<!DOCTYPE html><html dir="rtl"><head><meta charset="UTF-8"><title>سجل مخالفات ${studentName}</title><style>...</style></head><body>...</body></html>`);
+    printWindow.document.write(`<!DOCTYPE html><html dir="rtl"><head><meta charset="UTF-8"><title>سجل مخالفات ${studentName}</title><style>body{font-family:Tahoma,Arial;padding:20px}</style></head><body><h2>سجل مخالفات ${studentName}</h2>${violations.map(v=>`<div>${v.date} - ${v.violation} - ${v.details}</div>`).join('')}</body></html>`);
     printWindow.document.close();
     printWindow.print();
 }
@@ -3168,7 +3493,7 @@ function printViolationsReport() {
 async function exportViolationsToPdf() {
     const studentName = document.getElementById('violationsStudentName').innerText.replace('👨‍🎓 ', '').split(' (')[0];
     const violations = violationsData[currentClass]?.[studentName] || [];
-    const htmlContent = `<div>...</div>`;
+    const htmlContent = `<div><h2>سجل مخالفات ${studentName}</h2>${violations.map(v=>`<div>${v.date} - ${v.violation} - ${v.details}</div>`).join('')}</div>`;
     const opt = { margin: [0.5,0.5,0.5,0.5], filename: `سجل_مخالفات_${studentName}.pdf`, image: { type: 'jpeg', quality: 0.98 }, html2canvas: { scale: 2 }, jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' } };
     try { await html2pdf().set(opt).from(htmlContent).save(); alert('✅ تم تصدير سجل المخالفات'); } catch(error) { alert('❌ حدث خطأ'); }
 }
@@ -3771,6 +4096,7 @@ function showCertificateStudentsModal() {
     document.getElementById('cancelCertificateBtn').onclick = () => modalDiv.remove();
     modalDiv.onclick = (e) => { if(e.target === modalDiv) modalDiv.remove(); };
 }
+
 function generateFullCertificate(certificateIndex, studentName, rank) {
     const colors = certificateColors[certificateIndex];
     const photos = getCurrentPhotos();
@@ -3905,7 +4231,9 @@ function generateFullCertificate(certificateIndex, studentName, rank) {
 </body>
 </html>`);
     certWindow.document.close();
-}function showComprehensiveReportSelect() {
+}
+
+function showComprehensiveReportSelect() {
     const students = getCurrentStudents();
     if(students.length === 0) { alert('⚠️ لا يوجد طلاب في هذا الصف'); return; }
     
@@ -3980,18 +4308,18 @@ function generateComprehensiveReport() {
                 <p>الصف: ${currentClass}</p>
             </div>
             
-           <div class="comprehensive-student-info">
-    <h3>👨‍🎓 ${student.name}</h3>
-    <p style="font-size: 18px; margin-top: 10px;">⭐ مجموع النقاط: ${student.points} نقطة</p>
-    <p>🏆 المستوى: ${getLevel(student.points)}</p>
-    <p>🎖️ عدد الجوائز المحصلة: ${rewards.length} جائزة</p>
-    ${medical ? `<div style="margin-top: 10px; padding: 10px; background: #fef3c7; border-radius: 10px; color: #d97706; text-align: right;">
-        <p>🩺 <strong>الحالة المرضية:</strong> ${medical.condition}</p>
-        <p>✅ <strong>التسهيلات المقدمة:</strong> ${medical.facilities || 'لم يتم تحديد تسهيلات'}</p>
-        <small>📅 تم التسجيل: ${medical.date}</small>
-    </div>` : ''}
-    <p style="margin-top: 10px; padding: 10px; background: ${statusColor}20; border-radius: 10px; color: ${statusColor}; font-weight: bold;">📊 حالة الطالب: ${studentStatus}</p>
-</div>
+            <div class="comprehensive-student-info">
+                <h3>👨‍🎓 ${student.name}</h3>
+                <p style="font-size: 18px; margin-top: 10px;">⭐ مجموع النقاط: ${student.points} نقطة</p>
+                <p>🏆 المستوى: ${getLevel(student.points)}</p>
+                <p>🎖️ عدد الجوائز المحصلة: ${rewards.length} جائزة</p>
+                ${medical ? `<div style="margin-top: 10px; padding: 10px; background: #fef3c7; border-radius: 10px; color: #d97706; text-align: right;">
+                    <p>🩺 <strong>الحالة المرضية:</strong> ${medical.condition}</p>
+                    <p>✅ <strong>التسهيلات المقدمة:</strong> ${medical.facilities || 'لم يتم تحديد تسهيلات'}</p>
+                    <small>📅 تم التسجيل: ${medical.date}</small>
+                </div>` : ''}
+                <p style="margin-top: 10px; padding: 10px; background: ${statusColor}20; border-radius: 10px; color: ${statusColor}; font-weight: bold;">📊 حالة الطالب: ${studentStatus}</p>
+            </div>
             
             <div class="comprehensive-section">
                 <h3>📋 الجانب الأكاديمي - سجل المتابعة اليومية</h3>
@@ -4356,12 +4684,5 @@ window.openMessageForStudent = openMessageForStudent;
 window.purchaseReward = purchaseReward;
 window.deleteMedicalCondition = deleteMedicalCondition;
 </script>
- <script type="module" src="auth.js"></script>
-<div id="loginScreen" style="display:none;text-align:center;margin-top:100px">
-
-  <h1>بوابة المدرسة</h1>
-
-  <button onclick="login()">تسجيل الدخول بإيميل المدرسة</button>
-
-</div></body>
+</body>
 </html>
