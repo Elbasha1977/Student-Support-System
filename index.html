@@ -7,6 +7,8 @@
 
 <!-- مكتبة html2pdf لتصدير PDF -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<!-- مكتبة SheetJS لتصدير Excel -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 
 <style>
 * {
@@ -354,6 +356,7 @@ body {
 .violations-btn { background: #dc2626; }
 .comprehensive-report-btn { background: #8b5cf6; }
 .rewards-shop-btn { background: linear-gradient(135deg, #f59e0b, #e91e63); animation: goldPulse 2s infinite; }
+.group-points-btn { background: linear-gradient(135deg, #f59e0b, #d97706); }
 
 @keyframes goldPulse {
     0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(245,158,11,0.7); }
@@ -729,6 +732,78 @@ body {
     color: #4338ca;
 }
 
+/* ====== حقل البحث ====== */
+.search-box {
+    margin: 15px 0;
+    position: relative;
+}
+
+.search-box input {
+    width: 100%;
+    padding: 14px 45px 14px 15px;
+    font-size: 16px;
+    border: 2px solid #4338ca;
+    border-radius: 15px;
+    background: #f8fafc;
+    font-family: Tahoma, Arial;
+    transition: 0.3s;
+    text-align: right;
+}
+
+.search-box input:focus {
+    outline: none;
+    border-color: #e91e63;
+    background: white;
+    box-shadow: 0 0 0 3px rgba(233,30,99,0.1);
+}
+
+.search-box::before {
+    content: "🔍";
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 18px;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.search-box input::placeholder {
+    color: #999;
+}
+
+.search-box .clear-search {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: #ef4444;
+    color: white;
+    border: none;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 14px;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+}
+
+.search-box .clear-search:hover {
+    background: #dc2626;
+}
+
+.search-box .search-results-count {
+    text-align: center;
+    font-size: 13px;
+    color: #666;
+    margin-top: 5px;
+    font-weight: bold;
+}
+/* ====== نهاية حقل البحث ====== */
+
 .multi-select-group {
     margin: 20px 0;
     max-height: 300px;
@@ -768,6 +843,10 @@ body {
     font-size: 14px;
     color: #666;
     margin-right: auto;
+}
+
+.hidden-by-search {
+    display: none !important;
 }
 
 .textarea-group {
@@ -1238,6 +1317,72 @@ body {
     line-height: 1.8;
     color: #333;
 }
+
+/* ====== بطاقات الطلاب داخل المجموعات ====== */
+.group-student-card {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 15px;
+    margin: 5px;
+    border-radius: 15px;
+    font-size: 15px;
+    font-weight: bold;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    transition: 0.2s;
+}
+
+.group-student-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.level-badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: bold;
+    color: white;
+}
+
+.level-mumtaz { background: #22c55e; }
+.level-jayid-jiddan { background: #3b82f6; }
+.level-jayid { background: #eab308; }
+.level-maqbul { background: #f97316; }
+.level-daif { background: #ef4444; }
+.level-unknown { background: #9ca3af; }
+
+.group-balance-info {
+    background: linear-gradient(135deg, #e0e7ff, #c7d2fe);
+    border-radius: 15px;
+    padding: 12px 20px;
+    margin-bottom: 20px;
+    text-align: center;
+    font-size: 15px;
+    color: #4338ca;
+    font-weight: bold;
+    border: 2px dashed #8b5cf6;
+}
+
+.group-summary {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+.group-summary-item {
+    background: #f8fafc;
+    padding: 8px 15px;
+    border-radius: 15px;
+    font-size: 13px;
+    font-weight: bold;
+    color: #4338ca;
+    border: 1px solid #cbd5e1;
+}
+/* ====== نهاية بطاقات الطلاب ====== */
 
 .embed-code {
     background: #1e293b;
@@ -1911,6 +2056,560 @@ body {
     to { opacity: 1; }
 }
 
+/* ====== الاختبار التشخيصي ====== */
+.diagnostic-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+}
+
+.diagnostic-table th {
+    background: #4338ca;
+    color: white;
+    padding: 12px;
+    font-size: 15px;
+    text-align: center;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.diagnostic-table td {
+    padding: 8px;
+    border-bottom: 1px solid #e5e7eb;
+    font-size: 15px;
+    text-align: center;
+}
+
+.diagnostic-table tr:hover {
+    background: #f3f4f6;
+}
+
+.diagnostic-table input[type="number"] {
+    width: 90px;
+    padding: 8px;
+    font-size: 16px;
+    border: 2px solid #ddd;
+    border-radius: 10px;
+    text-align: center;
+    font-weight: bold;
+    transition: 0.2s;
+}
+
+.diagnostic-table input[type="number"]:focus {
+    outline: none;
+    border-color: #4338ca;
+    background: #f0f4ff;
+    box-shadow: 0 0 0 3px rgba(67,56,202,0.1);
+}
+
+.diagnostic-table input[type="number"]::-webkit-outer-spin-button,
+.diagnostic-table input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.diagnostic-table input[type="number"] {
+    -moz-appearance: textfield;
+}
+
+.diagnostic-summary {
+    background: linear-gradient(135deg, #e0e7ff, #c7d2fe);
+    border-radius: 20px;
+    padding: 20px;
+    margin: 20px 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 15px;
+    text-align: center;
+}
+
+.diagnostic-summary-item {
+    background: white;
+    border-radius: 15px;
+    padding: 12px;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+}
+
+.diagnostic-summary-item .count {
+    font-size: 28px;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.diagnostic-summary-item .label {
+    font-size: 13px;
+    color: #555;
+    font-weight: bold;
+}
+
+.diagnostic-total-input {
+    background: #fef3c7;
+    padding: 15px 20px;
+    border-radius: 15px;
+    border: 2px solid #f59e0b;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+}
+
+.diagnostic-total-input label {
+    font-size: 18px;
+    font-weight: bold;
+    color: #92400e;
+}
+
+.diagnostic-total-input input {
+    width: 120px;
+    padding: 12px;
+    font-size: 20px;
+    border: 2px solid #f59e0b;
+    border-radius: 12px;
+    text-align: center;
+    font-weight: bold;
+    background: white;
+}
+
+.diagnostic-total-input input:focus {
+    outline: none;
+    border-color: #d97706;
+    box-shadow: 0 0 0 3px rgba(245,158,11,0.2);
+}
+
+.diagnostic-total-input .hint {
+    font-size: 13px;
+    color: #92400e;
+    width: 100%;
+    text-align: center;
+}
+
+.diagnostic-legend {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+    margin: 15px 0;
+    padding: 15px;
+    background: #f8fafc;
+    border-radius: 15px;
+}
+
+.diagnostic-legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    font-weight: bold;
+    padding: 6px 12px;
+    border-radius: 20px;
+    background: white;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+.diagnostic-legend-color {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+}
+
+/* ====== نهاية الاختبار التشخيصي ====== */
+
+/* ====== الشاشة الاحتفالية للمرشحين ====== */
+.celebration-modal-content {
+    max-width: 1100px;
+    width: 96%;
+    background: linear-gradient(135deg, #1e1b4b 0%, #4c1d95 50%, #831843 100%);
+    border-radius: 35px;
+    padding: 35px 25px;
+    position: relative;
+    overflow: hidden;
+    border: 4px solid #ffd700;
+    box-shadow: 0 0 60px rgba(255, 215, 0, 0.5), 0 0 100px rgba(233, 30, 99, 0.3);
+    animation: celebrationEnter 0.8s ease;
+}
+
+@keyframes celebrationEnter {
+    0% { transform: scale(0.7) rotate(-5deg); opacity: 0; }
+    60% { transform: scale(1.05) rotate(2deg); opacity: 1; }
+    100% { transform: scale(1) rotate(0deg); opacity: 1; }
+}
+
+.celebration-modal-content::before {
+    content: "";
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255,215,0,0.15) 0%, transparent 60%);
+    animation: rotateGlow 15s linear infinite;
+    pointer-events: none;
+}
+
+@keyframes rotateGlow {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.celebration-title {
+    text-align: center;
+    color: #ffd700;
+    font-size: 42px;
+    font-weight: bold;
+    margin-bottom: 8px;
+    text-shadow: 0 0 20px rgba(255, 215, 0, 0.8), 0 4px 10px rgba(0,0,0,0.5);
+    animation: titlePulse 1.5s ease-in-out infinite;
+    position: relative;
+    z-index: 2;
+}
+
+@keyframes titlePulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
+
+.celebration-subtitle {
+    text-align: center;
+    color: #ffffff;
+    font-size: 20px;
+    margin-bottom: 30px;
+    opacity: 0.95;
+    position: relative;
+    z-index: 2;
+    text-shadow: 0 2px 8px rgba(0,0,0,0.5);
+}
+
+.celebration-stars {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    overflow: hidden;
+    z-index: 1;
+}
+
+.celebration-star {
+    position: absolute;
+    color: #ffd700;
+    font-size: 24px;
+    animation: starFloat 4s ease-in-out infinite;
+    opacity: 0.8;
+}
+
+@keyframes starFloat {
+    0%, 100% { transform: translateY(0) rotate(0deg); opacity: 0.5; }
+    50% { transform: translateY(-20px) rotate(180deg); opacity: 1; }
+}
+
+.candidates-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 25px;
+    position: relative;
+    z-index: 2;
+    margin-bottom: 25px;
+}
+
+.candidate-card {
+    background: linear-gradient(145deg, #ffffff, #fef9c3);
+    border-radius: 30px;
+    padding: 25px 20px;
+    text-align: center;
+    position: relative;
+    cursor: pointer;
+    transition: all 0.4s ease;
+    border: 4px solid transparent;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+    animation: cardBounce 2s ease-in-out infinite;
+    overflow: hidden;
+}
+
+.candidate-card:nth-child(1) {
+    animation-delay: 0s;
+    border-color: #ffd700;
+    background: linear-gradient(145deg, #fffef7, #fef3c7, #fde68a);
+    box-shadow: 0 15px 40px rgba(255, 215, 0, 0.6), 0 0 40px rgba(255, 215, 0, 0.3);
+}
+.candidate-card:nth-child(2) {
+    animation-delay: 0.3s;
+    border-color: #c0c0c0;
+    background: linear-gradient(145deg, #ffffff, #f1f5f9, #e2e8f0);
+    box-shadow: 0 15px 40px rgba(192, 192, 192, 0.6);
+}
+.candidate-card:nth-child(3) {
+    animation-delay: 0.6s;
+    border-color: #cd7f32;
+    background: linear-gradient(145deg, #fff7ed, #fed7aa, #fdba74);
+    box-shadow: 0 15px 40px rgba(205, 127, 50, 0.6);
+}
+
+@keyframes cardBounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+.candidate-card:hover {
+    transform: translateY(-15px) scale(1.05);
+    box-shadow: 0 25px 50px rgba(0,0,0,0.4), 0 0 60px rgba(255, 215, 0, 0.6);
+}
+
+.candidate-card:hover .candidate-name {
+    color: #e91e63;
+}
+
+.candidate-card::before {
+    content: "";
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(45deg, transparent, rgba(255,215,0,0.3), transparent);
+    transform: rotate(45deg);
+    animation: shineEffect 3s ease-in-out infinite;
+    pointer-events: none;
+}
+
+@keyframes shineEffect {
+    0% { transform: translateX(-100%) rotate(45deg); }
+    100% { transform: translateX(100%) rotate(45deg); }
+}
+
+.candidate-rank {
+    position: absolute;
+    top: -15px;
+    right: -15px;
+    width: 65px;
+    height: 65px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 38px;
+    background: white;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    animation: rankSpin 3s ease-in-out infinite;
+    z-index: 5;
+}
+
+@keyframes rankSpin {
+    0%, 100% { transform: rotate(0deg) scale(1); }
+    50% { transform: rotate(15deg) scale(1.1); }
+}
+
+.candidate-emoji {
+    font-size: 75px;
+    margin: 10px 0 15px;
+    animation: emojiBounce 1.5s ease-in-out infinite;
+    display: block;
+    filter: drop-shadow(0 5px 10px rgba(0,0,0,0.2));
+}
+
+@keyframes emojiBounce {
+    0%, 100% { transform: scale(1) rotate(-5deg); }
+    50% { transform: scale(1.15) rotate(5deg); }
+}
+
+.candidate-name {
+    font-size: 26px;
+    font-weight: bold;
+    color: #4338ca;
+    margin: 10px 0;
+    transition: all 0.3s ease;
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.1);
+    position: relative;
+    z-index: 2;
+}
+
+.candidate-points {
+    font-size: 32px;
+    font-weight: bold;
+    background: linear-gradient(135deg, #f59e0b, #e91e63);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin: 8px 0;
+    display: inline-block;
+    padding: 5px 15px;
+    border-radius: 20px;
+    position: relative;
+    z-index: 2;
+}
+
+.candidate-points-label {
+    font-size: 16px;
+    color: #666;
+    margin-bottom: 15px;
+    position: relative;
+    z-index: 2;
+}
+
+.candidate-medal {
+    font-size: 22px;
+    color: #b8860b;
+    font-weight: bold;
+    background: rgba(255, 215, 0, 0.2);
+    padding: 8px 18px;
+    border-radius: 25px;
+    display: inline-block;
+    margin-top: 5px;
+    position: relative;
+    z-index: 2;
+    border: 2px solid #ffd700;
+}
+
+.candidate-enter-btn {
+    background: linear-gradient(135deg, #e91e63, #f59e0b);
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 30px;
+    font-size: 17px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 15px;
+    box-shadow: 0 8px 20px rgba(233,30,99,0.4);
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    font-family: inherit;
+}
+
+.candidate-enter-btn:hover {
+    transform: scale(1.08);
+    box-shadow: 0 12px 30px rgba(233,30,99,0.6);
+    background: linear-gradient(135deg, #c2185b, #d97706);
+}
+
+.celebration-footer-btns {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    flex-wrap: wrap;
+    position: relative;
+    z-index: 2;
+    margin-top: 20px;
+}
+
+.celebration-close-btn {
+    background: rgba(255,255,255,0.15);
+    color: white;
+    border: 2px solid rgba(255,255,255,0.5);
+    padding: 12px 35px;
+    border-radius: 30px;
+    font-size: 17px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: inherit;
+    backdrop-filter: blur(10px);
+}
+
+.celebration-close-btn:hover {
+    background: rgba(255,255,255,0.3);
+    transform: scale(1.05);
+}
+
+.celebration-all-btn {
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: white;
+    border: none;
+    padding: 12px 35px;
+    border-radius: 30px;
+    font-size: 17px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 8px 20px rgba(16,185,129,0.4);
+    font-family: inherit;
+}
+
+.celebration-all-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 12px 30px rgba(16,185,129,0.6);
+}
+
+.confetti-piece {
+    position: fixed;
+    width: 12px;
+    height: 12px;
+    pointer-events: none;
+    z-index: 10001;
+    animation: confettiFall 4s linear forwards;
+    border-radius: 2px;
+}
+
+@keyframes confettiFall {
+    0% {
+        transform: translateY(-100vh) rotate(0deg);
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(100vh) rotate(720deg);
+        opacity: 0;
+    }
+}
+
+@media(max-width: 900px) {
+    .celebration-title { font-size: 30px; }
+    .celebration-subtitle { font-size: 16px; }
+    .candidates-container { grid-template-columns: 1fr; gap: 20px; }
+    .candidate-card { padding: 20px 15px; }
+    .candidate-emoji { font-size: 60px; }
+    .candidate-name { font-size: 22px; }
+    .candidate-points { font-size: 26px; }
+}
+
+@media(max-width: 500px) {
+    .celebration-title { font-size: 24px; }
+    .celebration-modal-content { padding: 20px 15px; }
+}
+/* ====== نهاية الشاشة الاحتفالية ====== */
+
+/* ====== نقاط المجموعات ====== */
+.group-points-info {
+    background: linear-gradient(135deg, #fef3c7, #fde68a);
+    border-radius: 15px;
+    padding: 15px 20px;
+    margin-bottom: 20px;
+    text-align: center;
+    font-size: 14px;
+    color: #92400e;
+    font-weight: bold;
+    border: 2px dashed #f59e0b;
+}
+
+.group-members-display {
+    background: #f8fafc;
+    border-radius: 15px;
+    padding: 12px 15px;
+    margin-top: 10px;
+    font-size: 13px;
+    color: #4338ca;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    align-items: center;
+    border: 1px solid #cbd5e1;
+}
+
+.group-member-badge {
+    background: white;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-weight: bold;
+    font-size: 12px;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+/* ====== نهاية نقاط المجموعات ====== */
+
 @media print {
     body * {
         visibility: hidden;
@@ -1944,6 +2643,9 @@ body {
     .tracker-checkbox { width: 16px; height: 16px; transform: scale(1); }
     .dropdown-btn { padding: 8px 15px; font-size: 12px; min-width: 120px; }
     .dropdown-content { min-width: 180px; right: auto; left: 0; }
+    .diagnostic-table { font-size: 12px; }
+    .diagnostic-table th, .diagnostic-table td { padding: 6px 4px; }
+    .diagnostic-table input[type="number"] { width: 70px; padding: 6px; font-size: 14px; }
 }
 
 @media(max-width: 700px) {
@@ -2052,6 +2754,7 @@ body {
                     <button class="dropdown-btn">📊 تصنيف الطلاب <span>▼</span></button>
                     <div class="dropdown-content">
                         <a id="studentsLevelsDropdown">📊 مستويات الطلاب</a>
+                        <a id="diagnosticTestDropdown">📝 الاختبار التشخيصي</a>
                         <a id="divisionDropdown">🔀 تقسيم الطلاب</a>
                         <a id="groupScoresDropdown">🏆 درجات المجموعات</a>
                         <a id="medicalConditionsDropdown">🏥 الحالات المرضية</a>
@@ -2066,6 +2769,7 @@ body {
                         <a id="addPointsDropdown">➕ إضافة نقاط</a>
                         <a id="deductPointsDropdown">🔻 خصم نقاط</a>
                         <a id="warningDropdown">⚠️ إعطاء إنذار</a>
+                        <a id="groupPointsDropdown">🎯 نقاط المجموعات</a>
                         <a id="studentsPointsDropdown">📊 نقاط الطلاب</a>
                     </div>
                 </div>
@@ -2078,6 +2782,7 @@ body {
                         <a id="editPrizesDropdown">🏆 تغيير الجوائز</a>
                         <a id="uploadPhotosDropdown">📸 صور الفائقين</a>
                         <a id="certificatesDropdown">🏆 شهادات التقدير</a>
+                        <a href="celebration.html" target="_blank" style="display:block; padding:10px; background:#8b5cf6; color:white; border-radius:16px; text-decoration:none; text-align:center; margin:5px 0;">🎉 الاحتفال بالطالب المثالي</a> 
                     </div>
                 </div>
 
@@ -2113,11 +2818,13 @@ body {
                 <button class="btn add-points" id="addPointsBtn">⭐ إضافة نقاط</button>
                 <button class="btn deduct-points" id="deductPointsBtn">🔻 خصم نقاط</button>
                 <button class="btn warning-btn" id="warningBtn">⚠️ إعطاء إنذار</button>
+                <button class="btn group-points-btn" id="groupPointsBtn">🎯 نقاط المجموعات</button>
                 <button class="btn surprise-btn" id="surpriseBtn">🎁 صندوق المفاجآت</button>
                 <button class="btn students-points-btn" id="studentsPointsBtn">📊 نقاط الطلاب</button>
                 <button class="btn edit-prizes-btn" id="editPrizesBtn">🏆 تغيير الجوائز</button>
                 <button class="btn upload-photos-btn" id="uploadPhotosBtn">📸 صور الفائقين</button>
                 <button class="btn students-levels-btn" id="studentsLevelsBtn">📊 مستويات الطلاب</button>
+                <button class="btn diagnostic-test-btn" id="diagnosticTestBtn" style="background:#8b5cf6;">📝 الاختبار التشخيصي</button>
                 <button class="btn division-btn" id="divisionBtn">🔀 تقسيم الطلاب</button>
                 <button class="btn group-scores-btn" id="groupScoresBtn">🏆 درجات المجموعات</button>
                 <button class="btn parent-contact-btn" id="parentContactBtn">📞 التواصل مع ولي الأمر</button>
@@ -2208,6 +2915,10 @@ body {
         <h2>🏥 تسجيل حالة مرضية</h2>
         <div class="select-group">
             <label>👨‍🎓 اختر الطالب:</label>
+            <div class="search-box">
+                <input type="text" id="medicalStudentSearch" placeholder="🔍 ابحث باسم الطالب...">
+                <button class="clear-search" id="clearMedicalSearch">✕</button>
+            </div>
             <select id="medicalStudentSelect">
                 <option value="">-- اختر الطالب --</option>
             </select>
@@ -2244,6 +2955,170 @@ body {
     </div>
 </div>
 
+<!-- ====== نافذة الاختبار التشخيصي ====== -->
+<div id="diagnosticTestModal" class="modal">
+    <div class="modal-content large" style="max-width: 1000px;">
+        <h2>📝 الاختبار التشخيصي - <span id="diagnosticClassName"></span></h2>
+        
+        <div class="diagnostic-total-input">
+            <label>🎯 الدرجة الكلية للاختبار:</label>
+            <input type="number" id="diagnosticTotalMarks" min="1" value="100" placeholder="100">
+            <span class="hint">💡 أدخل الدرجة العظمى للاختبار (مثال: 100) ثم أدخل درجات الطلاب أدناه</span>
+        </div>
+
+        <div class="diagnostic-legend">
+            <div class="diagnostic-legend-item"><div class="diagnostic-legend-color" style="background:#22c55e;"></div> ممتاز (90%+)</div>
+            <div class="diagnostic-legend-item"><div class="diagnostic-legend-color" style="background:#3b82f6;"></div> جيد جداً (80% - 89.9%)</div>
+            <div class="diagnostic-legend-item"><div class="diagnostic-legend-color" style="background:#eab308;"></div> جيد (70% - 79.9%)</div>
+            <div class="diagnostic-legend-item"><div class="diagnostic-legend-color" style="background:#f97316;"></div> مقبول (50% - 69.9%)</div>
+            <div class="diagnostic-legend-item"><div class="diagnostic-legend-color" style="background:#ef4444;"></div> ضعيف (أقل من 50%)</div>
+        </div>
+
+        <div class="search-box">
+            <input type="text" id="diagnosticSearch" placeholder="🔍 ابحث باسم الطالب...">
+            <button class="clear-search" id="clearDiagnosticSearch">✕</button>
+            <div class="search-results-count" id="diagnosticSearchCount"></div>
+        </div>
+
+        <div style="overflow-x: auto; max-height: 50vh;">
+            <table class="diagnostic-table">
+                <thead>
+                    <tr>
+                        <th style="width: 60px;">#</th>
+                        <th style="text-align: right; padding-right: 20px;">👨‍🎓 اسم الطالب</th>
+                        <th style="width: 150px;">📝 الدرجة</th>
+                        <th style="width: 100px;">📊 النسبة</th>
+                        <th style="width: 130px;">🏆 التصنيف</th>
+                    </tr>
+                </thead>
+                <tbody id="diagnosticTableBody"></tbody>
+            </table>
+        </div>
+
+        <div class="diagnostic-summary" id="diagnosticSummary">
+            <div class="diagnostic-summary-item">
+                <div class="count" style="color:#22c55e;" id="diagExcellentCount">0</div>
+                <div class="label">ممتاز</div>
+            </div>
+            <div class="diagnostic-summary-item">
+                <div class="count" style="color:#3b82f6;" id="diagVeryGoodCount">0</div>
+                <div class="label">جيد جداً</div>
+            </div>
+            <div class="diagnostic-summary-item">
+                <div class="count" style="color:#eab308;" id="diagGoodCount">0</div>
+                <div class="label">جيد</div>
+            </div>
+            <div class="diagnostic-summary-item">
+                <div class="count" style="color:#f97316;" id="diagAcceptableCount">0</div>
+                <div class="label">مقبول</div>
+            </div>
+            <div class="diagnostic-summary-item">
+                <div class="count" style="color:#ef4444;" id="diagWeakCount">0</div>
+                <div class="label">ضعيف</div>
+            </div>
+        </div>
+
+        <div style="display: flex; justify-content: center; gap: 15px; margin-top: 20px; flex-wrap: wrap;">
+            <button class="close-modal confirm-btn" id="classifyStudentsBtn" style="background: linear-gradient(135deg, #8b5cf6, #6d28d9); font-size: 18px; padding: 14px 35px;">🏆 تصنيف الطلاب ونقلهم للمستويات</button>
+            <button class="close-modal" id="exportDiagnosticExcelBtn" style="background: #16a34a;">📊 تصدير Excel</button>
+            <button class="close-modal cancel-btn" id="closeDiagnosticModalBtn">إغلاق</button>
+        </div>
+    </div>
+</div>
+<!-- ====== نهاية نافذة الاختبار التشخيصي ====== -->
+
+<!-- ====== نافذة نقاط المجموعات ====== -->
+<div id="groupPointsSetupModal" class="modal">
+    <div class="modal-content" style="max-width:550px;">
+        <h2>🎯 نقاط المجموعات - <span id="groupPointsClassName"></span></h2>
+        
+        <div class="group-points-info">
+            ⚖️ سيتم تقسيم الطلاب بعدالة حسب مستوياتهم<br>
+            ثم يمكنك اختيار مجموعة وإعطائها نقاط من قائمة النقاط
+        </div>
+        
+        <div class="select-group">
+            <label>📊 عدد المجموعات:</label>
+            <input type="number" id="groupPointsCount" min="2" max="10" value="4" style="width:100%;padding:15px;font-size:24px;border-radius:15px;text-align:center;border:2px solid #ddd;font-weight:bold;">
+        </div>
+        
+        <div class="select-group">
+            <label>🔀 طريقة التقسيم:</label>
+            <select id="groupPointsType">
+                <option value="مجموعات">👥 تقسيم مجموعات (توزيع متوازن)</option>
+                <option value="ثنائيات">👥 تقسيم ثنائي (أزواج)</option>
+            </select>
+        </div>
+        
+        <div style="display: flex; justify-content: center; gap: 15px; margin-top: 25px; flex-wrap: wrap;">
+            <button class="close-modal confirm-btn" id="createGroupsForPointsBtn" style="background: linear-gradient(135deg, #f59e0b, #d97706); font-size: 17px; padding: 14px 30px;">⚙️ إنشاء المجموعات</button>
+            <button class="close-modal cancel-btn" id="cancelGroupPointsSetupBtn">إلغاء</button>
+        </div>
+    </div>
+</div>
+
+<div id="groupPointsSelectionModal" class="modal">
+    <div class="modal-content" style="max-width:600px;">
+        <h2>🎯 اختر المجموعة لإعطائها نقاط</h2>
+        
+        <div class="group-points-info" id="groupPointsSelectionInfo">
+            📊 اختر المجموعة ثم اختر سبب إعطاء النقاط
+        </div>
+        
+        <div class="select-group">
+            <label>👥 اختر المجموعة:</label>
+            <select id="selectGroupForPoints">
+                <option value="">-- اختر المجموعة --</option>
+            </select>
+        </div>
+        
+        <div id="groupMembersPreview" style="margin: 15px 0;"></div>
+        
+        <div class="select-group">
+            <label>⭐ اختر سبب إعطاء النقاط:</label>
+            <select id="groupPointsReasonSelect">
+                <option value="">-- اختر السبب --</option>
+            </select>
+        </div>
+        
+        <div style="display: flex; justify-content: center; gap: 15px; margin-top: 25px; flex-wrap: wrap;">
+            <button class="close-modal confirm-btn" id="applyGroupPointsBtn" style="background: linear-gradient(135deg, #16a34a, #15803d); font-size: 17px; padding: 14px 30px;">✅ تطبيق النقاط على المجموعة</button>
+            <button class="close-modal" id="showGroupsTableBtn" style="background: #8b5cf6;">📊 عرض جميع المجموعات</button>
+            <button class="close-modal cancel-btn" id="closeGroupPointsSelectionBtn">إغلاق</button>
+        </div>
+    </div>
+</div>
+
+<div id="groupPointsTableModal" class="modal">
+    <div class="modal-content large" style="max-width:900px;">
+        <h2>📊 المجموعات الحالية - <span id="groupPointsTableClassName"></span></h2>
+        <div id="groupPointsTableContent" style="max-height:70vh; overflow-y:auto;"></div>
+        <div style="display: flex; justify-content: center; gap: 15px; margin-top: 20px; flex-wrap: wrap;">
+            <button class="close-modal confirm-btn" id="backToGroupSelectionBtn" style="background: #f59e0b;">⬅️ العودة لاختيار المجموعة</button>
+            <button class="close-modal cancel-btn" id="closeGroupPointsTableBtn">إغلاق</button>
+        </div>
+    </div>
+</div>
+<!-- ====== نهاية نافذة نقاط المجموعات ====== -->
+
+<!-- ====== نافذة الشاشة الاحتفالية للمرشحين ====== -->
+<div id="candidatesCelebrationModal" class="modal">
+    <div class="celebration-modal-content">
+        <div class="celebration-stars" id="celebrationStars"></div>
+        
+        <h2 class="celebration-title">🎉 ألف مبروك يا أبطال! 🎉</h2>
+        <p class="celebration-subtitle">🌟 هؤلاء هم الطلاب المتميزون أصحاب أعلى النقاط 🌟<br>اضغط على أي طالب للدخول إلى مكتبة الجوائز</p>
+        
+        <div class="candidates-container" id="candidatesContainer"></div>
+        
+        <div class="celebration-footer-btns">
+            <button class="celebration-all-btn" id="openAllRewardsBtn">🏅 فتح المكتبة لجميع الطلاب</button>
+            <button class="celebration-close-btn" id="closeCelebrationBtn">إغلاق</button>
+        </div>
+    </div>
+</div>
+<!-- ====== نهاية نافذة الشاشة الاحتفالية ====== -->
+
 <div id="selectClassModal" class="modal"><div class="modal-content"><h2>📚 اختر الصف</h2><div class="select-group"><select id="classSelect"><option value="">-- اختر الصف --</option><option value="السادس 1">السادس 1</option><option value="السادس 2">السادس 2</option><option value="السادس 3">السادس 3</option><option value="السادس 4">السادس 4</option><option value="السادس 5">السادس 5</option><option value="السادس 6">السادس 6</option><option value="السادس 7">السادس 7</option></select></div><button class="close-modal confirm-btn" id="saveClassBtn">💾 حفظ وفتح الصف</button><button class="close-modal cancel-btn" id="cancelClassBtn">إلغاء</button></div></div>
 
 <div id="parentContactModal" class="modal"><div class="modal-content large"><h2>📞 التواصل مع ولي الأمر - صف: <span id="currentClassForContact"></span></h2><div class="bulk-input-area"><h3>🚀 إدخال سريع - نسخ ولصق من إكسل</h3><div class="textarea-group"><label>📱 أرقام الهواتف (كل رقم في سطر)</label><textarea id="bulkPhonesInput" rows="3"></textarea></div><div class="textarea-group"><label>📧 البريد الإلكتروني (كل بريد في سطر)</label><textarea id="bulkEmailsInput" rows="3"></textarea></div><div class="bulk-buttons"><button class="bulk-btn" id="applyBulkPhonesBtn">📱 تطبيق الأرقام</button><button class="bulk-btn" id="applyBulkEmailsBtn">📧 تطبيق البريد</button><button class="bulk-btn" id="applyBothBulkBtn">✨ تطبيق الكل</button></div></div><div style="overflow-x: auto; max-height: 55vh;"><table class="parent-contact-table"><thead><tr><th>👨‍🎓 اسم الطالب</th><th>📞 بيانات التواصل</th></tr></thead><tbody id="parentContactTableBody"></tbody></table></div><div style="display: flex; justify-content: center; gap: 15px; margin-top: 20px;"><button class="close-modal confirm-btn" id="saveParentContactsBtn">💾 حفظ جميع البيانات</button><button class="close-modal cancel-btn" id="closeParentContactBtn">إغلاق</button></div></div></div>
@@ -2256,19 +3131,19 @@ body {
 
 <div id="embedModal" class="modal"><div class="modal-content embed-modal"><h2>🌐 رابط التضمين Embed</h2><p style="text-align:center; color:#666; margin-bottom:15px;">يمكنك تضمين هذا النظام في أي موقع باستخدام الكود التالي</p><div class="textarea-group"><label>🔗 الرابط المباشر للنظام:</label><div class="url-display" id="directUrlDisplay"></div><button class="copy-btn" id="copyUrlBtn">📋 نسخ الرابط</button></div><div class="textarea-group"><label>📝 كود HTML للتضمين (Iframe):</label><div class="embed-code" id="embedCodeDisplay"></div><button class="copy-btn" id="copyEmbedBtn">📋 نسخ الكود</button></div><div class="textarea-group"><label>🖼️ كود التضمين مع حجم محدد (800x600):</label><div class="embed-code" id="embedCodeSizedDisplay"></div><button class="copy-btn" id="copyEmbedSizedBtn">📋 نسخ الكود</button></div><div style="display: flex; justify-content: center; gap: 10px; margin-top: 20px;"><button class="close-modal cancel-btn" id="closeEmbedModalBtn">إغلاق</button></div></div></div>
 
-<div id="dailyTrackerModal" class="modal"><div class="modal-content large"><h2>📋 المتابعة اليومية للطلاب - <span id="trackerClassName"></span></h2><div class="date-time-header"><span>📅 التاريخ: <span id="currentDate"></span></span><span>🕐 الوقت: <span id="currentTime"></span></span></div><div style="overflow-x: auto; max-height: 65vh;"><table class="tracker-table"><thead><tr><th style="position: sticky; right: 0; background: #0d9488;">👨‍🎓 اسم الطالب</th><th>📚 الواجبات</th><th>😊 السلوك</th><th>📘 Workbook</th><th>🗣️ المشاركة</th><th>🚪 عدم الخروج المتكرر</th><th>📚 احضار الكتب والأدوات</th></tr></thead><tbody id="trackerTableBody"></tbody></table></div><div style="display: flex; justify-content: center; gap: 15px; margin-top: 20px; flex-wrap: wrap;"><button class="close-modal confirm-btn" id="saveTrackerBtn">💾 حفظ البيانات</button><button class="close-modal cancel-btn" id="closeTrackerModalBtn">إغلاق</button></div></div></div>
+<div id="dailyTrackerModal" class="modal"><div class="modal-content large"><h2>📋 المتابعة اليومية للطلاب - <span id="trackerClassName"></span></h2><div class="date-time-header"><span>📅 التاريخ: <span id="currentDate"></span></span><span>🕐 الوقت: <span id="currentTime"></span></span></div><div class="search-box"><input type="text" id="trackerSearch" placeholder="🔍 ابحث باسم الطالب..."><button class="clear-search" id="clearTrackerSearch">✕</button><div class="search-results-count" id="trackerSearchCount"></div></div><div style="overflow-x: auto; max-height: 60vh;"><table class="tracker-table"><thead><tr><th style="position: sticky; right: 0; background: #0d9488;">👨‍🎓 اسم الطالب</th><th>📚 الواجبات</th><th>😊 السلوك</th><th>📘 Workbook</th><th>🗣️ المشاركة</th><th>🚪 عدم الخروج المتكرر</th><th>📚 احضار الكتب والأدوات</th><th>🚫 غائب</th></tr></thead><tbody id="trackerTableBody"></tbody></table></div><div style="display: flex; justify-content: center; gap: 15px; margin-top: 20px; flex-wrap: wrap;"><button class="close-modal confirm-btn" id="saveTrackerBtn">💾 حفظ البيانات</button><button class="close-modal cancel-btn" id="closeTrackerModalBtn">إغلاق</button></div></div></div>
 
 <div id="studentReportModal" class="modal"><div class="modal-content report-modal-content"><div id="reportContentArea"><div class="report-print-area" id="reportPrintArea"><div class="report-header"><h1>📊 تقرير متابعة الطالب</h1><p>نظام النقاط والتحفيز المدرسي</p></div><div class="report-student-name" id="reportStudentName"></div><div id="reportContent"></div><div style="text-align: center; margin-top: 30px; padding-top: 20px; border-top: 1px solid #ddd; color: #999; font-size: 12px;">تم الإنشاء بواسطة نظام النقاط والتحفيز المدرسي</div></div></div><div style="display: flex; justify-content: center; gap: 15px; margin-top: 20px; flex-wrap: wrap;"><button class="close-modal confirm-btn" id="printReportBtn">🖨️ طباعة التقرير</button><button class="close-modal" id="exportPdfBtn" style="background: #dc2626;">📄 تصدير PDF</button><button class="close-modal cancel-btn" id="closeReportModalBtn">إغلاق</button></div></div></div>
 
-<div id="violationsModal" class="modal"><div class="modal-content violations-modal"><h2>⚠️ تسجيل مخالفة</h2><div class="date-time-header"><span>📅 التاريخ: <span id="violationDate"></span></span><span>🕐 الوقت: <span id="violationTime"></span></span></div><div class="select-group"><label>👨‍🎓 اختر الطالب:</label><select id="violationStudentSelect"><option value="">-- اختر الطالب --</option></select></div><div class="select-group"><label>⚠️ نوع المخالفة:</label><select id="violationTypeSelect"><option value="">-- اختر نوع المخالفة --</option><option value="كثرة الكلام أثناء الشرح">🗣️ كثرة الكلام أثناء الشرح</option><option value="عدم التركيز والانتباه">🎯 عدم التركيز والانتباه</option><option value="التأخر في إحضار الأدوات والكتب">📚 التأخر في إحضار الأدوات والكتب</option><option value="استخدام الهاتف أو الانشغال بأشياء أخرى">📱 استخدام الهاتف أو الانشغال بأشياء أخرى</option><option value="مقاطعة المعلم أثناء الشرح">🗣️ مقاطعة المعلم أثناء الشرح</option><option value="النوم أو الخمول داخل الحصة">😴 النوم أو الخمول داخل الحصة</option><option value="عدم حل الواجبات">📖 عدم حل الواجبات</option><option value="إثارة الفوضى والضحك الزائد">😂 إثارة الفوضى والضحك الزائد</option><option value="الخروج من المقعد بدون إذن">🚶 الخروج من المقعد بدون إذن</option><option value="التنمر أو مضايقة الزملاء">😠 التنمر أو مضايقة الزملاء</option><option value="التأخر في دخول الحصة">⏰ التأخر في دخول الحصة</option><option value="ضعف المشاركة والتفاعل">🤐 ضعف المشاركة والتفاعل</option><option value="عدم احترام قوانين الصف">📜 عدم احترام قوانين الصف</option><option value="الأكل والشرب أثناء الحصة">🍔 الأكل والشرب أثناء الحصة</option><option value="العبث بالممتلكات المدرسية">🔧 العبث بالممتلكات المدرسية</option></select></div><div class="textarea-group"><label>📝 تفاصيل المخالفة (اختياري):</label><textarea id="violationDetails" rows="4" placeholder="أدخل تفاصيل إضافية عن المخالفة..."></textarea></div><div style="display: flex; justify-content: center; gap: 15px; margin-top: 20px; flex-wrap: wrap;"><button class="close-modal confirm-btn" id="saveViolationBtn">💾 حفظ المخالفة</button><button class="close-modal cancel-btn" id="closeViolationModalBtn">إلغاء</button></div></div></div>
+<div id="violationsModal" class="modal"><div class="modal-content violations-modal"><h2>⚠️ تسجيل مخالفة</h2><div class="date-time-header"><span>📅 التاريخ: <span id="violationDate"></span></span><span>🕐 الوقت: <span id="violationTime"></span></span></div><div class="select-group"><label>👨‍🎓 اختر الطالب:</label><div class="search-box"><input type="text" id="violationStudentSearch" placeholder="🔍 ابحث باسم الطالب..."><button class="clear-search" id="clearViolationSearch">✕</button></div><select id="violationStudentSelect"><option value="">-- اختر الطالب --</option></select></div><div class="select-group"><label>⚠️ نوع المخالفة:</label><select id="violationTypeSelect"><option value="">-- اختر نوع المخالفة --</option><option value="كثرة الكلام أثناء الشرح">🗣️ كثرة الكلام أثناء الشرح</option><option value="عدم التركيز والانتباه">🎯 عدم التركيز والانتباه</option><option value="التأخر في إحضار الأدوات والكتب">📚 التأخر في إحضار الأدوات والكتب</option><option value="استخدام الهاتف أو الانشغال بأشياء أخرى">📱 استخدام الهاتف أو الانشغال بأشياء أخرى</option><option value="مقاطعة المعلم أثناء الشرح">🗣️ مقاطعة المعلم أثناء الشرح</option><option value="النوم أو الخمول داخل الحصة">😴 النوم أو الخمول داخل الحصة</option><option value="عدم حل الواجبات">📖 عدم حل الواجبات</option><option value="إثارة الفوضى والضحك الزائد">😂 إثارة الفوضى والضحك الزائد</option><option value="الخروج من المقعد بدون إذن">🚶 الخروج من المقعد بدون إذن</option><option value="التنمر أو مضايقة الزملاء">😠 التنمر أو مضايقة الزملاء</option><option value="التأخر في دخول الحصة">⏰ التأخر في دخول الحصة</option><option value="ضعف المشاركة والتفاعل">🤐 ضعف المشاركة والتفاعل</option><option value="عدم احترام قوانين الصف">📜 عدم احترام قوانين الصف</option><option value="الأكل والشرب أثناء الحصة">🍔 الأكل والشرب أثناء الحصة</option><option value="العبث بالممتلكات المدرسية">🔧 العبث بالممتلكات المدرسية</option></select></div><div class="textarea-group"><label>📝 تفاصيل المخالفة (اختياري):</label><textarea id="violationDetails" rows="4" placeholder="أدخل تفاصيل إضافية عن المخالفة..."></textarea></div><div style="display: flex; justify-content: center; gap: 15px; margin-top: 20px; flex-wrap: wrap;"><button class="close-modal confirm-btn" id="saveViolationBtn">💾 حفظ المخالفة</button><button class="close-modal cancel-btn" id="closeViolationModalBtn">إلغاء</button></div></div></div>
 
 <div id="studentViolationsModal" class="modal"><div class="modal-content" style="max-width: 800px;"><h2>📋 سجل مخالفات الطالب</h2><div class="report-student-name" id="violationsStudentName"></div><div id="violationsListContainer" class="violations-list"></div><div style="display: flex; justify-content: center; gap: 15px; margin-top: 20px; flex-wrap: wrap;"><button class="close-modal confirm-btn" id="printViolationsReportBtn">🖨️ طباعة التقرير</button><button class="close-modal" id="exportViolationsPdfBtn" style="background: #dc2626;">📄 تصدير PDF</button><button class="close-modal cancel-btn" id="closeViolationsListModalBtn">إغلاق</button></div></div></div>
 
 <div id="addClassModal" class="modal"><div class="modal-content large"><h2>📋 إضافة طلاب لصف: <span id="classNameForAdd"></span></h2><div class="textarea-group"><label>📝 أدخل أسماء الطلاب (كل اسم في سطر)</label><textarea id="studentsNamesInput" rows="10"></textarea></div><button class="close-modal confirm-btn" id="saveClassStudentsBtn">💾 حفظ الطلاب</button><button class="close-modal cancel-btn" id="cancelAddClassBtn">إلغاء</button></div></div>
 
-<div id="deleteStudentModal" class="modal"><div class="modal-content"><h2>🗑️ حذف طالب</h2><div class="select-group"><select id="deleteStudentSelect"></select></div><button class="close-modal confirm-btn" id="confirmDeleteBtn">🗑️ تأكيد الحذف</button><button class="close-modal cancel-btn" id="cancelDeleteBtn">إلغاء</button></div></div>
+<div id="deleteStudentModal" class="modal"><div class="modal-content"><h2>🗑️ حذف طالب</h2><div class="search-box"><input type="text" id="deleteStudentSearch" placeholder="🔍 ابحث باسم الطالب..."><button class="clear-search" id="clearDeleteSearch">✕</button></div><div class="select-group"><select id="deleteStudentSelect"></select></div><button class="close-modal confirm-btn" id="confirmDeleteBtn">🗑️ تأكيد الحذف</button><button class="close-modal cancel-btn" id="cancelDeleteBtn">إلغاء</button></div></div>
 
-<div id="multiSelectModal" class="modal"><div class="modal-content large"><h2 id="multiSelectTitle">📝 اختر الطلاب</h2><div class="multi-select-group" id="multiSelectList"></div><button class="close-modal confirm-btn" id="confirmMultiSelectBtn">تأكيد</button><button class="close-modal cancel-btn" id="cancelMultiSelectBtn">إلغاء</button></div></div>
+<div id="multiSelectModal" class="modal"><div class="modal-content large"><h2 id="multiSelectTitle">📝 اختر الطلاب</h2><div class="search-box"><input type="text" id="multiSelectSearch" placeholder="🔍 ابحث باسم الطالب..."><button class="clear-search" id="clearMultiSearch">✕</button><div class="search-results-count" id="multiSelectSearchCount"></div></div><div class="multi-select-group" id="multiSelectList"></div><button class="close-modal confirm-btn" id="confirmMultiSelectBtn">تأكيد</button><button class="close-modal cancel-btn" id="cancelMultiSelectBtn">إلغاء</button></div></div>
 
 <div id="pointsModal" class="modal"><div class="modal-content"><h2 id="pointsModalTitle">⭐ اختر عدد النقاط</h2><div class="select-group"><select id="pointsSelect"></select></div><button class="close-modal confirm-btn" id="confirmPointsBtn">تأكيد</button><button class="close-modal cancel-btn" id="cancelPointsBtn">إلغاء</button></div></div>
 
@@ -2280,7 +3155,7 @@ body {
 
 <div id="studentsPointsModal" class="modal"><div class="modal-content"><h2>📊 قائمة طلاب صف: <span id="currentClassForPoints"></span></h2><div class="legend"><div class="legend-item"><div class="legend-color" style="background:#22c55e;"></div><span>أسطوري (500+)</span></div><div class="legend-item"><div class="legend-color" style="background:#eab308;"></div><span>متميز (300-499)</span></div><div class="legend-item"><div class="legend-color" style="background:#3b82f6;"></div><span>نشيط (100-299)</span></div><div class="legend-item"><div class="legend-color" style="background:#ef4444;"></div><span>مبتدئ (0-99)</span></div><div class="legend-item"><div class="legend-color" style="background:#f97316;"></div><span>تحذير (أقل من 0)</span></div></div><div style="overflow-x: auto;"><table class="students-table-modal"><thead><tr><th style="width: 80px;">الترتيب</th><th style="text-align: right;">اسم الطالب</th><th style="width: 120px;">المستوى</th><th style="width: 100px;">النقاط</th></tr></thead><tbody id="studentsPointsTableBody"></tbody></table></div><div style="display: flex; justify-content: center; margin-top: 20px;"><button class="close-modal cancel-btn" id="closeStudentsPointsModalBtn">إغلاق</button></div></div></div>
 
-<div id="levelsModal" class="modal"><div class="modal-content"><h2 id="levelsModalTitle">📊 مستويات الطلاب</h2><div style="max-height: 500px; overflow-y: auto;"><table style="width:100%"><thead><tr style="background:#4338ca;color:white"><th>#</th><th>اسم الطالب</th><th>المستوى</th></tr></thead><tbody id="levelsTableBody"></tbody></table></div><button class="close-modal confirm-btn" id="saveLevelsBtn">💾 حفظ المستويات</button><button class="close-modal cancel-btn" id="closeLevelsBtn">إلغاء</button></div></div>
+<div id="levelsModal" class="modal"><div class="modal-content"><h2 id="levelsModalTitle">📊 مستويات الطلاب</h2><div style="max-height: 500px; overflow-y: auto;"><table style="width:100%"><thead><tr style="background:#4338ca;color:white"><th>#</th><th>اسم الطالب</th><th>المستوى</th></tr></thead><tbody id="levelsTableBody"></tbody></table></div><div style="display: flex; justify-content: center; gap: 10px; margin-top: 20px; flex-wrap: wrap;"><button class="close-modal" id="exportLevelsExcelBtn" style="background: #16a34a;">📊 تصدير Excel</button><button class="close-modal confirm-btn" id="saveLevelsBtn">💾 حفظ المستويات</button><button class="close-modal cancel-btn" id="closeLevelsBtn">إلغاء</button></div></div></div>
 
 <div id="restoreModal" class="modal"><div class="modal-content"><h2>📂 استعادة نسخة احتياطية</h2><div class="select-group"><label>اختر ملف النسخة الاحتياطية (.json)</label><input type="file" id="restoreFileInput" accept=".json"></div><button class="close-modal confirm-btn" id="confirmRestoreBtn">استعادة</button><button class="close-modal cancel-btn" id="cancelRestoreBtn">إلغاء</button></div></div>
 
@@ -2288,21 +3163,1092 @@ body {
 
 <div id="imageModal" class="modal"><div class="modal-content image-modal"><img id="aboutImage" src=""><button class="close-modal" id="closeImageModalBtn">إغلاق</button></div></div>
 
-<div id="comprehensiveReportSelectModal" class="modal"><div class="modal-content"><h2>📊 تقرير شامل عن الطالب</h2><div class="select-group"><label>👨‍🎓 اختر الطالب:</label><select id="comprehensiveStudentSelect"><option value="">-- اختر الطالب --</option></select></div><div style="display: flex; justify-content: center; gap: 15px; margin-top: 20px; flex-wrap: wrap;"><button class="close-modal confirm-btn" id="generateComprehensiveReportBtn">📊 إنشاء التقرير</button><button class="close-modal cancel-btn" id="cancelComprehensiveSelectBtn">إلغاء</button></div></div></div>
+<div id="comprehensiveReportSelectModal" class="modal"><div class="modal-content"><h2>📊 تقرير شامل عن الطالب</h2><div class="select-group"><label>👨‍🎓 اختر الطالب:</label><div class="search-box"><input type="text" id="comprehensiveStudentSearch" placeholder="🔍 ابحث باسم الطالب..."><button class="clear-search" id="clearComprehensiveSearch">✕</button></div><select id="comprehensiveStudentSelect"><option value="">-- اختر الطالب --</option></select></div><div style="display: flex; justify-content: center; gap: 15px; margin-top: 20px; flex-wrap: wrap;"><button class="close-modal confirm-btn" id="generateComprehensiveReportBtn">📊 إنشاء التقرير</button><button class="close-modal cancel-btn" id="cancelComprehensiveSelectBtn">إلغاء</button></div></div></div>
 
 <div id="comprehensiveReportModal" class="modal"><div class="modal-content" style="max-width: 900px; width: 95%;"><div id="comprehensiveReportContent"></div><div style="display: flex; justify-content: center; gap: 15px; margin-top: 20px; flex-wrap: wrap;"><button class="close-modal confirm-btn" id="printComprehensiveReportBtn">🖨️ طباعة التقرير</button><button class="close-modal" id="exportComprehensivePdfBtn" style="background: #dc2626;">📄 تصدير PDF</button><button class="close-modal send-btn" id="sendWhatsAppReportBtn" style="background: #25D366;">📱 إرسال عبر واتساب</button><button class="close-modal email-send-btn" id="sendEmailReportBtn" style="background: #3b82f6;">📧 إرسال عبر البريد</button><button class="close-modal cancel-btn" id="closeComprehensiveReportModalBtn">إغلاق</button></div></div></div>
 
-<div id="selectStudentRewardModal" class="modal"><div class="modal-content"><h2>🏅 مكتبة الجوائز الرقمية</h2><div class="select-group"><label>👨‍🎓 اختر الطالب:</label><select id="rewardStudentSelect"><option value="">-- اختر الطالب --</option></select></div><div style="display: flex; justify-content: center; gap: 15px; margin-top: 20px; flex-wrap: wrap;"><button class="close-modal confirm-btn" id="openRewardsBtn">🏅 فتح المكتبة</button><button class="close-modal cancel-btn" id="cancelRewardSelectBtn">إلغاء</button></div></div></div>
+<div id="selectStudentRewardModal" class="modal"><div class="modal-content"><h2>🏅 مكتبة الجوائز الرقمية</h2><div class="select-group"><label>👨‍🎓 اختر الطالب:</label><div class="search-box"><input type="text" id="rewardStudentSearch" placeholder="🔍 ابحث باسم الطالب..."><button class="clear-search" id="clearRewardSearch">✕</button></div><select id="rewardStudentSelect"><option value="">-- اختر الطالب --</option></select></div><div style="display: flex; justify-content: center; gap: 15px; margin-top: 20px; flex-wrap: wrap;"><button class="close-modal confirm-btn" id="openRewardsBtn">🏅 فتح المكتبة</button><button class="close-modal cancel-btn" id="cancelRewardSelectBtn">إلغاء</button></div></div></div>
 
 <div id="rewardsShopModal" class="modal"><div class="modal-content large" style="max-width: 1100px;"><h2>🏅 مكتبة الجوائز الرقمية</h2><div class="student-points-display" id="studentPointsDisplay"><h3>👨‍🎓 <span id="currentStudentName"></span></h3><div class="points-value">⭐ <span id="currentStudentPoints"></span> نقطة</div><div class="points-value" style="font-size:18px; margin-top:5px;">🏆 <span id="totalRewardsCount"></span> جائزة محصلة</div></div><div id="ownedRewardsDisplay" class="owned-badges"></div><div id="messageArea"></div><div class="reward-category"><div class="category-title category-badges">🎖️ الشارات (Badges)</div><div class="rewards-grid" id="badgesGrid"></div></div><div class="reward-category"><div class="category-title category-cups">🏆 الكؤوس الافتراضية</div><div class="rewards-grid" id="cupsGrid"></div></div><div class="reward-category"><div class="category-title category-stars">🌟 نجوم ومكافآت</div><div class="rewards-grid" id="starsGrid"></div></div><div class="reward-category"><div class="category-title category-medals">🎖️ أوسمة إضافية</div><div class="rewards-grid" id="medalsGrid"></div></div><div class="reward-category"><div class="category-title category-store">🛍️ المتجر الافتراضي - استبدل نقاطك بجوائز</div><div class="rewards-grid" id="storeGrid"></div></div><div style="display: flex; justify-content: center; gap: 15px; margin-top: 20px;"><button class="close-modal cancel-btn" id="closeRewardsModalBtn">إغلاق</button></div></div></div>
 
 <script>
-// ==================== نظام تسجيل الدخول الكامل (بدون تذكر الدخول) ====================
+// ==================== دالة تصدير المستويات إلى Excel ====================
+function exportLevelsToExcel() {
+    const students = getCurrentStudents();
+    if (students.length === 0) {
+        alert('⚠️ لا يوجد طلاب في هذا الصف');
+        return;
+    }
+    
+    const levels = studentLevels[currentClass] || {};
+    
+    const dataForExport = [];
+    dataForExport.push(['#', 'اسم الطالب', 'المستوى', 'النقاط']);
+    
+    students.forEach((student, index) => {
+        dataForExport.push([
+            index + 1,
+            student.name,
+            levels[student.name] || 'لم يتم التحديد',
+            student.points
+        ]);
+    });
+    
+    const worksheet = XLSX.utils.aoa_to_sheet(dataForExport);
+    
+    worksheet['!cols'] = [
+        { wch: 6 },
+        { wch: 30 },
+        { wch: 18 },
+        { wch: 12 }
+    ];
+    
+    if (!worksheet['!views']) worksheet['!views'] = [];
+    worksheet['!views'].push({ RTL: true });
+    
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'مستويات الطلاب');
+    
+    const now = new Date();
+    const dateStr = now.getFullYear() + '-' + 
+                    String(now.getMonth() + 1).padStart(2, '0') + '-' + 
+                    String(now.getDate()).padStart(2, '0');
+    const fileName = `مستويات_الطلاب_${currentClass.replace(/\s+/g, '_')}_${dateStr}.xlsx`;
+    
+    try {
+        XLSX.writeFile(workbook, fileName, { bookType: 'xlsx', type: 'binary' });
+        alert(`✅ تم تصدير ملف Excel بنجاح!\n📁 اسم الملف: ${fileName}`);
+    } catch (error) {
+        alert('❌ حدث خطأ أثناء تصدير الملف: ' + error.message);
+    }
+}
+
+// ==================== نظام الاختبار التشخيصي ====================
+let diagnosticData = {};
+
+function loadDiagnosticData() {
+    const saved = localStorage.getItem('diagnosticData');
+    if (saved) {
+        try { diagnosticData = JSON.parse(saved); } catch(e) { diagnosticData = {}; }
+    }
+}
+
+function saveDiagnosticData() {
+    localStorage.setItem('diagnosticData', JSON.stringify(diagnosticData));
+}
+
+function getDiagnosticClassification(score, totalMarks) {
+    if (!totalMarks || totalMarks <= 0) return { percentage: 0, level: '', color: '#999', bgColor: '#f1f5f9' };
+    const percentage = (score / totalMarks) * 100;
+    let level = '', color = '', bgColor = '';
+    
+    if (percentage >= 90) {
+        level = 'ممتاز'; color = '#22c55e'; bgColor = '#f0fdf4';
+    } else if (percentage >= 80) {
+        level = 'جيد جداً'; color = '#3b82f6'; bgColor = '#eff6ff';
+    } else if (percentage >= 70) {
+        level = 'جيد'; color = '#eab308'; bgColor = '#fefce8';
+    } else if (percentage >= 50) {
+        level = 'مقبول'; color = '#f97316'; bgColor = '#fff7ed';
+    } else {
+        level = 'ضعيف'; color = '#ef4444'; bgColor = '#fef2f2';
+    }
+    
+    return { percentage: percentage.toFixed(1), level, color, bgColor };
+}
+
+function showDiagnosticTestModal() {
+    const students = getCurrentStudents();
+    if (students.length === 0) {
+        alert('⚠️ لا يوجد طلاب في هذا الصف');
+        return;
+    }
+    
+    document.getElementById('diagnosticClassName').innerText = currentClass;
+    
+    if (!diagnosticData[currentClass]) {
+        diagnosticData[currentClass] = { totalMarks: 100, scores: {} };
+    }
+    
+    document.getElementById('diagnosticTotalMarks').value = diagnosticData[currentClass].totalMarks || 100;
+    
+    renderDiagnosticTable();
+    
+    document.getElementById('diagnosticSearch').value = '';
+    document.getElementById('clearDiagnosticSearch').style.display = 'none';
+    document.getElementById('diagnosticSearchCount').innerText = '';
+    
+    document.getElementById('diagnosticTestModal').style.display = 'flex';
+}
+
+function renderDiagnosticTable() {
+    const students = getCurrentStudents();
+    const totalMarks = parseFloat(document.getElementById('diagnosticTotalMarks').value) || 100;
+    const scores = diagnosticData[currentClass]?.scores || {};
+    const tbody = document.getElementById('diagnosticTableBody');
+    tbody.innerHTML = '';
+    
+    students.forEach((student, index) => {
+        const score = scores[student.name] !== undefined ? scores[student.name] : '';
+        const classification = score !== '' ? getDiagnosticClassification(score, totalMarks) : { percentage: '-', level: '-', color: '#999', bgColor: '#f1f5f9' };
+        
+        let row = `<tr class="diagnostic-row" data-student-name="${student.name.toLowerCase()}">
+            <td style="font-weight:bold;">${index + 1}</td>
+            <td style="text-align:right; font-weight:bold; padding-right:20px;">${student.name}</td>
+            <td>
+                <input type="number" class="diagnostic-score-input" data-student="${student.name.replace(/"/g, '&quot;')}" 
+                    value="${score}" min="0" max="${totalMarks}" step="0.5" placeholder="0">
+            </td>
+            <td style="font-weight:bold; color:${classification.color};">${classification.percentage !== '-' ? classification.percentage + '%' : '-'}</td>
+            <td>
+                <span style="background:${classification.bgColor}; color:${classification.color}; padding:5px 12px; border-radius:15px; font-weight:bold; font-size:13px; display:inline-block;">
+                    ${classification.level}
+                </span>
+            </td>
+        </tr>`;
+        tbody.innerHTML += row;
+    });
+    
+    setTimeout(() => {
+        document.querySelectorAll('.diagnostic-score-input').forEach(input => {
+            input.oninput = function() {
+                const studentName = this.getAttribute('data-student');
+                const value = parseFloat(this.value);
+                const total = parseFloat(document.getElementById('diagnosticTotalMarks').value) || 100;
+                
+                if (!diagnosticData[currentClass]) diagnosticData[currentClass] = { totalMarks: total, scores: {} };
+                if (!diagnosticData[currentClass].scores) diagnosticData[currentClass].scores = {};
+                
+                if (this.value === '' || isNaN(value)) {
+                    delete diagnosticData[currentClass].scores[studentName];
+                } else {
+                    diagnosticData[currentClass].scores[studentName] = value;
+                }
+                diagnosticData[currentClass].totalMarks = total;
+                saveDiagnosticData();
+                
+                const row = this.closest('tr');
+                const percentageCell = row.cells[3];
+                const levelCell = row.cells[4];
+                const classification = getDiagnosticClassification(value, total);
+                percentageCell.innerText = classification.percentage + '%';
+                percentageCell.style.color = classification.color;
+                levelCell.innerHTML = `<span style="background:${classification.bgColor}; color:${classification.color}; padding:5px 12px; border-radius:15px; font-weight:bold; font-size:13px; display:inline-block;">${classification.level}</span>`;
+                
+                updateDiagnosticSummary();
+            };
+        });
+    }, 50);
+    
+    updateDiagnosticSummary();
+}
+
+function updateDiagnosticSummary() {
+    const students = getCurrentStudents();
+    const totalMarks = parseFloat(document.getElementById('diagnosticTotalMarks').value) || 100;
+    const scores = diagnosticData[currentClass]?.scores || {};
+    
+    let excellent = 0, veryGood = 0, good = 0, acceptable = 0, weak = 0;
+    
+    students.forEach(student => {
+        const score = scores[student.name];
+        if (score !== undefined && score !== '' && !isNaN(score)) {
+            const classification = getDiagnosticClassification(score, totalMarks);
+            switch(classification.level) {
+                case 'ممتاز': excellent++; break;
+                case 'جيد جداً': veryGood++; break;
+                case 'جيد': good++; break;
+                case 'مقبول': acceptable++; break;
+                case 'ضعيف': weak++; break;
+            }
+        }
+    });
+    
+    document.getElementById('diagExcellentCount').innerText = excellent;
+    document.getElementById('diagVeryGoodCount').innerText = veryGood;
+    document.getElementById('diagGoodCount').innerText = good;
+    document.getElementById('diagAcceptableCount').innerText = acceptable;
+    document.getElementById('diagWeakCount').innerText = weak;
+}
+
+function classifyStudentsAndTransfer() {
+    const students = getCurrentStudents();
+    if (students.length === 0) {
+        alert('⚠️ لا يوجد طلاب');
+        return;
+    }
+    
+    const totalMarks = parseFloat(document.getElementById('diagnosticTotalMarks').value) || 100;
+    const scores = diagnosticData[currentClass]?.scores || {};
+    
+    const studentsWithScores = students.filter(s => scores[s.name] !== undefined && scores[s.name] !== '' && !isNaN(scores[s.name]));
+    if (studentsWithScores.length === 0) {
+        alert('❌ لم يتم إدخال أي درجات. الرجاء إدخال درجات الطلاب أولاً');
+        return;
+    }
+    
+    if (studentsWithScores.length < students.length) {
+        if (!confirm(`⚠️ يوجد ${students.length - studentsWithScores.length} طالب بدون درجة.\nسيتم تصنيف الطلاب الذين لديهم درجات فقط.\n\nهل تريد المتابعة؟`)) {
+            return;
+        }
+    }
+    
+    if (!studentLevels[currentClass]) studentLevels[currentClass] = {};
+    
+    let transferred = 0;
+    studentsWithScores.forEach(student => {
+        const score = scores[student.name];
+        const classification = getDiagnosticClassification(score, totalMarks);
+        let levelForTransfer = classification.level;
+        if (levelForTransfer === 'جيد جداً') levelForTransfer = 'جيد جدا';
+        studentLevels[currentClass][student.name] = levelForTransfer;
+        transferred++;
+    });
+    
+    localStorage.setItem('studentLevels', JSON.stringify(studentLevels));
+    saveAllData();
+    
+    let reportHtml = `<div style="text-align: center; padding: 20px;">
+        <h3 style="color: #16a34a; margin-bottom: 20px;">✅ تم تصنيف ${transferred} طالب ونقلهم إلى قائمة المستويات بنجاح!</h3>
+        <div style="max-height: 300px; overflow-y: auto; text-align: right; background: #f8fafc; padding: 15px; border-radius: 15px;">
+            <table style="width: 100%; border-collapse: collapse;">
+                <thead>
+                    <tr style="background: #4338ca; color: white;">
+                        <th style="padding: 10px;">الطالب</th>
+                        <th style="padding: 10px;">الدرجة</th>
+                        <th style="padding: 10px;">النسبة</th>
+                        <th style="padding: 10px;">المستوى</th>
+                    </tr>
+                </thead>
+                <tbody>`;
+    
+    studentsWithScores.forEach(student => {
+        const score = scores[student.name];
+        const classification = getDiagnosticClassification(score, totalMarks);
+        let levelForTransfer = classification.level;
+        if (levelForTransfer === 'جيد جداً') levelForTransfer = 'جيد جدا';
+        reportHtml += `<tr style="border-bottom: 1px solid #e2e8f0;">
+            <td style="padding: 8px; font-weight: bold;">${student.name}</td>
+            <td style="padding: 8px; text-align: center;">${score} / ${totalMarks}</td>
+            <td style="padding: 8px; text-align: center; color: ${classification.color}; font-weight: bold;">${classification.percentage}%</td>
+            <td style="padding: 8px; text-align: center;"><span style="background:${classification.bgColor}; color:${classification.color}; padding:4px 10px; border-radius:12px; font-weight:bold; font-size:12px;">${levelForTransfer}</span></td>
+        </tr>`;
+    });
+    
+    reportHtml += `</tbody></table></div>
+        <p style="margin-top: 20px; color: #666; font-size: 14px;">💡 يمكنك الآن فتح "مستويات الطلاب" لرؤية التصنيف الجديد</p>
+        <button onclick="document.getElementById('classifyResultModal').remove();" style="margin-top: 15px; padding: 12px 30px; background: #16a34a; color: white; border: none; border-radius: 25px; font-size: 16px; font-weight: bold; cursor: pointer;">حسناً</button>
+    </div>`;
+    
+    const modalDiv = document.createElement('div');
+    modalDiv.id = 'classifyResultModal';
+    modalDiv.className = 'modal';
+    modalDiv.style.display = 'flex';
+    modalDiv.style.background = 'rgba(0,0,0,0.85)';
+    modalDiv.innerHTML = `<div class="modal-content" style="max-width: 700px;">${reportHtml}</div>`;
+    document.body.appendChild(modalDiv);
+}
+
+function exportDiagnosticToExcel() {
+    const students = getCurrentStudents();
+    if (students.length === 0) {
+        alert('⚠️ لا يوجد طلاب في هذا الصف');
+        return;
+    }
+    
+    const totalMarks = parseFloat(document.getElementById('diagnosticTotalMarks').value) || 100;
+    const scores = diagnosticData[currentClass]?.scores || {};
+    
+    const dataForExport = [];
+    dataForExport.push(['#', 'اسم الطالب', 'الدرجة', 'الدرجة الكلية', 'النسبة %', 'التصنيف']);
+    
+    students.forEach((student, index) => {
+        const score = scores[student.name];
+        if (score !== undefined && score !== '' && !isNaN(score)) {
+            const classification = getDiagnosticClassification(score, totalMarks);
+            dataForExport.push([
+                index + 1,
+                student.name,
+                score,
+                totalMarks,
+                classification.percentage + '%',
+                classification.level
+            ]);
+        } else {
+            dataForExport.push([
+                index + 1,
+                student.name,
+                'لم يتم الإدخال',
+                totalMarks,
+                '-',
+                '-'
+            ]);
+        }
+    });
+    
+    const worksheet = XLSX.utils.aoa_to_sheet(dataForExport);
+    
+    worksheet['!cols'] = [
+        { wch: 6 },
+        { wch: 30 },
+        { wch: 12 },
+        { wch: 14 },
+        { wch: 12 },
+        { wch: 15 }
+    ];
+    
+    if (!worksheet['!views']) worksheet['!views'] = [];
+    worksheet['!views'].push({ RTL: true });
+    
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'الاختبار التشخيصي');
+    
+    const now = new Date();
+    const dateStr = now.getFullYear() + '-' + 
+                    String(now.getMonth() + 1).padStart(2, '0') + '-' + 
+                    String(now.getDate()).padStart(2, '0');
+    const fileName = `الاختبار_التشخيصي_${currentClass.replace(/\s+/g, '_')}_${dateStr}.xlsx`;
+    
+    try {
+        XLSX.writeFile(workbook, fileName, { bookType: 'xlsx', type: 'binary' });
+        alert(`✅ تم تصدير ملف Excel بنجاح!\n📁 اسم الملف: ${fileName}`);
+    } catch (error) {
+        alert('❌ حدث خطأ أثناء تصدير الملف: ' + error.message);
+    }
+}
+
+function closeDiagnosticModal() {
+    document.getElementById('diagnosticTestModal').style.display = 'none';
+}
+
+// ==================== نظام التقسيم العادل ====================
+const LEVEL_ORDER = { 'ممتاز': 5, 'جيد جدا': 4, 'جيد': 3, 'مقبول': 2, 'ضعيف': 1 };
+const LEVEL_UNKNOWN = 0;
+
+function getLevelValue(studentName) {
+    const level = studentLevels[currentClass]?.[studentName];
+    if (!level) return LEVEL_UNKNOWN;
+    return LEVEL_ORDER[level] || LEVEL_UNKNOWN;
+}
+
+function getLevelColorClass(level) {
+    switch(level) {
+        case 'ممتاز': return 'level-mumtaz';
+        case 'جيد جدا': return 'level-jayid-jiddan';
+        case 'جيد': return 'level-jayid';
+        case 'مقبول': return 'level-maqbul';
+        case 'ضعيف': return 'level-daif';
+        default: return 'level-unknown';
+    }
+}
+
+function sortStudentsByLevel(students) {
+    return [...students].sort((a, b) => {
+        const levelA = getLevelValue(a.name);
+        const levelB = getLevelValue(b.name);
+        if (levelB !== levelA) return levelB - levelA;
+        return b.points - a.points;
+    });
+}
+
+function createStudentCard(student, showLevel = true) {
+    const level = studentLevels[currentClass]?.[student.name] || 'غير محدد';
+    const colorClass = getLevelColorClass(level);
+    return `<span class="group-student-card" style="background: linear-gradient(135deg, #f8fafc, #e2e8f0);">
+        👤 ${student.name}
+        ${showLevel ? `<span class="level-badge ${colorClass}">${level}</span>` : ''}
+    </span>`;
+}
+
+function createPairGroups() {
+    const students = getCurrentStudents();
+    if (students.length < 2) {
+        alert('⚠️ يجب أن يكون هناك طالبان على الأقل');
+        return;
+    }
+    
+    const studentsWithoutLevel = students.filter(s => !studentLevels[currentClass]?.[s.name]);
+    if (studentsWithoutLevel.length > 0) {
+        const proceed = confirm(`⚠️ يوجد ${studentsWithoutLevel.length} طالب بدون مستوى محدد.\nسيتم اعتبارهم في المستوى "غير محدد" (منخفض).\n\nهل تريد المتابعة؟`);
+        if (!proceed) return;
+    }
+    
+    const sorted = sortStudentsByLevel(students);
+    const midpoint = Math.ceil(sorted.length / 2);
+    const topHalf = sorted.slice(0, midpoint);
+    const bottomHalf = sorted.slice(midpoint);
+    
+    const pairs = [];
+    
+    for (let i = 0; i < topHalf.length; i++) {
+        const pair = [topHalf[i]];
+        if (i < bottomHalf.length) {
+            pair.push(bottomHalf[bottomHalf.length - 1 - i]);
+        }
+        pairs.push(pair);
+    }
+    
+    showGroupsDisplay(pairs, 'ثنائيات');
+}
+
+function askNumberOfGroups() {
+    const modalDiv = document.createElement('div');
+    modalDiv.className = 'modal';
+    modalDiv.style.display = 'flex';
+    modalDiv.style.background = 'rgba(0,0,0,0.85)';
+    modalDiv.innerHTML = `<div class="modal-content"><h2>🔢 عدد المجموعات</h2>
+        <div class="select-group">
+            <label>📊 كم مجموعة تريد؟</label>
+            <input type="number" id="groupCountInput" min="2" max="10" value="4" style="width:100%;padding:15px;font-size:24px;border-radius:15px;text-align:center">
+            <p style="font-size:13px; color:#666; margin-top:10px; text-align:center;">⚖️ سيتم التوزيع بعدالة بحيث تحتوي كل مجموعة على مستويات متنوعة</p>
+        </div>
+        <div style="display:flex;justify-content:center;gap:15px;margin-top:20px">
+            <button id="confirmCountBtn" style="background:#16a34a;color:white;border:none;padding:12px 25px;border-radius:25px;cursor:pointer">تأكيد</button>
+            <button id="cancelCountBtn" style="background:#6b7280;color:white;border:none;padding:12px 25px;border-radius:25px;cursor:pointer">إلغاء</button>
+        </div>
+    </div>`;
+    document.body.appendChild(modalDiv);
+    document.getElementById('confirmCountBtn').onclick = () => { 
+        const count = parseInt(document.getElementById('groupCountInput').value); 
+        if(count>=2 && count <= 10){ 
+            modalDiv.remove(); 
+            createGroups(count); 
+        } else {
+            alert('❌ أدخل رقماً بين 2 و 10');
+        }
+    };
+    document.getElementById('cancelCountBtn').onclick = () => modalDiv.remove();
+    modalDiv.onclick = (e) => { if(e.target === modalDiv) modalDiv.remove(); };
+}
+
+function createGroups(groupCount) {
+    const students = getCurrentStudents();
+    if (students.length < groupCount) {
+        alert(`⚠️ عدد الطلاب (${students.length}) أقل من عدد المجموعات (${groupCount})`);
+        return;
+    }
+    
+    const studentsWithoutLevel = students.filter(s => !studentLevels[currentClass]?.[s.name]);
+    if (studentsWithoutLevel.length > 0) {
+        const proceed = confirm(`⚠️ يوجد ${studentsWithoutLevel.length} طالب بدون مستوى محدد.\nسيتم اعتبارهم في المستوى "غير محدد" (منخفض).\n\nهل تريد المتابعة؟`);
+        if (!proceed) return;
+    }
+    
+    const sorted = sortStudentsByLevel(students);
+    const groups = Array(groupCount).fill().map(() => []);
+    
+    let currentGroup = 0;
+    let direction = 1;
+    
+    sorted.forEach((student, index) => {
+        groups[currentGroup].push(student);
+        
+        if (direction === 1) {
+            if (currentGroup === groupCount - 1) {
+                direction = -1;
+            } else {
+                currentGroup++;
+            }
+        } else {
+            if (currentGroup === 0) {
+                direction = 1;
+            } else {
+                currentGroup--;
+            }
+        }
+    });
+    
+    showGroupsDisplay(groups, 'مجموعات');
+}
+
+function showGroupsDisplay(groups, type) {
+    const groupKey = `${currentClass}_${type}_${Date.now()}`;
+    if(!groupScores[groupKey]) { groupScores[groupKey] = {}; groups.forEach((_,i)=> groupScores[groupKey][i]=0); }
+    const colors = ['#FF6B6B','#4ECDC4','#45B7D1','#96CEB4','#FFEAA7','#DDA0DD','#F9B5AC','#C7CEE6','#B5EAD7','#FFD93D'];
+    
+    const groupStats = groups.map(group => {
+        let totalLevel = 0;
+        let levelCounts = { 'ممتاز': 0, 'جيد جدا': 0, 'جيد': 0, 'مقبول': 0, 'ضعيف': 0, 'غير محدد': 0 };
+        group.forEach(student => {
+            const level = studentLevels[currentClass]?.[student.name] || 'غير محدد';
+            totalLevel += getLevelValue(student.name);
+            levelCounts[level] = (levelCounts[level] || 0) + 1;
+        });
+        return { totalLevel, avgLevel: group.length > 0 ? (totalLevel / group.length).toFixed(2) : 0, levelCounts, count: group.length };
+    });
+    
+    const allTotals = groupStats.map(g => g.totalLevel);
+    const maxTotal = Math.max(...allTotals);
+    const minTotal = Math.min(...allTotals);
+    const difference = maxTotal - minTotal;
+    const isBalanced = difference <= 2;
+    
+    let html = `<h2 style="text-align:center;margin-bottom:20px">📊 ${type === 'ثنائيات' ? 'تقسيم الطلاب إلى ثنائيات عادلة' : 'تقسيم الطلاب إلى مجموعات عادلة'}</h2>`;
+    
+    html += `<div class="group-balance-info">
+        ⚖️ ${isBalanced ? '✅ التقسيم عادل ومتوازن' : '⚠️ التقسيم شبه متوازن'} 
+        (الفرق في مجموع المستويات: ${difference})
+        <br><small>كل مجموعة تحتوي على مزيج من المستويات المختلفة</small>
+    </div>`;
+    
+    groups.forEach((group, idx) => {
+        const currentScore = groupScores[groupKey][idx] || 0;
+        const stats = groupStats[idx];
+        
+        let levelsSummary = '';
+        Object.entries(stats.levelCounts).forEach(([level, count]) => {
+            if (count > 0) {
+                const colorClass = getLevelColorClass(level);
+                levelsSummary += `<span class="level-badge ${colorClass}" style="margin:2px;">${level}: ${count}</span> `;
+            }
+        });
+        
+        html += `<div class="group-card">
+            <div class="group-header">
+                <div class="group-name" style="color:${colors[idx%colors.length]}">${type === 'ثنائيات' ? '👥 الزوج' : '👥 المجموعة'} ${idx+1}</div>
+                <div class="group-score">⭐ <input type="number" class="group-score-input" data-group-idx="${idx}" value="${currentScore}" style="width:80px;padding:8px;font-size:18px;border-radius:10px;text-align:center"></div>
+            </div>
+            <div class="group-summary">
+                <div class="group-summary-item">👥 عدد الطلاب: ${stats.count}</div>
+                <div class="group-summary-item">📊 مجموع المستويات: ${stats.totalLevel}</div>
+                <div class="group-summary-item">📈 متوسط المستوى: ${stats.avgLevel}</div>
+            </div>
+            <div style="margin-bottom:10px; text-align:center;">${levelsSummary}</div>
+            <div class="group-students">${group.map(s => createStudentCard(s)).join('')}</div>
+        </div>`;
+    });
+    
+    const modalDiv = document.createElement('div');
+    modalDiv.className = 'modal';
+    modalDiv.style.display = 'flex';
+    modalDiv.style.background = 'rgba(0,0,0,0.85)';
+    modalDiv.innerHTML = `<div class="modal-content large" style="max-width:900px">
+        <div style="max-height:75vh;overflow-y:auto">${html}</div>
+        <div style="display:flex;justify-content:center;gap:15px;margin-top:20px">
+            <button id="saveGroupsBtn" style="background:#16a34a;color:white;border:none;padding:12px 30px;border-radius:25px;cursor:pointer">💾 حفظ الدرجات</button>
+            <button id="closeGroupsBtn" style="background:#6b7280;color:white;border:none;padding:12px 30px;border-radius:25px;cursor:pointer">إغلاق</button>
+        </div>
+    </div>`;
+    document.body.appendChild(modalDiv);
+    document.getElementById('saveGroupsBtn').onclick = () => {
+        document.querySelectorAll('.group-score-input').forEach(inp=>{ const idx = parseInt(inp.dataset.groupIdx); groupScores[groupKey][idx] = parseInt(inp.value)||0; });
+        localStorage.setItem('groupScores', JSON.stringify(groupScores));
+        alert('✅ تم حفظ الدرجات');
+        modalDiv.remove();
+    };
+    document.getElementById('closeGroupsBtn').onclick = () => modalDiv.remove();
+    modalDiv.onclick = (e) => { if(e.target === modalDiv) modalDiv.remove(); };
+}
+
+// ==================== نظام نقاط المجموعات ====================
+let currentGroupingForPoints = {
+    groups: [],
+    type: 'مجموعات',
+    timestamp: null
+};
+
+function showGroupPointsSetup() {
+    const students = getCurrentStudents();
+    if (students.length < 2) {
+        alert('⚠️ يجب أن يكون هناك طالبان على الأقل');
+        return;
+    }
+    
+    if (Object.keys(studentLevels[currentClass] || {}).length === 0) {
+        const proceed = confirm('⚠️ لم يتم تحديد مستويات الطلاب بعد.\nسيتم اعتبار جميع الطلاب في نفس المستوى.\n\nهل تريد المتابعة؟');
+        if (!proceed) return;
+    }
+    
+    document.getElementById('groupPointsClassName').innerText = currentClass;
+    document.getElementById('groupPointsCount').value = 4;
+    document.getElementById('groupPointsType').value = 'مجموعات';
+    
+    document.getElementById('groupPointsSetupModal').style.display = 'flex';
+}
+
+function closeGroupPointsSetup() {
+    document.getElementById('groupPointsSetupModal').style.display = 'none';
+}
+
+function createGroupsForPoints() {
+    const students = getCurrentStudents();
+    const count = parseInt(document.getElementById('groupPointsCount').value);
+    const type = document.getElementById('groupPointsType').value;
+    
+    if (count < 2 || count > 10) {
+        alert('❌ أدخل رقماً بين 2 و 10');
+        return;
+    }
+    
+    if (students.length < count && type === 'مجموعات') {
+        alert(`⚠️ عدد الطلاب (${students.length}) أقل من عدد المجموعات (${count})`);
+        return;
+    }
+    
+    // ترتيب الطلاب حسب المستوى
+    const sorted = sortStudentsByLevel(students);
+    let groups = [];
+    
+    if (type === 'ثنائيات') {
+        // تقسيم ثنائي: عالي مع منخفض
+        const midpoint = Math.ceil(sorted.length / 2);
+        const topHalf = sorted.slice(0, midpoint);
+        const bottomHalf = sorted.slice(midpoint);
+        
+        for (let i = 0; i < topHalf.length; i++) {
+            const pair = [topHalf[i]];
+            if (i < bottomHalf.length) {
+                pair.push(bottomHalf[bottomHalf.length - 1 - i]);
+            }
+            groups.push(pair);
+        }
+    } else {
+        // تقسيم مجموعات بنظام الثعبان
+        groups = Array(count).fill().map(() => []);
+        let currentGroup = 0;
+        let direction = 1;
+        
+        sorted.forEach((student) => {
+            groups[currentGroup].push(student);
+            
+            if (direction === 1) {
+                if (currentGroup === count - 1) {
+                    direction = -1;
+                } else {
+                    currentGroup++;
+                }
+            } else {
+                if (currentGroup === 0) {
+                    direction = 1;
+                } else {
+                    currentGroup--;
+                }
+            }
+        });
+        
+        // إزالة المجموعات الفارغة
+        groups = groups.filter(g => g.length > 0);
+    }
+    
+    if (groups.length === 0) {
+        alert('❌ لم يتم إنشاء أي مجموعات');
+        return;
+    }
+    
+    currentGroupingForPoints = {
+        groups: groups,
+        type: type,
+        timestamp: Date.now()
+    };
+    
+    // إعادة تعيين قائمة الاختيار
+    const select = document.getElementById('selectGroupForPoints');
+    select.innerHTML = '<option value="">-- اختر المجموعة --</option>';
+    
+    groups.forEach((group, idx) => {
+        const groupName = type === 'ثنائيات' ? `👥 الزوج ${idx + 1}` : `👥 المجموعة ${idx + 1}`;
+        select.innerHTML += `<option value="${idx}">${groupName} (${group.length} طالب)</option>`;
+    });
+    
+    // تعيين أسباب النقاط من القائمة الأصلية
+    const reasonSelect = document.getElementById('groupPointsReasonSelect');
+    reasonSelect.innerHTML = '<option value="">-- اختر السبب --</option>';
+    positivePoints.forEach(p => {
+        reasonSelect.innerHTML += `<option value="${p.points}">${p.name} (${p.points > 0 ? '+' : ''}${p.points})</option>`;
+    });
+    negativePoints.forEach(n => {
+        reasonSelect.innerHTML += `<option value="${n.points}">${n.name} (${n.points})</option>`;
+    });
+    
+    // إعادة تعيين المعاينة
+    document.getElementById('groupMembersPreview').innerHTML = '';
+    document.getElementById('groupPointsSelectionInfo').innerHTML = 
+        `📊 تم إنشاء ${groups.length} ${type === 'ثنائيات' ? 'زوج' : 'مجموعة'}<br>
+        👥 اختر ${type === 'ثنائيات' ? 'الزوج' : 'المجموعة'} ثم اختر سبب إعطاء النقاط`;
+    
+    closeGroupPointsSetup();
+    document.getElementById('groupPointsSelectionModal').style.display = 'flex';
+}
+
+function closeGroupPointsSelection() {
+    document.getElementById('groupPointsSelectionModal').style.display = 'none';
+}
+
+function updateGroupMembersPreview() {
+    const groupIdx = parseInt(document.getElementById('selectGroupForPoints').value);
+    const previewDiv = document.getElementById('groupMembersPreview');
+    
+    if (isNaN(groupIdx) || !currentGroupingForPoints.groups[groupIdx]) {
+        previewDiv.innerHTML = '';
+        return;
+    }
+    
+    const group = currentGroupingForPoints.groups[groupIdx];
+    let membersHtml = '<div class="group-members-display">👥 <strong>أعضاء المجموعة:</strong> ';
+    group.forEach(student => {
+        const level = studentLevels[currentClass]?.[student.name] || 'غير محدد';
+        membersHtml += `<span class="group-member-badge">${student.name} (${level})</span>`;
+    });
+    membersHtml += '</div>';
+    
+    previewDiv.innerHTML = membersHtml;
+}
+
+function applyGroupPoints() {
+    const groupIdx = parseInt(document.getElementById('selectGroupForPoints').value);
+    const pointsValue = document.getElementById('groupPointsReasonSelect').value;
+    
+    if (isNaN(groupIdx)) {
+        alert('❌ الرجاء اختيار المجموعة');
+        return;
+    }
+    
+    if (!pointsValue) {
+        alert('❌ الرجاء اختيار سبب إعطاء النقاط');
+        return;
+    }
+    
+    const group = currentGroupingForPoints.groups[groupIdx];
+    if (!group || group.length === 0) {
+        alert('❌ المجموعة المختارة فارغة');
+        return;
+    }
+    
+    const points = parseInt(pointsValue);
+    const students = getCurrentStudents();
+    
+    // الحصول على اسم السبب
+    const reasonSelect = document.getElementById('groupPointsReasonSelect');
+    const reasonText = reasonSelect.options[reasonSelect.selectedIndex].text;
+    
+    // تأكيد العملية
+    let membersList = group.map(s => s.name).join('، ');
+    if (!confirm(`⚠️ هل أنت متأكد من تطبيق هذه النقاط؟\n\n📌 السبب: ${reasonText}\n⭐ النقاط: ${points > 0 ? '+' : ''}${points}\n👥 عدد الطلاب: ${group.length}\n👤 الطلاب: ${membersList}`)) {
+        return;
+    }
+    
+    // تطبيق النقاط على جميع الطلاب في المجموعة
+    let applied = 0;
+    group.forEach(groupStudent => {
+        const studentIndex = students.findIndex(s => s.name === groupStudent.name);
+        if (studentIndex !== -1) {
+            students[studentIndex].points += points;
+            // إضافة النقاط للشهر إذا كانت موجبة
+            if (points > 0) {
+                updateMonthlyPoints(students[studentIndex].name, points);
+            }
+            applied++;
+        }
+    });
+    
+    saveCurrentStudents(students);
+    renderStudents();
+    
+    // عرض رسالة النجاح
+    const successMsg = `✅ تم تطبيق ${points > 0 ? '+' : ''}${points} نقطة على ${applied} طالب في ${currentGroupingForPoints.type === 'ثنائيات' ? 'الزوج' : 'المجموعة'} ${groupIdx + 1}`;
+    
+    // عرض رسالة نجاح في المعاينة
+    const previewDiv = document.getElementById('groupMembersPreview');
+    previewDiv.innerHTML = `<div style="background:#d1fae5; color:#065f46; padding:15px; border-radius:15px; text-align:center; font-weight:bold; margin:10px 0; font-size:16px;">
+        🎉 ${successMsg}
+    </div>` + previewDiv.innerHTML;
+    
+    // إعادة تعيين قائمة السبب
+    document.getElementById('groupPointsReasonSelect').value = '';
+    
+    // تحديث معاينة المجموعة لإظهار النقاط الجديدة
+    setTimeout(() => {
+        updateGroupMembersPreview();
+    }, 2000);
+}
+
+function showGroupPointsTable() {
+    if (!currentGroupingForPoints.groups || currentGroupingForPoints.groups.length === 0) {
+        alert('⚠️ لم يتم إنشاء مجموعات بعد');
+        return;
+    }
+    
+    document.getElementById('groupPointsTableClassName').innerText = currentClass;
+    
+    const groups = currentGroupingForPoints.groups;
+    const type = currentGroupingForPoints.type;
+    const colors = ['#FF6B6B','#4ECDC4','#45B7D1','#96CEB4','#FFEAA7','#DDA0DD','#F9B5AC','#C7CEE6','#B5EAD7','#FFD93D'];
+    
+    let html = '';
+    
+    // حساب إحصائيات كل مجموعة
+    const groupStats = groups.map(group => {
+        let totalPoints = 0;
+        let totalLevel = 0;
+        group.forEach(student => {
+            totalPoints += student.points;
+            totalLevel += getLevelValue(student.name);
+        });
+        return {
+            totalPoints,
+            avgPoints: group.length > 0 ? (totalPoints / group.length).toFixed(1) : 0,
+            totalLevel,
+            avgLevel: group.length > 0 ? (totalLevel / group.length).toFixed(2) : 0,
+            count: group.length
+        };
+    });
+    
+    groups.forEach((group, idx) => {
+        const stats = groupStats[idx];
+        
+        html += `<div class="group-card" style="border-right: 5px solid ${colors[idx % colors.length]};">
+            <div class="group-header">
+                <div class="group-name" style="color:${colors[idx % colors.length]}">
+                    ${type === 'ثنائيات' ? '👥 الزوج' : '👥 المجموعة'} ${idx + 1}
+                </div>
+                <div class="group-score" style="background:${colors[idx % colors.length]}">
+                    ⭐ ${stats.totalPoints} نقطة
+                </div>
+            </div>
+            <div class="group-summary">
+                <div class="group-summary-item">👥 عدد الطلاب: ${stats.count}</div>
+                <div class="group-summary-item">📈 متوسط النقاط: ${stats.avgPoints}</div>
+                <div class="group-summary-item">📊 مجموع المستويات: ${stats.totalLevel}</div>
+                <div class="group-summary-item">📈 متوسط المستوى: ${stats.avgLevel}</div>
+            </div>
+            <div class="group-students">
+                ${group.map(s => {
+                    const level = studentLevels[currentClass]?.[s.name] || 'غير محدد';
+                    const colorClass = getLevelColorClass(level);
+                    return `<span class="group-student-card" style="background: linear-gradient(135deg, #f8fafc, #e2e8f0);">
+                        👤 ${s.name}
+                        <span class="level-badge ${colorClass}">${level}</span>
+                        <span style="background:#4338ca; color:white; padding:2px 8px; border-radius:10px; font-size:11px;">⭐ ${s.points}</span>
+                    </span>`;
+                }).join('')}
+            </div>
+        </div>`;
+    });
+    
+    document.getElementById('groupPointsTableContent').innerHTML = html;
+    
+    closeGroupPointsSelection();
+    document.getElementById('groupPointsTableModal').style.display = 'flex';
+}
+
+function closeGroupPointsTable() {
+    document.getElementById('groupPointsTableModal').style.display = 'none';
+}
+
+function backToGroupSelection() {
+    closeGroupPointsTable();
+    document.getElementById('groupPointsSelectionModal').style.display = 'flex';
+}
+
+// ==================== الشاشة الاحتفالية للمرشحين ====================
+function createConfetti() {
+    const colors = ['#ffd700', '#e91e63', '#22c55e', '#3b82f6', '#f59e0b', '#ec4899', '#8b5cf6', '#10b981'];
+    for (let i = 0; i < 80; i++) {
+        const confetti = document.createElement('div');
+        confetti.className = 'confetti-piece';
+        confetti.style.left = Math.random() * 100 + 'vw';
+        confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+        confetti.style.animationDelay = Math.random() * 2 + 's';
+        confetti.style.animationDuration = (3 + Math.random() * 3) + 's';
+        if (Math.random() > 0.5) {
+            confetti.style.borderRadius = '50%';
+        }
+        document.body.appendChild(confetti);
+        setTimeout(() => confetti.remove(), 7000);
+    }
+}
+
+function createCelebrationStars() {
+    const starsContainer = document.getElementById('celebrationStars');
+    if (!starsContainer) return;
+    starsContainer.innerHTML = '';
+    const starEmojis = ['⭐', '🌟', '✨', '💫', '🎉', '🎊', '🏆', '👑', '💎', '🎁'];
+    for (let i = 0; i < 25; i++) {
+        const star = document.createElement('div');
+        star.className = 'celebration-star';
+        star.textContent = starEmojis[Math.floor(Math.random() * starEmojis.length)];
+        star.style.left = Math.random() * 100 + '%';
+        star.style.top = Math.random() * 100 + '%';
+        star.style.fontSize = (18 + Math.random() * 25) + 'px';
+        star.style.animationDelay = Math.random() * 3 + 's';
+        star.style.animationDuration = (3 + Math.random() * 3) + 's';
+        starsContainer.appendChild(star);
+    }
+}
+
+function showCandidatesCelebration() {
+    const students = getCurrentStudents();
+    if (students.length === 0) {
+        alert('⚠️ لا يوجد طلاب في هذا الصف');
+        return;
+    }
+    
+    const sorted = [...students].sort((a, b) => b.points - a.points);
+    const topThree = sorted.slice(0, 3);
+    
+    if (topThree.length === 0) {
+        alert('⚠️ لا يوجد طلاب');
+        return;
+    }
+    
+    const container = document.getElementById('candidatesContainer');
+    container.innerHTML = '';
+    
+    const medals = ['🥇', '🥈', '🥉'];
+    const rankEmojis = ['👑', '🌟', '⭐'];
+    const rankTitles = ['المركز الأول', 'المركز الثاني', 'المركز الثالث'];
+    const bgEmojis = ['🎉', '🎊', '✨'];
+    
+    topThree.forEach((student, index) => {
+        const card = document.createElement('div');
+        card.className = 'candidate-card';
+        card.setAttribute('data-student-name', student.name);
+        card.innerHTML = `
+            <div class="candidate-rank">${medals[index]}</div>
+            <div class="candidate-emoji">${rankEmojis[index]}</div>
+            <div class="candidate-name">${student.name}</div>
+            <div class="candidate-points">${student.points}</div>
+            <div class="candidate-points-label">نقطة</div>
+            <div class="candidate-medal">${bgEmojis[index]} ${rankTitles[index]} ${bgEmojis[index]}</div>
+            <button class="candidate-enter-btn" data-student-name="${student.name.replace(/"/g, '&quot;')}">
+                🏅 ادخل مكتبة الجوائز
+            </button>
+        `;
+        
+        const enterBtn = card.querySelector('.candidate-enter-btn');
+        enterBtn.onclick = (e) => {
+            e.stopPropagation();
+            closeCelebrationModal();
+            openRewardsForStudent(student.name);
+        };
+        
+        card.onclick = () => {
+            closeCelebrationModal();
+            openRewardsForStudent(student.name);
+        };
+        
+        container.appendChild(card);
+    });
+    
+    createCelebrationStars();
+    createConfetti();
+    playCelebrationSound();
+    
+    document.getElementById('candidatesCelebrationModal').style.display = 'flex';
+}
+
+function closeCelebrationModal() {
+    document.getElementById('candidatesCelebrationModal').style.display = 'none';
+}
+
+function openRewardsForStudent(studentName) {
+    const student = getCurrentStudents().find(s => s.name === studentName);
+    if (!student) {
+        alert('❌ الطالب غير موجود');
+        return;
+    }
+    
+    currentRewardStudent = student;
+    document.getElementById('currentStudentName').innerHTML = student.name;
+    document.getElementById('currentStudentPoints').innerHTML = student.points;
+    
+    const ownedRewards = studentRewards[currentClass]?.[student.name] || [];
+    document.getElementById('totalRewardsCount').innerHTML = ownedRewards.length;
+    
+    const ownedDiv = document.getElementById('ownedRewardsDisplay');
+    if (ownedRewards.length === 0) {
+        ownedDiv.innerHTML = '<div style="text-align:center; color:#666; padding:10px;">🎁 لم يحصل الطالب على أي جوائز بعد</div>';
+    } else {
+        let ownedHtml = '<div style="margin-bottom:10px;"><strong>🏆 الجوائز التي حصل عليها:</strong></div><div>';
+        ownedRewards.forEach(rewardId => {
+            const reward = allRewards.find(r => r.id === rewardId);
+            if (reward) ownedHtml += `<span class="owned-badge-item">${reward.icon} ${reward.name}</span>`;
+        });
+        ownedHtml += '</div>';
+        ownedDiv.innerHTML = ownedHtml;
+    }
+    
+    renderRewardsGrid('badgesGrid', rewardsData.badges, student);
+    renderRewardsGrid('cupsGrid', rewardsData.cups, student);
+    renderRewardsGrid('starsGrid', rewardsData.stars, student);
+    renderRewardsGrid('medalsGrid', rewardsData.medals, student);
+    renderRewardsGrid('storeGrid', rewardsData.store, student);
+    
+    document.getElementById('rewardsShopModal').style.display = 'flex';
+}
+
+function openRewardsForAll() {
+    closeCelebrationModal();
+    showRewardStudentSelect();
+}
+
+function playCelebrationSound() {
+    try {
+        if (!audioContext) audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        const frequencies = [523.25, 659.25, 783.99, 1046.50, 783.99, 1046.50, 1318.51];
+        frequencies.forEach((freq, i) => {
+            setTimeout(() => {
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                oscillator.frequency.value = freq;
+                oscillator.type = 'sine';
+                gainNode.gain.value = 0.12;
+                oscillator.start();
+                gainNode.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.4);
+                oscillator.stop(audioContext.currentTime + 0.4);
+            }, i * 150);
+        });
+    } catch(e) {}
+}
+
+// ==================== دالة مساعدة للبحث ====================
+function filterSelectOptions(searchInputId, selectId, clearBtnId) {
+    const searchInput = document.getElementById(searchInputId);
+    const select = document.getElementById(selectId);
+    const clearBtn = document.getElementById(clearBtnId);
+    if (!searchInput || !select) return;
+    
+    searchInput.addEventListener('input', function() {
+        const searchTerm = this.value.trim().toLowerCase();
+        if (clearBtn) clearBtn.style.display = searchTerm ? 'flex' : 'none';
+        
+        const currentValue = select.value;
+        const allOptions = Array.from(select.querySelectorAll('option')).filter(opt => opt.value !== '');
+        
+        while (select.options.length > 1) {
+            select.remove(1);
+        }
+        
+        allOptions.forEach(opt => {
+            const text = opt.textContent.toLowerCase();
+            const value = opt.value.toLowerCase();
+            if (text.includes(searchTerm) || value.includes(searchTerm)) {
+                select.appendChild(opt.cloneNode(true));
+            }
+        });
+        
+        if (Array.from(select.options).some(o => o.value === currentValue)) {
+            select.value = currentValue;
+        }
+    });
+    
+    if (clearBtn) {
+        clearBtn.onclick = function() {
+            searchInput.value = '';
+            clearBtn.style.display = 'none';
+            searchInput.dispatchEvent(new Event('input'));
+        };
+    }
+}
+
+// ==================== نظام تسجيل الدخول الكامل ====================
 (function() {
     const USERS_STORAGE_KEY = 'school_users_data_complete';
     const PENDING_KEY = 'school_pending_requests_complete';
     const ADMIN_CODE = 'Anhs7293@';
-    const ADMIN_EMAIL = 'a.atia1201@education.qa'; // بريد المدير
+    const ADMIN_EMAIL = 'a.atia1201@education.qa';
   
     let usersData = {};
     
@@ -2406,13 +4352,10 @@ body {
         return false;
     }
     
-    // دالة إظهار شاشة تسجيل الدخول (تظهر دائماً عند بدء التشغيل)
     function showLoginScreen() {
-        // إخفاء المحتوى الرئيسي
         const container = document.querySelector('.container');
         if (container) container.style.display = 'none';
         
-        // إزالة أي شاشة دخول سابقة
         const oldOverlay = document.getElementById('loginOverlay');
         if(oldOverlay) oldOverlay.remove();
         
@@ -2456,7 +4399,6 @@ body {
                     if (isApproved(email)) {
                         msgDiv.innerText = '✅ مرحباً بك... جاري التحميل';
                         msgDiv.style.color = '#22c55e';
-                        // لا نحفظ جلسة في localStorage، فقط نسمح بالدخول لهذه الجلسة
                         setTimeout(() => {
                             overlay.remove();
                             if (container) container.style.display = 'block';
@@ -2544,7 +4486,7 @@ body {
                 msgDiv.innerText = '✅ تم تسجيل حسابك! تم إرسال طلب التفعيل إلى المدير. سيتم تفعيل حسابك قريباً.';
                 msgDiv.style.color = '#22c55e';
                 setTimeout(() => {
-                    location.reload(); // إعادة تحميل الصفحة للعودة لشاشة الدخول
+                    location.reload();
                 }, 3000);
             } else {
                 msgDiv.innerText = '❌ حدث خطأ، يرجى المحاولة مرة أخرى';
@@ -2678,7 +4620,7 @@ body {
         
         document.getElementById('logoutAdminBtn').onclick = () => {
             if (confirm('⚠️ هل تريد تسجيل الخروج؟')) {
-                location.reload(); // إعادة تحميل الصفحة للعودة لشاشة الدخول
+                location.reload();
             }
         };
         
@@ -2686,8 +4628,6 @@ body {
     }
     
     loadUsersData();
-    
-    // لا نتحقق من وجود جلسة سابقة، نعرض شاشة الدخول دائماً
     showLoginScreen();
 })();
 
@@ -2790,7 +4730,8 @@ const trackerItems = [
     { id: "workbook", name: "Workbook", emoji: "📘" },
     { id: "participation", name: "المشاركة", emoji: "🗣️" },
     { id: "noExit", name: "عدم الخروج المتكرر", emoji: "🚪" },
-    { id: "booksTools", name: "احضار الكتب والأدوات", emoji: "📚" }
+    { id: "booksTools", name: "احضار الكتب والأدوات", emoji: "📚" },
+    { id: "absent", name: "غائب", emoji: "🚫" }
 ];
 
 const certificateColors = [
@@ -2941,6 +4882,8 @@ if(savedRewards) { try { studentRewards = JSON.parse(savedRewards); } catch(e) {
 const savedMedical = localStorage.getItem('medicalConditions');
 if(savedMedical) { try { medicalConditions = JSON.parse(savedMedical); } catch(e) {} }
 
+loadDiagnosticData();
+
 classNames.forEach(c => { initializeClassData(c); });
 
 const savedClass = localStorage.getItem('currentClass');
@@ -3063,6 +5006,8 @@ function showMedicalConditionsModal() {
     });
     document.getElementById('medicalConditionText').value = '';
     document.getElementById('medicalFacilitiesText').value = '';
+    document.getElementById('medicalStudentSearch').value = '';
+    document.getElementById('clearMedicalSearch').style.display = 'none';
     document.getElementById('medicalConditionsModal').style.display = 'flex';
 }
 
@@ -3124,6 +5069,8 @@ function showRewardStudentSelect() {
         const rewards = studentRewards[currentClass]?.[student.name] || [];
         select.innerHTML += `<option value="${student.name.replace(/'/g, "\\'")}">${student.name} (${student.points} نقطة - ${rewards.length} جائزة)</option>`;
     });
+    document.getElementById('rewardStudentSearch').value = '';
+    document.getElementById('clearRewardSearch').style.display = 'none';
     document.getElementById('selectStudentRewardModal').style.display = 'flex';
 }
 
@@ -3275,7 +5222,7 @@ function showDailyTrackerModal() {
     tbody.innerHTML = '';
     students.forEach((student, idx) => {
         const studentData = todayData[student.name] || {};
-        let row = `<tr><td class="student-name-cell" style="position: sticky; right: 0; background: #f8fafc; font-weight: bold;">${student.name}<button class="view-report-btn" onclick="showStudentReport('${student.name.replace(/'/g, "\\'")}')">📊 تقرير المتابعة</button><button class="view-report-btn" onclick="showStudentViolations('${student.name.replace(/'/g, "\\'")}')" style="background:#dc2626;">⚠️ المخالفات</button><\/td>`;
+        let row = `<tr data-student-name="${student.name.toLowerCase()}" class="tracker-row"><td class="student-name-cell" style="position: sticky; right: 0; background: #f8fafc; font-weight: bold;">${student.name}<button class="view-report-btn" onclick="showStudentReport('${student.name.replace(/'/g, "\\'")}')">📊 تقرير المتابعة</button><button class="view-report-btn" onclick="showStudentViolations('${student.name.replace(/'/g, "\\'")}')" style="background:#dc2626;">⚠️ المخالفات</button><\/td>`;
         trackerItems.forEach(item => {
             const isChecked = studentData[item.id] === true;
             row += `<td><input type="checkbox" class="tracker-checkbox" data-student="${student.name.replace(/'/g, "\\'")}" data-item="${item.id}" ${isChecked ? 'checked' : ''}><\/td>`;
@@ -3295,6 +5242,10 @@ function showDailyTrackerModal() {
             };
         });
     }, 100);
+    const searchInput = document.getElementById('trackerSearch');
+    searchInput.value = '';
+    document.getElementById('clearTrackerSearch').style.display = 'none';
+    document.getElementById('trackerSearchCount').innerText = '';
     document.getElementById('dailyTrackerModal').style.display = 'flex';
 }
 
@@ -3310,16 +5261,23 @@ function showStudentReport(studentName) {
         const studentData = dailyTrackerData[dateKey][studentName];
         if (studentData) {
             const failedItems = [];
-            trackerItems.forEach(item => { if (studentData[item.id] === true) failedItems.push(`${item.emoji} ${item.name}`); });
+            trackerItems.forEach(item => { 
+                if (studentData[item.id] === true && item.id !== 'absent') {
+                    failedItems.push(`${item.emoji} ${item.name}`);
+                }
+            });
+            if (studentData.absent === true) {
+                failedItems.push(`🚫 غائب`);
+            }
             if (failedItems.length > 0) reportData.push({ date: dateStr, items: failedItems });
         }
     });
     document.getElementById('reportStudentName').innerHTML = `👨‍🎓 ${studentName}`;
     const reportDiv = document.getElementById('reportContent');
     if (reportData.length === 0) {
-        reportDiv.innerHTML = '<p style="text-align:center; color:#22c55e; font-size:18px; padding:30px;">🎉 لا توجد أي تقارير عن تقصير لهذا الطالب. متميز! 🎉</p>';
+        reportDiv.innerHTML = '<p style="text-align:center; color:#22c55e; font-size:18px; padding:30px;">🎉 لا توجد أي تقارير عن تقصير أو غياب لهذا الطالب. متميز! 🎉</p>';
     } else {
-        let html = '<h3 style="color:#e91e63; margin-bottom:15px;">📋 سجل التقصير حسب التواريخ:</h3><ul class="report-list">';
+        let html = '<h3 style="color:#e91e63; margin-bottom:15px;">📋 سجل التقصير والغياب حسب التواريخ:</h3><ul class="report-list">';
         reportData.forEach(record => { html += `<li><strong>📅 ${record.date.replace(/-/g, '/')}</strong><br><span style="color:#dc2626;">⚠️ العناصر المقصر فيها:</span><br>${record.items.join(' - ')}</li>`; });
         html += '</ul>';
         reportDiv.innerHTML = html;
@@ -3363,6 +5321,8 @@ function showViolationsModal() {
     students.forEach(student => { select.innerHTML += `<option value="${student.name.replace(/'/g, "\\'")}">${student.name} (${student.points} نقطة)</option>`; });
     document.getElementById('violationTypeSelect').value = '';
     document.getElementById('violationDetails').value = '';
+    document.getElementById('violationStudentSearch').value = '';
+    document.getElementById('clearViolationSearch').style.display = 'none';
     document.getElementById('violationsModal').style.display = 'flex';
 }
 
@@ -3684,7 +5644,13 @@ function saveClassStudents() {
     closeAddClassModal();
 }
 
-function showDeleteStudentModal() { if(!getCurrentStudents().length){ alert('⚠️ لا يوجد طلاب'); return; } updateDeleteSelect(); document.getElementById('deleteStudentModal').style.display='flex'; }
+function showDeleteStudentModal() { 
+    if(!getCurrentStudents().length){ alert('⚠️ لا يوجد طلاب'); return; } 
+    updateDeleteSelect(); 
+    document.getElementById('deleteStudentSearch').value = '';
+    document.getElementById('clearDeleteSearch').style.display = 'none';
+    document.getElementById('deleteStudentModal').style.display='flex'; 
+}
 function closeDeleteStudentModal() { document.getElementById('deleteStudentModal').style.display='none'; }
 function updateDeleteSelect() { const select = document.getElementById('deleteStudentSelect'); select.innerHTML='<option value="">-- اختر طالب --</option>'; getCurrentStudents().forEach((s,i)=>{ select.innerHTML+=`<option value="${i}">${s.name} (${s.points} نقطة)</option>`; }); }
 function deleteStudent() { const idx = parseInt(document.getElementById('deleteStudentSelect').value); if(isNaN(idx)){ alert('❌ اختر طالباً'); return; } const students = getCurrentStudents(); const name = students[idx].name; if(confirm(`⚠️ حذف ${name}؟`)){ students.splice(idx,1); saveCurrentStudents(students); renderStudents(); alert(`✅ تم حذف ${name}`); closeDeleteStudentModal(); } }
@@ -3729,7 +5695,10 @@ function showMultiSelectModal(title, action) {
     document.getElementById('multiSelectTitle').innerHTML = title;
     const container = document.getElementById('multiSelectList');
     container.innerHTML = '';
-    students.forEach((s,i)=>{ container.innerHTML += `<label><input type="checkbox" value="${i}"><span class="student-name">${s.name}</span><span class="student-points">(${s.points} نقطة)</span></label>`; });
+    students.forEach((s,i)=>{ container.innerHTML += `<label class="multi-select-item" data-name="${s.name.toLowerCase()}"><input type="checkbox" value="${i}"><span class="student-name">${s.name}</span><span class="student-points">(${s.points} نقطة)</span></label>`; });
+    document.getElementById('multiSelectSearch').value = '';
+    document.getElementById('clearMultiSearch').style.display = 'none';
+    document.getElementById('multiSelectSearchCount').innerText = '';
     document.getElementById('multiSelectModal').style.display = 'flex';
 }
 function closeMultiSelectModal() { document.getElementById('multiSelectModal').style.display = 'none'; }
@@ -3803,7 +5772,7 @@ function handlePhotoUpload(inputId, photoKey, previewId) {
 function saveAllPhotos() { alert('✅ تم حفظ صور الصف ' + currentClass + ' بنجاح!'); closeUploadPhotosModal(); }
 
 function backupData() {
-    const backup = { allClassesData, classPrizes, parentContacts, studentLevels, groupScores, dailyTrackerData, violationsData, studentRewards, monthlyPoints, availablePrizesCount, medicalConditions, version:"1.0", date:new Date().toLocaleString('ar-EG') };
+    const backup = { allClassesData, classPrizes, parentContacts, studentLevels, groupScores, dailyTrackerData, violationsData, studentRewards, monthlyPoints, availablePrizesCount, medicalConditions, diagnosticData, version:"1.0", date:new Date().toLocaleString('ar-EG') };
     const blob = new Blob([JSON.stringify(backup,null,2)], {type:"application/json"});
     const a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
@@ -3831,6 +5800,7 @@ function restoreData(file) {
             if(d.monthlyPoints) monthlyPoints = d.monthlyPoints;
             if(d.availablePrizesCount) availablePrizesCount = d.availablePrizesCount;
             if(d.medicalConditions) medicalConditions = d.medicalConditions;
+            if(d.diagnosticData) { diagnosticData = d.diagnosticData; saveDiagnosticData(); }
             classNames.forEach(c=>initializeClassData(c));
             saveAllData();
             renderStudents();
@@ -3868,6 +5838,9 @@ function fullSystemReset() {
         studentRewards = {};
         monthlyPoints = {};
         availablePrizesCount = 5;
+        diagnosticData = {};
+        currentGroupingForPoints = { groups: [], type: 'مجموعات', timestamp: null };
+        saveDiagnosticData();
         saveAllData();
         renderStudents();
         alert('✅ تم إعادة ضبط النظام');
@@ -3886,68 +5859,22 @@ function showDivisionOptions() {
     modalDiv.className = 'modal';
     modalDiv.style.display = 'flex';
     modalDiv.style.background = 'rgba(0,0,0,0.85)';
-    modalDiv.innerHTML = `<div class="modal-content" style="max-width:450px;text-align:center"><h2>🔀 تقسيم الطلاب - ${currentClass}</h2><div style="display:flex;flex-direction:column;gap:20px;margin:30px 0"><button id="pairDivBtn" style="background:#8b5cf6;color:white;border:none;padding:18px;border-radius:20px;font-size:22px;cursor:pointer">👥 تقسيم ثنائي (أزواج)</button><button id="groupDivBtn" style="background:#10b981;color:white;border:none;padding:18px;border-radius:20px;font-size:22px;cursor:pointer">👥 تقسيم مجموعات</button></div><button id="cancelDivBtn" style="background:#6b7280;color:white;border:none;padding:12px 25px;border-radius:25px;font-size:18px;cursor:pointer">إلغاء</button></div>`;
+    modalDiv.innerHTML = `<div class="modal-content" style="max-width:500px;text-align:center">
+        <h2>🔀 تقسيم الطلاب - ${currentClass}</h2>
+        <div style="background:#f0fdf4; padding:15px; border-radius:15px; margin-bottom:20px; border:2px dashed #22c55e;">
+            <p style="color:#16a34a; font-weight:bold; margin-bottom:5px;">⚖️ تقسيم عادل ومتوازن</p>
+            <p style="color:#666; font-size:13px;">يتم توزيع الطلاب بحيث تحتوي كل مجموعة على مستويات متنوعة</p>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:20px;margin:30px 0">
+            <button id="pairDivBtn" style="background:#8b5cf6;color:white;border:none;padding:18px;border-radius:20px;font-size:22px;cursor:pointer">👥 تقسيم ثنائي (أزواج) - عالي مع منخفض</button>
+            <button id="groupDivBtn" style="background:#10b981;color:white;border:none;padding:18px;border-radius:20px;font-size:22px;cursor:pointer">👥 تقسيم مجموعات - توزيع متوازن</button>
+        </div>
+        <button id="cancelDivBtn" style="background:#6b7280;color:white;border:none;padding:12px 25px;border-radius:25px;font-size:18px;cursor:pointer">إلغاء</button>
+    </div>`;
     document.body.appendChild(modalDiv);
     document.getElementById('pairDivBtn').onclick = () => { modalDiv.remove(); createPairGroups(); };
     document.getElementById('groupDivBtn').onclick = () => { modalDiv.remove(); askNumberOfGroups(); };
     document.getElementById('cancelDivBtn').onclick = () => modalDiv.remove();
-    modalDiv.onclick = (e) => { if(e.target === modalDiv) modalDiv.remove(); };
-}
-
-function createPairGroups() {
-    const students = getCurrentStudents();
-    const levels = studentLevels[currentClass] || {};
-    const order = { 'ممتاز':5, 'جيد جدا':4, 'جيد':3, 'مقبول':2, 'ضعيف':1 };
-    const sorted = [...students].sort((a,b)=> (order[levels[b.name]||'ضعيف']||1) - (order[levels[a.name]||'ضعيف']||1));
-    const pairs = [];
-    for(let i=0; i<sorted.length; i+=2) { const pair = [sorted[i]]; if(i+1<sorted.length) pair.push(sorted[i+1]); pairs.push(pair); }
-    showGroupsDisplay(pairs, 'ثنائيات');
-}
-
-function askNumberOfGroups() {
-    const modalDiv = document.createElement('div');
-    modalDiv.className = 'modal';
-    modalDiv.style.display = 'flex';
-    modalDiv.style.background = 'rgba(0,0,0,0.85)';
-    modalDiv.innerHTML = `<div class="modal-content"><h2>🔢 عدد المجموعات</h2><div class="select-group"><label>📊 كم مجموعة تريد؟</label><input type="number" id="groupCountInput" min="2" max="10" value="4" style="width:100%;padding:15px;font-size:24px;border-radius:15px;text-align:center"></div><div style="display:flex;justify-content:center;gap:15px;margin-top:20px"><button id="confirmCountBtn" style="background:#16a34a;color:white;border:none;padding:12px 25px;border-radius:25px;cursor:pointer">تأكيد</button><button id="cancelCountBtn" style="background:#6b7280;color:white;border:none;padding:12px 25px;border-radius:25px;cursor:pointer">إلغاء</button></div></div>`;
-    document.body.appendChild(modalDiv);
-    document.getElementById('confirmCountBtn').onclick = () => { const count = parseInt(document.getElementById('groupCountInput').value); if(count>=2){ modalDiv.remove(); createGroups(count); } else alert('❌ أدخل رقماً أكبر من 1'); };
-    document.getElementById('cancelCountBtn').onclick = () => modalDiv.remove();
-    modalDiv.onclick = (e) => { if(e.target === modalDiv) modalDiv.remove(); };
-}
-
-function createGroups(groupCount) {
-    const students = getCurrentStudents();
-    const levels = studentLevels[currentClass] || {};
-    const order = { 'ممتاز':5, 'جيد جدا':4, 'جيد':3, 'مقبول':2, 'ضعيف':1 };
-    const sorted = [...students].sort((a,b)=> (order[levels[b.name]||'ضعيف']||1) - (order[levels[a.name]||'ضعيف']||1));
-    const groups = Array(groupCount).fill().map(()=>[]);
-    for(let i=0; i<sorted.length; i++) groups[i%groupCount].push(sorted[i]);
-    showGroupsDisplay(groups, 'مجموعات');
-}
-
-function showGroupsDisplay(groups, type) {
-    const groupKey = `${currentClass}_${type}_${Date.now()}`;
-    if(!groupScores[groupKey]) { groupScores[groupKey] = {}; groups.forEach((_,i)=> groupScores[groupKey][i]=0); }
-    const colors = ['#FF6B6B','#4ECDC4','#45B7D1','#96CEB4','#FFEAA7','#DDA0DD','#F9B5AC','#C7CEE6','#B5EAD7','#FFD93D'];
-    let html = `<h2 style="text-align:center;margin-bottom:20px">📊 ${type === 'ثنائيات' ? 'تقسيم الطلاب إلى ثنائيات' : 'تقسيم الطلاب إلى مجموعات'}</h2>`;
-    groups.forEach((group, idx) => {
-        const currentScore = groupScores[groupKey][idx] || 0;
-        html += `<div class="group-card"><div class="group-header"><div class="group-name" style="color:${colors[idx%colors.length]}">${type === 'ثنائيات' ? '👥 الزوج' : '👥 المجموعة'} ${idx+1}</div><div class="group-score">⭐ <input type="number" class="group-score-input" data-group-idx="${idx}" value="${currentScore}" style="width:80px;padding:8px;font-size:18px;border-radius:10px;text-align:center"></div></div><div class="group-students">👥 الطلاب: ${group.map(s=>s.name).join('  •  ')}</div></div>`;
-    });
-    const modalDiv = document.createElement('div');
-    modalDiv.className = 'modal';
-    modalDiv.style.display = 'flex';
-    modalDiv.style.background = 'rgba(0,0,0,0.85)';
-    modalDiv.innerHTML = `<div class="modal-content large" style="max-width:700px"><div style="max-height:70vh;overflow-y:auto">${html}</div><div style="display:flex;justify-content:center;gap:15px;margin-top:20px"><button id="saveGroupsBtn" style="background:#16a34a;color:white;border:none;padding:12px 30px;border-radius:25px;cursor:pointer">💾 حفظ الدرجات</button><button id="closeGroupsBtn" style="background:#6b7280;color:white;border:none;padding:12px 30px;border-radius:25px;cursor:pointer">إغلاق</button></div></div>`;
-    document.body.appendChild(modalDiv);
-    document.getElementById('saveGroupsBtn').onclick = () => {
-        document.querySelectorAll('.group-score-input').forEach(inp=>{ const idx = parseInt(inp.dataset.groupIdx); groupScores[groupKey][idx] = parseInt(inp.value)||0; });
-        localStorage.setItem('groupScores', JSON.stringify(groupScores));
-        alert('✅ تم حفظ الدرجات');
-        modalDiv.remove();
-    };
-    document.getElementById('closeGroupsBtn').onclick = () => modalDiv.remove();
     modalDiv.onclick = (e) => { if(e.target === modalDiv) modalDiv.remove(); };
 }
 
@@ -4033,6 +5960,8 @@ function showComprehensiveReportSelect() {
     const select = document.getElementById('comprehensiveStudentSelect');
     select.innerHTML = '<option value="">-- اختر الطالب --</option>';
     students.forEach(student => { select.innerHTML += `<option value="${student.name.replace(/'/g, "\\'")}">${student.name} (${student.points} نقطة)</option>`; });
+    document.getElementById('comprehensiveStudentSearch').value = '';
+    document.getElementById('clearComprehensiveSearch').style.display = 'none';
     document.getElementById('comprehensiveReportSelectModal').style.display = 'flex';
 }
 
@@ -4052,7 +5981,14 @@ function generateComprehensiveReport() {
         const studentData = dailyTrackerData[dateKey][studentName];
         if (studentData) {
             const failedItems = [];
-            trackerItems.forEach(item => { if (studentData[item.id] === true) failedItems.push(`${item.emoji} ${item.name}`); });
+            trackerItems.forEach(item => { 
+                if (studentData[item.id] === true && item.id !== 'absent') {
+                    failedItems.push(`${item.emoji} ${item.name}`);
+                }
+            });
+            if (studentData.absent === true) {
+                failedItems.push(`🚫 غائب`);
+            }
             if (failedItems.length > 0) dailyReport.push({ date: dateStr, items: failedItems });
         }
     });
@@ -4065,7 +6001,7 @@ function generateComprehensiveReport() {
     else if (dailyReport.length <= 2 && sortedViolations.length <= 2) { studentStatus = "جيد"; statusColor = "#eab308"; }
     else { studentStatus = "بحاجة إلى تحسين"; statusColor = "#ef4444"; }
     const now = new Date();
-    const reportHtml = `<div class="comprehensive-report-content" id="comprehensiveReportInner"><div class="comprehensive-report-header"><h1>📊 التقرير الأكاديمي الشامل - اللغة الإنجليزية</h1><h2>نظام النقاط والتحفيز المدرسي</h2><p>تاريخ التقرير: ${now.toLocaleDateString('ar-EG')} - ${now.toLocaleTimeString('ar-EG')}</p><p>الصف: ${currentClass}</p></div><div class="comprehensive-student-info"><h3>👨‍🎓 ${student.name}</h3><p style="font-size: 18px; margin-top: 10px;">⭐ مجموع النقاط: ${student.points} نقطة</p><p>🏆 المستوى: ${getLevel(student.points)}</p><p>🎖️ عدد الجوائز المحصلة: ${rewards.length} جائزة</p>${medical ? `<div style="margin-top: 10px; padding: 10px; background: #fef3c7; border-radius: 10px; color: #d97706; text-align: right;"><p>🩺 <strong>الحالة المرضية:</strong> ${medical.condition}</p><p>✅ <strong>التسهيلات المقدمة:</strong> ${medical.facilities || 'لم يتم تحديد تسهيلات'}</p><small>📅 تم التسجيل: ${medical.date}</small></div>` : ''}<p style="margin-top: 10px; padding: 10px; background: ${statusColor}20; border-radius: 10px; color: ${statusColor}; font-weight: bold;">📊 حالة الطالب: ${studentStatus}</p></div><div class="comprehensive-section"><h3>📋 الجانب الأكاديمي - سجل المتابعة اليومية</h3>${dailyReport.length === 0 ? '<p style="text-align:center; color:#22c55e; padding:20px;">🎉 لا توجد أي تقارير عن تقصير في المتابعة اليومية. الطالب متميز!</p>' : `<table class="comprehensive-table"><thead><tr><th>التاريخ</th><th>العناصر المقصر فيها</th></tr></thead><tbody>${dailyReport.map(r => `<tr><td style="padding: 8px; text-align: center;">${r.date.replace(/-/g, '/')}<\/td><td style="padding: 8px; text-align: center;">${r.items.join(' - ')}<\/td><\/tr>`).join('')}</tbody></table>`}</div><div class="comprehensive-section"><h3>⚠️ الجانب السلوكي - سجل المخالفات</h3>${sortedViolations.length === 0 ? '<p style="text-align:center; color:#22c55e; padding:20px;">🎉 لا توجد أي مخالفات مسجلة. سلوك الطالب ممتاز!</p>' : `${sortedViolations.map(v => `<div class="comprehensive-violation-item"><div class="comprehensive-violation-title">⚠️ ${v.violation}</div><div>📅 ${v.date} - 🕐 ${v.time}</div><div>📝 ${v.details}</div><div style="color:#dc2626; margin-top:5px;">🔻 تم خصم ${v.pointsDeducted} نقطة</div></div>`).join('')}<div style="margin-top:15px; padding:10px; background:#fef2f2; border-radius:10px; text-align:center;"><strong>📊 إجمالي عدد المخالفات: ${sortedViolations.length}</strong><br><strong>💰 إجمالي النقاط المخصومة: ${sortedViolations.reduce((sum, v) => sum + v.pointsDeducted, 0)} نقطة</strong></div>`}</div><div class="comprehensive-section"><h3>🏅 الجوائز التي حصل عليها الطالب</h3>${rewards.length === 0 ? '<p style="text-align:center; color:#666; padding:20px;">🎁 لم يحصل الطالب على أي جوائز بعد</p>' : `<div style="display: flex; flex-wrap: wrap; gap: 10px; padding: 15px;">${rewards.map(rewardId => { const reward = allRewards.find(r => r.id === rewardId); return reward ? `<div style="background: #e2e8f0; padding: 8px 15px; border-radius: 25px;">${reward.icon} ${reward.name}</div>` : ''; }).join('')}</div>`}</div><div class="comprehensive-footer">تم الإنشاء بواسطة نظام النقاط والتحفيز المدرسي - مادة اللغة الإنجليزية</div></div>`;
+    const reportHtml = `<div class="comprehensive-report-content" id="comprehensiveReportInner"><div class="comprehensive-report-header"><h1>📊 التقرير الأكاديمي الشامل - اللغة الإنجليزية</h1><h2>نظام النقاط والتحفيز المدرسي</h2><p>تاريخ التقرير: ${now.toLocaleDateString('ar-EG')} - ${now.toLocaleTimeString('ar-EG')}</p><p>الصف: ${currentClass}</p></div><div class="comprehensive-student-info"><h3>👨‍🎓 ${student.name}</h3><p style="font-size: 18px; margin-top: 10px;">⭐ مجموع النقاط: ${student.points} نقطة</p><p>🏆 المستوى: ${getLevel(student.points)}</p><p>🎖️ عدد الجوائز المحصلة: ${rewards.length} جائزة</p>${medical ? `<div style="margin-top: 10px; padding: 10px; background: #fef3c7; border-radius: 10px; color: #d97706; text-align: right;"><p>🩺 <strong>الحالة المرضية:</strong> ${medical.condition}</p><p>✅ <strong>التسهيلات المقدمة:</strong> ${medical.facilities || 'لم يتم تحديد تسهيلات'}</p><small>📅 تم التسجيل: ${medical.date}</small></div>` : ''}<p style="margin-top: 10px; padding: 10px; background: ${statusColor}20; border-radius: 10px; color: ${statusColor}; font-weight: bold;">📊 حالة الطالب: ${studentStatus}</p></div><div class="comprehensive-section"><h3>📋 الجانب الأكاديمي - سجل المتابعة اليومية</h3>${dailyReport.length === 0 ? '<p style="text-align:center; color:#22c55e; padding:20px;">🎉 لا توجد أي تقارير عن تقصير أو غياب في المتابعة اليومية. الطالب متميز!</p>' : `<table class="comprehensive-table"><thead><tr><th>التاريخ</th><th>العناصر المقصر فيها</th></tr></thead><tbody>${dailyReport.map(r => `<tr><td style="padding: 8px; text-align: center;">${r.date.replace(/-/g, '/')}<\/td><td style="padding: 8px; text-align: center;">${r.items.join(' - ')}<\/td><\/tr>`).join('')}</tbody></table>`}</div><div class="comprehensive-section"><h3>⚠️ الجانب السلوكي - سجل المخالفات</h3>${sortedViolations.length === 0 ? '<p style="text-align:center; color:#22c55e; padding:20px;">🎉 لا توجد أي مخالفات مسجلة. سلوك الطالب ممتاز!</p>' : `${sortedViolations.map(v => `<div class="comprehensive-violation-item"><div class="comprehensive-violation-title">⚠️ ${v.violation}</div><div>📅 ${v.date} - 🕐 ${v.time}</div><div>📝 ${v.details}</div><div style="color:#dc2626; margin-top:5px;">🔻 تم خصم ${v.pointsDeducted} نقطة</div></div>`).join('')}<div style="margin-top:15px; padding:10px; background:#fef2f2; border-radius:10px; text-align:center;"><strong>📊 إجمالي عدد المخالفات: ${sortedViolations.length}</strong><br><strong>💰 إجمالي النقاط المخصومة: ${sortedViolations.reduce((sum, v) => sum + v.pointsDeducted, 0)} نقطة</strong></div>`}</div><div class="comprehensive-section"><h3>🏅 الجوائز التي حصل عليها الطالب</h3>${rewards.length === 0 ? '<p style="text-align:center; color:#666; padding:20px;">🎁 لم يحصل الطالب على أي جوائز بعد</p>' : `<div style="display: flex; flex-wrap: wrap; gap: 10px; padding: 15px;">${rewards.map(rewardId => { const reward = allRewards.find(r => r.id === rewardId); return reward ? `<div style="background: #e2e8f0; padding: 8px 15px; border-radius: 25px;">${reward.icon} ${reward.name}</div>` : ''; }).join('')}</div>`}</div><div class="comprehensive-footer">تم الإنشاء بواسطة نظام النقاط والتحفيز المدرسي - مادة اللغة الإنجليزية</div></div>`;
     document.getElementById('comprehensiveReportContent').innerHTML = reportHtml;
     closeComprehensiveSelectModal();
     document.getElementById('comprehensiveReportModal').style.display = 'flex';
@@ -4125,14 +6061,16 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('deleteStudentDropdown').onclick = () => document.getElementById('deleteStudentBtn').click();
     document.getElementById('randomPickerDropdown').onclick = () => document.getElementById('randomPickerBtn').click();
     document.getElementById('studentsLevelsDropdown').onclick = () => document.getElementById('studentsLevelsBtn').click();
+    document.getElementById('diagnosticTestDropdown').onclick = () => showDiagnosticTestModal();
     document.getElementById('divisionDropdown').onclick = () => document.getElementById('divisionBtn').click();
     document.getElementById('groupScoresDropdown').onclick = () => document.getElementById('groupScoresBtn').click();
     document.getElementById('medicalConditionsDropdown').onclick = () => showMedicalConditionsModal();
     document.getElementById('addPointsDropdown').onclick = () => document.getElementById('addPointsBtn').click();
     document.getElementById('deductPointsDropdown').onclick = () => document.getElementById('deductPointsBtn').click();
     document.getElementById('warningDropdown').onclick = () => document.getElementById('warningBtn').click();
+    document.getElementById('groupPointsDropdown').onclick = () => showGroupPointsSetup();
     document.getElementById('studentsPointsDropdown').onclick = () => document.getElementById('studentsPointsBtn').click();
-    document.getElementById('rewardsShopDropdown').onclick = () => document.getElementById('rewardsShopBtn').click();
+    document.getElementById('rewardsShopDropdown').onclick = () => showCandidatesCelebration();
     document.getElementById('surpriseDropdown').onclick = () => document.getElementById('surpriseBtn').click();
     document.getElementById('editPrizesDropdown').onclick = () => document.getElementById('editPrizesBtn').click();
     document.getElementById('uploadPhotosDropdown').onclick = () => document.getElementById('uploadPhotosBtn').click();
@@ -4166,6 +6104,7 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('addPointsBtn').onclick = () => showMultiSelectModal('⭐ اختر الطلاب لإضافة نقاط','add');
     document.getElementById('deductPointsBtn').onclick = () => showMultiSelectModal('🔻 اختر الطلاب لخصم نقاط','deduct');
     document.getElementById('warningBtn').onclick = () => showMultiSelectModal('⚠️ اختر الطلاب لإعطاء إنذار','warning');
+    document.getElementById('groupPointsBtn').onclick = () => showGroupPointsSetup();
     document.getElementById('confirmMultiSelectBtn').onclick = () => { if(!getSelectedStudents().length){ alert('❌ اختر طالباً'); return; } closeMultiSelectModal(); if(currentAction==='add') showPointsModal(true); else if(currentAction==='deduct') showPointsModal(false); else if(currentAction==='warning') showWarningModal(); };
     document.getElementById('cancelMultiSelectBtn').onclick = closeMultiSelectModal;
     document.getElementById('confirmPointsBtn').onclick = () => { const pts = parseInt(document.getElementById('pointsSelect').value); if(isNaN(pts)){ alert('❌ اختر نقاطاً'); return; } const isAdd = document.getElementById('pointsModalTitle').innerText.includes('إضافة'); if(applyPointsToStudents(pts,isAdd)){ closePointsModal(); currentAction=null; } };
@@ -4186,6 +6125,11 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('studentsLevelsBtn').onclick = showLevelsModal;
     document.getElementById('saveLevelsBtn').onclick = saveLevelsData;
     document.getElementById('closeLevelsBtn').onclick = closeLevelsModal;
+    document.getElementById('exportLevelsExcelBtn').onclick = exportLevelsToExcel;
+    document.getElementById('diagnosticTestBtn').onclick = showDiagnosticTestModal;
+    document.getElementById('closeDiagnosticModalBtn').onclick = closeDiagnosticModal;
+    document.getElementById('classifyStudentsBtn').onclick = classifyStudentsAndTransfer;
+    document.getElementById('exportDiagnosticExcelBtn').onclick = exportDiagnosticToExcel;
     document.getElementById('divisionBtn').onclick = showDivisionOptions;
     document.getElementById('groupScoresBtn').onclick = showGroupScores;
     document.getElementById('certificatesBtn').onclick = showCertificateStudentsModal;
@@ -4230,10 +6174,12 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('exportComprehensivePdfBtn').onclick = exportComprehensiveToPdf;
     document.getElementById('sendWhatsAppReportBtn').onclick = sendReportViaWhatsApp;
     document.getElementById('sendEmailReportBtn').onclick = sendReportViaEmail;
-    document.getElementById('rewardsShopBtn').onclick = showRewardStudentSelect;
+    document.getElementById('rewardsShopBtn').onclick = showCandidatesCelebration;
     document.getElementById('openRewardsBtn').onclick = openRewardsShop;
     document.getElementById('cancelRewardSelectBtn').onclick = closeRewardSelectModal;
     document.getElementById('closeRewardsModalBtn').onclick = closeRewardsModal;
+    document.getElementById('closeCelebrationBtn').onclick = closeCelebrationModal;
+    document.getElementById('openAllRewardsBtn').onclick = openRewardsForAll;
     document.getElementById('surpriseBtn').onclick = showAutoSurprise;
     document.getElementById('refreshBtn').onclick = () => { renderStudents(); alert('🔄 تم التحديث'); };
     document.getElementById('resetBtn').onclick = fullSystemReset;
@@ -4244,6 +6190,133 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('restoreBtn').onclick = showRestoreModal;
     document.getElementById('confirmRestoreBtn').onclick = () => { const f = document.getElementById('restoreFileInput'); if(f.files.length) restoreData(f.files[0]); else alert('❌ اختر ملف'); };
     document.getElementById('cancelRestoreBtn').onclick = closeRestoreModal;
+    
+    // ==================== ربط أزرار نقاط المجموعات ====================
+    document.getElementById('createGroupsForPointsBtn').onclick = createGroupsForPoints;
+    document.getElementById('cancelGroupPointsSetupBtn').onclick = closeGroupPointsSetup;
+    document.getElementById('selectGroupForPoints').onchange = updateGroupMembersPreview;
+    document.getElementById('applyGroupPointsBtn').onclick = applyGroupPoints;
+    document.getElementById('showGroupsTableBtn').onclick = showGroupPointsTable;
+    document.getElementById('closeGroupPointsSelectionBtn').onclick = closeGroupPointsSelection;
+    document.getElementById('closeGroupPointsTableBtn').onclick = closeGroupPointsTable;
+    document.getElementById('backToGroupSelectionBtn').onclick = backToGroupSelection;
+    
+    const diagnosticSearch = document.getElementById('diagnosticSearch');
+    const clearDiagnosticSearch = document.getElementById('clearDiagnosticSearch');
+    const diagnosticSearchCount = document.getElementById('diagnosticSearchCount');
+    diagnosticSearch.addEventListener('input', function() {
+        const searchTerm = this.value.trim().toLowerCase();
+        clearDiagnosticSearch.style.display = searchTerm ? 'flex' : 'none';
+        const rows = document.querySelectorAll('#diagnosticTableBody .diagnostic-row');
+        let visibleCount = 0;
+        rows.forEach(row => {
+            const name = row.getAttribute('data-student-name') || '';
+            if (name.includes(searchTerm)) {
+                row.style.display = '';
+                visibleCount++;
+            } else {
+                row.style.display = 'none';
+            }
+        });
+        if (searchTerm) {
+            diagnosticSearchCount.innerText = `تم العثور على ${visibleCount} من ${rows.length} طالب`;
+        } else {
+            diagnosticSearchCount.innerText = '';
+        }
+    });
+    clearDiagnosticSearch.onclick = function() {
+        diagnosticSearch.value = '';
+        clearDiagnosticSearch.style.display = 'none';
+        diagnosticSearch.dispatchEvent(new Event('input'));
+    };
+    
+    document.getElementById('diagnosticTotalMarks').addEventListener('input', function() {
+        const total = parseFloat(this.value) || 100;
+        if (diagnosticData[currentClass]) {
+            diagnosticData[currentClass].totalMarks = total;
+            saveDiagnosticData();
+        }
+        document.querySelectorAll('.diagnostic-score-input').forEach(input => {
+            input.setAttribute('max', total);
+            const studentName = input.getAttribute('data-student');
+            const value = parseFloat(input.value);
+            const row = input.closest('tr');
+            const percentageCell = row.cells[3];
+            const levelCell = row.cells[4];
+            
+            if (input.value !== '' && !isNaN(value)) {
+                const classification = getDiagnosticClassification(value, total);
+                percentageCell.innerText = classification.percentage + '%';
+                percentageCell.style.color = classification.color;
+                levelCell.innerHTML = `<span style="background:${classification.bgColor}; color:${classification.color}; padding:5px 12px; border-radius:15px; font-weight:bold; font-size:13px; display:inline-block;">${classification.level}</span>`;
+            }
+        });
+        updateDiagnosticSummary();
+    });
+    
+    filterSelectOptions('medicalStudentSearch', 'medicalStudentSelect', 'clearMedicalSearch');
+    filterSelectOptions('violationStudentSearch', 'violationStudentSelect', 'clearViolationSearch');
+    filterSelectOptions('deleteStudentSearch', 'deleteStudentSelect', 'clearDeleteSearch');
+    filterSelectOptions('comprehensiveStudentSearch', 'comprehensiveStudentSelect', 'clearComprehensiveSearch');
+    filterSelectOptions('rewardStudentSearch', 'rewardStudentSelect', 'clearRewardSearch');
+    
+    const trackerSearch = document.getElementById('trackerSearch');
+    const clearTrackerSearch = document.getElementById('clearTrackerSearch');
+    const trackerSearchCount = document.getElementById('trackerSearchCount');
+    trackerSearch.addEventListener('input', function() {
+        const searchTerm = this.value.trim().toLowerCase();
+        clearTrackerSearch.style.display = searchTerm ? 'flex' : 'none';
+        const rows = document.querySelectorAll('#trackerTableBody .tracker-row');
+        let visibleCount = 0;
+        rows.forEach(row => {
+            const name = row.getAttribute('data-student-name') || '';
+            if (name.includes(searchTerm)) {
+                row.style.display = '';
+                visibleCount++;
+            } else {
+                row.style.display = 'none';
+            }
+        });
+        if (searchTerm) {
+            trackerSearchCount.innerText = `تم العثور على ${visibleCount} من ${rows.length} طالب`;
+        } else {
+            trackerSearchCount.innerText = '';
+        }
+    });
+    clearTrackerSearch.onclick = function() {
+        trackerSearch.value = '';
+        clearTrackerSearch.style.display = 'none';
+        trackerSearch.dispatchEvent(new Event('input'));
+    };
+    
+    const multiSelectSearch = document.getElementById('multiSelectSearch');
+    const clearMultiSearch = document.getElementById('clearMultiSearch');
+    const multiSelectSearchCount = document.getElementById('multiSelectSearchCount');
+    multiSelectSearch.addEventListener('input', function() {
+        const searchTerm = this.value.trim().toLowerCase();
+        clearMultiSearch.style.display = searchTerm ? 'flex' : 'none';
+        const items = document.querySelectorAll('#multiSelectList .multi-select-item');
+        let visibleCount = 0;
+        items.forEach(item => {
+            const name = item.getAttribute('data-name') || '';
+            if (name.includes(searchTerm)) {
+                item.style.display = '';
+                visibleCount++;
+            } else {
+                item.style.display = 'none';
+            }
+        });
+        if (searchTerm) {
+            multiSelectSearchCount.innerText = `تم العثور على ${visibleCount} من ${items.length} طالب`;
+        } else {
+            multiSelectSearchCount.innerText = '';
+        }
+    });
+    clearMultiSearch.onclick = function() {
+        multiSelectSearch.value = '';
+        clearMultiSearch.style.display = 'none';
+        multiSelectSearch.dispatchEvent(new Event('input'));
+    };
     
     window.onclick = (e) => { if(e.target.classList && e.target.classList.contains('modal')) e.target.style.display = 'none'; };
 });
@@ -4259,4 +6332,3 @@ window.deleteMedicalCondition = deleteMedicalCondition;
 </script>
 </body>
 </html>
-#####
