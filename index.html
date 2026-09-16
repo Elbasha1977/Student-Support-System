@@ -4363,20 +4363,20 @@ function filterSelectOptions(searchInputId, selectId, clearBtnId) {
         overlay.className = 'login-overlay';
         overlay.id = 'loginOverlay';
         overlay.innerHTML = `
-            <div class="login-card">
-                <h2>📚 نظام النقاط والتحفيز المدرسي</h2>
-                <p style="color:#666; margin-bottom:20px;">تسجيل الدخول إلى النظام</p>
-                <input type="email" id="loginEmail" placeholder="البريد الإلكتروني (example@education.qa)" dir="ltr">
-                <input type="password" id="loginPassword" placeholder="كلمة المرور">
-                <button id="loginBtn">🔐 دخول</button>
-                <div id="loginMessage" class="error"></div>
-                <div class="admin-panel">
-                    <a href="#" id="adminLink">👨‍💼 لوحة المدير</a>
-                    <span style="margin:0 10px">|</span>
-                    <a href="#" id="forgotLink">🔑 نسيت كلمة المرور؟</a>
-                </div>
-            </div>
-        `;
+    <div class="login-card">
+        <h2>📚 نظام النقاط والتحفيز المدرسي</h2>
+        <p style="color:#666; margin-bottom:20px;">تسجيل الدخول إلى النظام</p>
+        <input type="email" id="loginEmail" placeholder="البريد الإلكتروني (example@education.qa)" dir="ltr" value="a.atia1201@education.qa">
+        <input type="password" id="loginPassword" placeholder="كلمة المرور" autofocus>
+        <button id="loginBtn">🔐 دخول</button>
+        <div id="loginMessage" class="error"></div>
+        <div class="admin-panel">
+            <a href="#" id="adminLink">👨‍💼 لوحة المدير</a>
+            <span style="margin:0 10px">|</span>
+            <a href="#" id="forgotLink">🔑 نسيت كلمة المرور؟</a>
+        </div>
+    </div>
+`;
         document.body.appendChild(overlay);
         
         document.getElementById('loginBtn').onclick = () => {
