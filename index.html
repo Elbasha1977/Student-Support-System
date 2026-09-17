@@ -2571,7 +2571,104 @@ body {
     .celebration-title { font-size: 24px; }
     .celebration-modal-content { padding: 20px 15px; }
 }
-/* ====== نهاية الشاشة الاحتفالية ====== */
+
+/* ====== أنماط أزرار تحديد الكل ====== */
+.select-all-col-btn {
+    transition: all 0.2s ease;
+    font-family: Tahoma, Arial;
+}
+
+.select-all-col-btn:hover {
+    transform: scale(1.05);
+    opacity: 0.9;
+}
+
+.tracker-table th {
+    vertical-align: top;
+    position: relative;
+}
+
+#selectAllStudentsBtn, #deselectAllStudentsBtn {
+    transition: all 0.3s ease;
+}
+
+#selectAllStudentsBtn:hover, #deselectAllStudentsBtn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+#selectedCountDisplay {
+    transition: all 0.3s ease;
+}
+
+#selectAllGroupsBtn {
+    transition: all 0.3s ease;
+}
+
+#selectAllGroupsBtn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(139, 92, 246, 0.4);
+}
+
+/* ====== أنماط شاشة تهنئة صندوق المفاجآت ====== */
+@keyframes surpriseTitlePulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
+
+@keyframes surpriseStarFloat {
+    0%, 100% { transform: translateY(0) rotate(0deg); opacity: 0.5; }
+    50% { transform: translateY(-20px) rotate(180deg); opacity: 1; }
+}
+
+@keyframes surprisePop {
+    0% { transform: scale(0.5); opacity: 0; }
+    80% { transform: scale(1.05); }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes surpriseEmojiBounce {
+    0%, 100% { transform: scale(1) rotate(-5deg); }
+    50% { transform: scale(1.15) rotate(5deg); }
+}
+
+@keyframes surpriseEnter {
+    0% { transform: scale(0.7) rotate(-5deg); opacity: 0; }
+    60% { transform: scale(1.05) rotate(2deg); opacity: 1; }
+    100% { transform: scale(1) rotate(0deg); opacity: 1; }
+}
+
+.surprise-congrats-modal {
+    max-width: 700px;
+    width: 95%;
+    background: linear-gradient(135deg, #1e1b4b 0%, #4c1d95 50%, #831843 100%);
+    border-radius: 35px;
+    padding: 40px 30px;
+    text-align: center;
+    border: 4px solid #ffd700;
+    box-shadow: 0 0 60px rgba(255, 215, 0, 0.5);
+    position: relative;
+    overflow: hidden;
+    animation: surpriseEnter 0.8s ease;
+    direction: rtl;
+}
+
+.surprise-stars-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+.surprise-star {
+    position: absolute;
+    color: #ffd700;
+    animation: surpriseStarFloat 4s ease-in-out infinite;
+}
+/* ====== نهاية أنماط شاشة التهنئة ====== */
 
 /* ====== نقاط المجموعات ====== */
 .group-points-info {
@@ -3157,7 +3254,6 @@ body {
     </div>
 </div>
 
-<!-- ====== نافذة إصدار جميع التقارير (جديدة) ====== -->
 <div id="bulkReportsModal" class="modal">
     <div class="modal-content" style="max-width: 700px;">
         <h2>📚 إصدار جميع التقارير - <span id="bulkReportsClassName"></span></h2>
@@ -3234,7 +3330,6 @@ body {
         </div>
     </div>
 </div>
-<!-- ====== نهاية نافذة إصدار جميع التقارير ====== -->
 
 <div id="candidatesCelebrationModal" class="modal">
     <div class="celebration-modal-content">
@@ -3887,6 +3982,50 @@ function showGroupPointsSetup() {
         return;
     }
     
+    // التحقق من وجود تقسيم محفوظ
+    if (savedGroupings[currentClass] && savedGroupings[currentClass].groups && savedGroupings[currentClass].groups.length > 0) {
+        const saved = savedGroupings[currentClass];
+        const confirmLoad = confirm(`📂 يوجد تقسيم محفوظ مسبقاً:\n\n📅 التاريخ: ${saved.date}\n🕐 الوقت: ${saved.time}\n👥 النوع: ${saved.type}\n📊 عدد المجموعات: ${saved.groups.length}\n\nهل تريد استخدام التقسيم المحفوظ؟\n\n(اضغط "إلغاء" لإنشاء تقسيم جديد)`);
+        
+        if (confirmLoad) {
+            const type = saved.type;
+            const groups = saved.groups;
+            
+            currentGroupingForPoints = {
+                groups: groups,
+                type: type,
+                timestamp: saved.timestamp
+            };
+            
+            const select = document.getElementById('selectGroupForPoints');
+            select.innerHTML = '<option value="">-- اختر المجموعة --</option>';
+            
+            groups.forEach((group, idx) => {
+                const groupName = type === 'ثنائيات' ? `👥 الزوج ${idx + 1}` : `👥 المجموعة ${idx + 1}`;
+                select.innerHTML += `<option value="${idx}">${groupName} (${group.length} طالب)</option>`;
+            });
+            
+            const reasonSelect = document.getElementById('groupPointsReasonSelect');
+            reasonSelect.innerHTML = '<option value="">-- اختر السبب --</option>';
+            positivePoints.forEach(p => {
+                reasonSelect.innerHTML += `<option value="${p.points}">${p.name} (${p.points > 0 ? '+' : ''}${p.points})</option>`;
+            });
+            negativePoints.forEach(n => {
+                reasonSelect.innerHTML += `<option value="${n.points}">${n.name} (${n.points})</option>`;
+            });
+            
+            document.getElementById('groupMembersPreview').innerHTML = '';
+            document.getElementById('groupPointsSelectionInfo').innerHTML = 
+                `📂 تم استرجاع التقسيم المحفوظ<br>
+                📅 ${saved.date} - 🕐 ${saved.time}<br>
+                👥 اختر ${type === 'ثنائيات' ? 'الزوج' : 'المجموعة'} ثم اختر سبب إعطاء النقاط`;
+            
+            document.getElementById('groupPointsSelectionModal').style.display = 'flex';
+            setTimeout(addSelectAllGroupsButton, 100);
+            return;
+        }
+    }
+    
     if (Object.keys(studentLevels[currentClass] || {}).length === 0) {
         const proceed = confirm('⚠️ لم يتم تحديد مستويات الطلاب بعد.\nسيتم اعتبار جميع الطلاب في نفس المستوى.\n\nهل تريد المتابعة؟');
         if (!proceed) return;
@@ -3897,6 +4036,81 @@ function showGroupPointsSetup() {
     document.getElementById('groupPointsType').value = 'مجموعات';
     
     document.getElementById('groupPointsSetupModal').style.display = 'flex';
+}
+
+// دالة إضافة زر "تحديد كل المجموعات"
+function addSelectAllGroupsButton() {
+    const selectionModal = document.getElementById('groupPointsSelectionModal');
+    if (!selectionModal) return;
+    
+    const oldBtn = document.getElementById('selectAllGroupsBtn');
+    if (oldBtn) oldBtn.remove();
+    
+    const btn = document.createElement('button');
+    btn.id = 'selectAllGroupsBtn';
+    btn.style.cssText = 'width:100%; margin:15px 0; padding:14px; background:linear-gradient(135deg, #8b5cf6, #6d28d9); color:white; border:none; border-radius:15px; cursor:pointer; font-weight:bold; font-size:16px;';
+    btn.textContent = '✅ تطبيق النقاط على جميع المجموعات';
+    
+    btn.onclick = () => {
+        const pointsValue = document.getElementById('groupPointsReasonSelect').value;
+        if (!pointsValue) {
+            alert('❌ الرجاء اختيار سبب إعطاء النقاط أولاً');
+            return;
+        }
+        
+        const points = parseInt(pointsValue);
+        const groups = currentGroupingForPoints.groups;
+        
+        if (!groups || groups.length === 0) {
+            alert('❌ لا توجد مجموعات');
+            return;
+        }
+        
+        const reasonSelect = document.getElementById('groupPointsReasonSelect');
+        const reasonText = reasonSelect.options[reasonSelect.selectedIndex].text;
+        
+        let totalStudents = 0;
+        groups.forEach(g => totalStudents += g.length);
+        
+        if (!confirm(`⚠️ هل أنت متأكد من تطبيق النقاط على جميع المجموعات؟\n\n📌 السبب: ${reasonText}\n⭐ النقاط: ${points > 0 ? '+' : ''}${points}\n👥 عدد المجموعات: ${groups.length}\n👤 إجمالي الطلاب: ${totalStudents}`)) {
+            return;
+        }
+        
+        const students = getCurrentStudents();
+        let applied = 0;
+        
+        groups.forEach(group => {
+            group.forEach(groupStudent => {
+                const studentIndex = students.findIndex(s => s.name === groupStudent.name);
+                if (studentIndex !== -1) {
+                    students[studentIndex].points += points;
+                    if (points > 0) {
+                        updateMonthlyPoints(students[studentIndex].name, points);
+                    }
+                    applied++;
+                }
+            });
+        });
+        
+        saveCurrentStudents(students);
+        renderStudents();
+        
+        const previewDiv = document.getElementById('groupMembersPreview');
+        if (previewDiv) {
+            previewDiv.innerHTML = `<div style="background:#d1fae5; color:#065f46; padding:15px; border-radius:15px; text-align:center; font-weight:bold; margin:10px 0; font-size:16px;">
+                🎉 تم تطبيق ${points > 0 ? '+' : ''}${points} نقطة على ${applied} طالب في جميع المجموعات
+            </div>` + previewDiv.innerHTML;
+        }
+        
+        alert(`✅ تم تطبيق ${points > 0 ? '+' : ''}${points} نقطة على ${applied} طالب في جميع المجموعات`);
+        
+        document.getElementById('groupPointsReasonSelect').value = '';
+    };
+    
+    const applyBtn = document.getElementById('applyGroupPointsBtn');
+    if (applyBtn && applyBtn.parentNode) {
+        applyBtn.parentNode.insertBefore(btn, applyBtn);
+    }
 }
 
 function closeGroupPointsSetup() {
@@ -3918,12 +4132,10 @@ function createGroupsForPoints() {
         return;
     }
     
-    // ترتيب الطلاب حسب المستوى
     const sorted = sortStudentsByLevel(students);
     let groups = [];
     
     if (type === 'ثنائيات') {
-        // تقسيم ثنائي: عالي مع منخفض
         const midpoint = Math.ceil(sorted.length / 2);
         const topHalf = sorted.slice(0, midpoint);
         const bottomHalf = sorted.slice(midpoint);
@@ -3936,7 +4148,6 @@ function createGroupsForPoints() {
             groups.push(pair);
         }
     } else {
-        // تقسيم مجموعات بنظام الثعبان
         groups = Array(count).fill().map(() => []);
         let currentGroup = 0;
         let direction = 1;
@@ -3959,7 +4170,6 @@ function createGroupsForPoints() {
             }
         });
         
-        // إزالة المجموعات الفارغة
         groups = groups.filter(g => g.length > 0);
     }
     
@@ -3974,7 +4184,17 @@ function createGroupsForPoints() {
         timestamp: Date.now()
     };
     
-    // إعادة تعيين قائمة الاختيار
+    // حفظ التقسيم
+    if (!savedGroupings[currentClass]) savedGroupings[currentClass] = {};
+    savedGroupings[currentClass] = {
+        groups: groups,
+        type: type,
+        timestamp: Date.now(),
+        date: new Date().toLocaleDateString('ar-EG'),
+        time: new Date().toLocaleTimeString('ar-EG')
+    };
+    localStorage.setItem('savedGroupings', JSON.stringify(savedGroupings));
+    
     const select = document.getElementById('selectGroupForPoints');
     select.innerHTML = '<option value="">-- اختر المجموعة --</option>';
     
@@ -3983,7 +4203,6 @@ function createGroupsForPoints() {
         select.innerHTML += `<option value="${idx}">${groupName} (${group.length} طالب)</option>`;
     });
     
-    // تعيين أسباب النقاط من القائمة الأصلية
     const reasonSelect = document.getElementById('groupPointsReasonSelect');
     reasonSelect.innerHTML = '<option value="">-- اختر السبب --</option>';
     positivePoints.forEach(p => {
@@ -3993,14 +4212,16 @@ function createGroupsForPoints() {
         reasonSelect.innerHTML += `<option value="${n.points}">${n.name} (${n.points})</option>`;
     });
     
-    // إعادة تعيين المعاينة
     document.getElementById('groupMembersPreview').innerHTML = '';
     document.getElementById('groupPointsSelectionInfo').innerHTML = 
         `📊 تم إنشاء ${groups.length} ${type === 'ثنائيات' ? 'زوج' : 'مجموعة'}<br>
+        💾 تم حفظ التقسيم - لن يتغير إلا بإعادة التقسيم<br>
         👥 اختر ${type === 'ثنائيات' ? 'الزوج' : 'المجموعة'} ثم اختر سبب إعطاء النقاط`;
     
     closeGroupPointsSetup();
     document.getElementById('groupPointsSelectionModal').style.display = 'flex';
+    
+    setTimeout(addSelectAllGroupsButton, 100);
 }
 
 function closeGroupPointsSelection() {
@@ -4050,23 +4271,19 @@ function applyGroupPoints() {
     const points = parseInt(pointsValue);
     const students = getCurrentStudents();
     
-    // الحصول على اسم السبب
     const reasonSelect = document.getElementById('groupPointsReasonSelect');
     const reasonText = reasonSelect.options[reasonSelect.selectedIndex].text;
     
-    // تأكيد العملية
     let membersList = group.map(s => s.name).join('، ');
     if (!confirm(`⚠️ هل أنت متأكد من تطبيق هذه النقاط؟\n\n📌 السبب: ${reasonText}\n⭐ النقاط: ${points > 0 ? '+' : ''}${points}\n👥 عدد الطلاب: ${group.length}\n👤 الطلاب: ${membersList}`)) {
         return;
     }
     
-    // تطبيق النقاط على جميع الطلاب في المجموعة
     let applied = 0;
     group.forEach(groupStudent => {
         const studentIndex = students.findIndex(s => s.name === groupStudent.name);
         if (studentIndex !== -1) {
             students[studentIndex].points += points;
-            // إضافة النقاط للشهر إذا كانت موجبة
             if (points > 0) {
                 updateMonthlyPoints(students[studentIndex].name, points);
             }
@@ -4077,19 +4294,15 @@ function applyGroupPoints() {
     saveCurrentStudents(students);
     renderStudents();
     
-    // عرض رسالة النجاح
     const successMsg = `✅ تم تطبيق ${points > 0 ? '+' : ''}${points} نقطة على ${applied} طالب في ${currentGroupingForPoints.type === 'ثنائيات' ? 'الزوج' : 'المجموعة'} ${groupIdx + 1}`;
     
-    // عرض رسالة نجاح في المعاينة
     const previewDiv = document.getElementById('groupMembersPreview');
     previewDiv.innerHTML = `<div style="background:#d1fae5; color:#065f46; padding:15px; border-radius:15px; text-align:center; font-weight:bold; margin:10px 0; font-size:16px;">
         🎉 ${successMsg}
     </div>` + previewDiv.innerHTML;
     
-    // إعادة تعيين قائمة السبب
     document.getElementById('groupPointsReasonSelect').value = '';
     
-    // تحديث معاينة المجموعة لإظهار النقاط الجديدة
     setTimeout(() => {
         updateGroupMembersPreview();
     }, 2000);
@@ -4109,7 +4322,6 @@ function showGroupPointsTable() {
     
     let html = '';
     
-    // حساب إحصائيات كل مجموعة
     const groupStats = groups.map(group => {
         let totalPoints = 0;
         let totalLevel = 0;
@@ -4129,8 +4341,7 @@ function showGroupPointsTable() {
     groups.forEach((group, idx) => {
         const stats = groupStats[idx];
         
-        html += `<div class="group-card" style="border-right: 5px solid ${colors[idx % colors.length]};">
-            <div class="group-header">
+        html += `<div class="group-card" style="border-right: 5px solid ${colors[idx % colors.length]};">            <div class="group-header">
                 <div class="group-name" style="color:${colors[idx % colors.length]}">
                     ${type === 'ثنائيات' ? '👥 الزوج' : '👥 المجموعة'} ${idx + 1}
                 </div>
@@ -4162,6 +4373,42 @@ function showGroupPointsTable() {
     
     closeGroupPointsSelection();
     document.getElementById('groupPointsTableModal').style.display = 'flex';
+    
+    setTimeout(addClearGroupingButton, 100);
+}
+
+// دالة إضافة زر حذف التقسيم المحفوظ
+function addClearGroupingButton() {
+    const tableModal = document.getElementById('groupPointsTableModal');
+    if (!tableModal) return;
+    
+    const oldBtn = document.getElementById('clearGroupingBtn');
+    if (oldBtn) oldBtn.remove();
+    
+    const btn = document.createElement('button');
+    btn.id = 'clearGroupingBtn';
+    btn.className = 'close-modal';
+    btn.style.cssText = 'background:#dc2626; color:white; border:none; padding:12px 25px; border-radius:25px; cursor:pointer; margin:5px; font-size:14px;';
+    btn.textContent = '🗑️ حذف التقسيم المحفوظ';
+    
+    btn.onclick = () => {
+        if (confirm('⚠️ هل أنت متأكد من حذف التقسيم المحفوظ؟\nسيتمكن النظام من إنشاء تقسيم جديد.')) {
+            if (savedGroupings[currentClass]) {
+                delete savedGroupings[currentClass];
+                localStorage.setItem('savedGroupings', JSON.stringify(savedGroupings));
+                currentGroupingForPoints = { groups: [], type: 'مجموعات', timestamp: null };
+                alert('✅ تم حذف التقسيم المحفوظ');
+                closeGroupPointsTable();
+            } else {
+                alert('⚠️ لا يوجد تقسيم محفوظ لهذا الصف');
+            }
+        }
+    };
+    
+    const backBtn = document.getElementById('backToGroupSelectionBtn');
+    if (backBtn && backBtn.parentNode) {
+        backBtn.parentNode.insertBefore(btn, backBtn);
+    }
 }
 
 function closeGroupPointsTable() {
@@ -4173,7 +4420,7 @@ function backToGroupSelection() {
     document.getElementById('groupPointsSelectionModal').style.display = 'flex';
 }
 
-// ==================== نظام إصدار جميع التقارير (جديد) ====================
+// ==================== نظام إصدار جميع التقارير ====================
 function showBulkReportsSetup() {
     const students = getCurrentStudents();
     if (students.length === 0) {
@@ -4199,7 +4446,6 @@ function closeBulkReportsView() {
     document.getElementById('bulkReportsViewModal').style.display = 'none';
 }
 
-// ترتيب الطلاب حسب الاختيار
 function sortStudentsForBulkReport(students, sortType) {
     const sorted = [...students];
     switch(sortType) {
@@ -4218,7 +4464,6 @@ function sortStudentsForBulkReport(students, sortType) {
     }
 }
 
-// التحقق من وجود بيانات للطالب
 function studentHasData(studentName) {
     const hasTrackerData = Object.keys(dailyTrackerData).some(key => {
         if (!key.startsWith(currentClass)) return false;
@@ -4230,7 +4475,6 @@ function studentHasData(studentName) {
     return hasTrackerData || hasViolations || hasRewards || hasMedical;
 }
 
-// توليد تقرير المتابعة اليومية لطالب
 function generateStudentTrackerReportHTML(student) {
     const studentName = student.name;
     const reportData = [];
@@ -4274,7 +4518,6 @@ function generateStudentTrackerReportHTML(student) {
     return html;
 }
 
-// توليد تقرير المخالفات لطالب
 function generateStudentViolationsReportHTML(student) {
     const studentName = student.name;
     const violations = violationsData[currentClass]?.[studentName] || [];
@@ -4302,7 +4545,6 @@ function generateStudentViolationsReportHTML(student) {
     return html;
 }
 
-// توليد الجوائز للطالب
 function generateRewardsForBulkReport(student) {
     const rewards = studentRewards[currentClass]?.[student.name] || [];
     if (rewards.length === 0) {
@@ -4319,7 +4561,6 @@ function generateRewardsForBulkReport(student) {
     return html;
 }
 
-// توليد التقرير الشامل لطالب
 function generateStudentComprehensiveReportHTML(student) {
     const studentName = student.name;
     
@@ -4427,7 +4668,6 @@ function generateStudentComprehensiveReportHTML(student) {
     return html;
 }
 
-// الدالة الرئيسية لتوليد جميع التقارير
 function generateBulkReports() {
     const students = getCurrentStudents();
     if (students.length === 0) {
@@ -4524,7 +4764,6 @@ function generateBulkReports() {
     document.getElementById('bulkReportsViewModal').style.display = 'flex';
 }
 
-// طباعة التقارير المجمعة
 function printBulkReports() {
     const content = document.getElementById('bulkReportsContent').innerHTML;
     const className = document.getElementById('bulkReportsViewClassName').innerText;
@@ -4558,7 +4797,6 @@ ${content}
     setTimeout(() => { printWindow.print(); }, 500);
 }
 
-// تصدير التقارير المجمعة كـ PDF
 async function exportBulkReportsToPdf() {
     const element = document.getElementById('bulkReportsContent');
     const className = document.getElementById('bulkReportsViewClassName').innerText;
@@ -5198,6 +5436,9 @@ let currentRewardStudent = null;
 let monthlyPoints = {};
 let availablePrizesCount = 5;
 
+// متغير حفظ التقسيمات
+let savedGroupings = {};
+
 function initMonthlyData() {
     const currentMonth = new Date().getMonth();
     const currentYear = new Date().getFullYear();
@@ -5427,6 +5668,12 @@ const savedMedical = localStorage.getItem('medicalConditions');
 if(savedMedical) { try { medicalConditions = JSON.parse(savedMedical); } catch(e) {} }
 
 loadDiagnosticData();
+
+// تحميل التقسيمات المحفوظة
+const savedGroupingsData = localStorage.getItem('savedGroupings');
+if (savedGroupingsData) {
+    try { savedGroupings = JSON.parse(savedGroupingsData); } catch(e) { savedGroupings = {}; }
+}
 
 classNames.forEach(c => { initializeClassData(c); });
 
@@ -5712,31 +5959,205 @@ function showAutoSurprise() {
     scoredStudents.sort((a,b) => b.monthlyPoints - a.monthlyPoints);
     const topStudent = scoredStudents[0];
     if (!topStudent) { alert('⚠️ لا يوجد طلاب للترتيب'); return; }
+    
     const canOpen = (topStudent.monthlyPoints >= 500 && availablePrizesCount >= 5);
-    let resultHtml = '', reasonHtml = '', prizeHtml = '';
+    const prizes = getCurrentPrizes();
+    
     if (canOpen) {
-        const prizes = getCurrentPrizes();
-        resultHtml = `<div>🥇 الطالب الفائز: ${topStudent.name}</div><div>⭐ نقاط الشهر: ${topStudent.monthlyPoints} نقطة</div><div>🎁 عدد الجوائز المتاحة: ${availablePrizesCount} جائزة</div>`;
-        reasonHtml = `✅ تم استيفاء الشرطين: ${topStudent.monthlyPoints} نقطة (الحد الأدنى 500) و ${availablePrizesCount} جائزة متاحة (الحد الأدنى 5)`;
-        prizeHtml = `<div>🏆 الجائزة المستحقة: ${topStudent.name} يحصل على ${prizes.first}</div>`;
+        showSurpriseCongratulation(topStudent, prizes.first);
         consumePrize();
-        setTimeout(() => { alert(`🎉 تهانينا! الطالب ${topStudent.name} فاز بصندوق المفاجآت!\nالجائزة: ${prizes.first}\nتبقى ${availablePrizesCount} جائزة في المكتبة`); }, 100);
     } else {
-        resultHtml = `<div>🥇 الطالب الأول: ${topStudent.name}</div><div>⭐ نقاط الشهر: ${topStudent.monthlyPoints} نقطة</div><div>🎁 عدد الجوائز المتاحة: ${availablePrizesCount} جائزة</div>`;
-        reasonHtml = `❌ لم يتم استيفاء الشروط: يحتاج الطالب إلى 500 نقطة (لديه ${topStudent.monthlyPoints}) وتحتاج المكتبة إلى 5 جوائز (متاح ${availablePrizesCount})`;
-        prizeHtml = `<div style="color: #e74c3c;">⛔ لا يمكن فتح صندوق المفاجآت هذا الأسبوع</div><div>💡 نصيحة: شجع الطلاب على كسب المزيد من النقاط، وأضف جوائز إلى المكتبة.</div>`;
+        let rankingHtml = '<div style="text-align:right;"><strong>📊 ترتيب نقاط الشهر:</strong><br><br>';
+        scoredStudents.slice(0, 5).forEach((student, idx) => { 
+            const medal = idx === 0 ? '🥇' : idx === 1 ? '🥈' : idx === 2 ? '🥉' : `#${idx+1}`;
+            rankingHtml += `<div style="padding:6px; margin:4px 0; background:${idx < 3 ? '#fef3c7' : '#f1f5f9'}; border-radius:8px;">${medal} ${student.name} - ${student.monthlyPoints} نقطة</div>`; 
+        });
+        rankingHtml += '</div>';
+        
+        const modalDiv = document.createElement('div');
+        modalDiv.className = 'modal';
+        modalDiv.style.display = 'flex';
+        modalDiv.style.background = 'rgba(0,0,0,0.85)';
+        modalDiv.innerHTML = `
+            <div class="modal-content random-picker" style="max-width: 600px;">
+                <h2>🎁 صندوق المفاجآت - ${currentClass} 🎁</h2>
+                <div style="text-align: center; margin: 20px 0;">
+                    <div style="font-size: 20px; font-weight: bold; padding: 20px; background: rgba(255,255,255,0.9); border-radius: 20px; margin: 15px 0;">
+                        <div>🥇 الطالب الأول: ${topStudent.name}</div>
+                        <div>⭐ نقاط الشهر: ${topStudent.monthlyPoints} نقطة</div>
+                        <div>🎁 عدد الجوائز المتاحة: ${availablePrizesCount} جائزة</div>
+                    </div>
+                    <div style="color: #666; font-size: 14px; padding: 10px; background: #f1f5f9; border-radius: 15px;">
+                        ❌ لم يتم استيفاء الشروط: يحتاج الطالب إلى 500 نقطة (لديه ${topStudent.monthlyPoints}) وتحتاج المكتبة إلى 5 جوائز (متاح ${availablePrizesCount})
+                    </div>
+                    <div style="background: #fef3c7; padding: 15px; border-radius: 15px; margin-top: 15px;">
+                        <div style="color: #e74c3c; font-weight: bold;">⛔ لا يمكن فتح صندوق المفاجآت هذا الأسبوع</div>
+                        <div style="margin-top: 8px;">💡 نصيحة: شجع الطلاب على كسب المزيد من النقاط، وأضف جوائز إلى المكتبة.</div>
+                    </div>
+                    <div style="margin-top: 15px; padding: 15px; background: #f8fafc; border-radius: 15px;">
+                        ${rankingHtml}
+                    </div>
+                    <div style="margin-top: 15px; padding: 10px; background: #e2e8f0; border-radius: 10px; font-size: 12px;">
+                        ℹ️ ملاحظة: يتم احتساب نقاط الشهر الحالي فقط لصندوق المفاجآت.
+                    </div>
+                </div>
+                <button class="close-modal confirm-btn" id="closeAutoSurpriseBtn">إغلاق</button>
+            </div>
+        `;
+        document.body.appendChild(modalDiv);
+        document.getElementById('closeAutoSurpriseBtn').onclick = () => modalDiv.remove();
+        modalDiv.onclick = (e) => { if(e.target === modalDiv) modalDiv.remove(); };
     }
-    let rankingHtml = '<div><strong>📊 ترتيب نقاط الشهر:</strong><br>';
-    scoredStudents.slice(0, 5).forEach((student, idx) => { rankingHtml += `#${idx+1}: ${student.name} - ${student.monthlyPoints} نقطة<br>`; });
-    rankingHtml += '</div>';
+}
+
+function showSurpriseCongratulation(student, prize) {
+    createConfetti();
+    playCelebrationSound();
+    
     const modalDiv = document.createElement('div');
     modalDiv.className = 'modal';
     modalDiv.style.display = 'flex';
-    modalDiv.style.background = 'rgba(0,0,0,0.85)';
-    modalDiv.innerHTML = `<div class="modal-content random-picker" style="max-width: 600px;"><h2>🎁 صندوق المفاجآت - ${currentClass} 🎁</h2><div style="text-align: center; margin: 20px 0;"><div style="font-size: 20px; font-weight: bold; padding: 20px; background: rgba(255,255,255,0.9); border-radius: 20px; margin: 15px 0;">${resultHtml}</div><div style="color: #666; font-size: 14px; padding: 10px; background: #f1f5f9; border-radius: 15px;">${reasonHtml}</div><div style="background: #fef3c7; padding: 15px; border-radius: 15px; margin-top: 15px;">${prizeHtml}</div>${rankingHtml}<div style="margin-top: 15px; padding: 10px; background: #e2e8f0; border-radius: 10px; font-size: 12px;">ℹ️ ملاحظة: يتم احتساب نقاط الشهر الحالي فقط لصندوق المفاجآت.</div></div><button class="close-modal confirm-btn" id="closeAutoSurpriseBtn">إغلاق</button></div>`;
+    modalDiv.style.background = 'rgba(0,0,0,0.9)';
+    modalDiv.style.zIndex = '10002';
+    
+    const starsHtml = Array(15).fill().map(() => `
+        <div class="surprise-star" style="font-size: ${18 + Math.random() * 20}px; left: ${Math.random() * 100}%; top: ${Math.random() * 100}%; animation-delay: ${Math.random() * 3}s; animation-duration: ${3 + Math.random() * 3}s;">⭐</div>
+    `).join('');
+    
+    modalDiv.innerHTML = `
+        <div class="surprise-congrats-modal">
+            <div class="surprise-stars-bg">
+                ${starsHtml}
+            </div>
+            
+            <h2 style="color: #ffd700; font-size: 38px; margin-bottom: 10px; text-shadow: 0 0 20px rgba(255, 215, 0, 0.8); position: relative; z-index: 2; animation: surpriseTitlePulse 1.5s ease-in-out infinite; font-family: Tahoma, Arial;">
+                🎉 ألف مبروك! 🎉
+            </h2>
+            
+            <p style="color: #ffffff; font-size: 20px; margin-bottom: 30px; position: relative; z-index: 2; text-shadow: 0 2px 8px rgba(0,0,0,0.5);">
+                🌟 تم اختيارك من صندوق المفاجآت 🌟
+            </p>
+            
+            <div style="background: white; border-radius: 25px; padding: 30px 20px; margin: 20px 0; position: relative; z-index: 2; box-shadow: 0 15px 35px rgba(0,0,0,0.3); animation: surprisePop 0.6s ease;">
+                <div style="font-size: 80px; margin-bottom: 15px;">🏆</div>
+                <div style="font-size: 32px; font-weight: bold; color: #4338ca; margin-bottom: 10px;">
+                    ${student.name}
+                </div>
+                <div style="font-size: 24px; color: #e91e63; font-weight: bold; margin-bottom: 15px;">
+                    ⭐ ${student.monthlyPoints} نقطة هذا الشهر ⭐
+                </div>
+                <div style="background: linear-gradient(135deg, #fef3c7, #fde68a); padding: 15px 25px; border-radius: 20px; display: inline-block; border: 2px solid #f59e0b;">
+                    <div style="font-size: 18px; color: #92400e; font-weight: bold;">🎁 الجائزة المستحقة</div>
+                    <div style="font-size: 24px; color: #d97706; font-weight: bold; margin-top: 5px;">${prize}</div>
+                </div>
+            </div>
+            
+            <div style="color: #ffffff; font-size: 18px; margin: 20px 0; position: relative; z-index: 2; line-height: 1.8;">
+                🌟 أنت من أفضل الطلاب هذا الشهر! 🌟<br>
+                استمر في التميز والتفوق 💪
+            </div>
+            
+            <div style="display: flex; justify-content: center; gap: 15px; flex-wrap: wrap; position: relative; z-index: 2;">
+                <button id="acceptSurprisePrizeBtn" style="background: linear-gradient(135deg, #10b981, #059669); color: white; border: none; padding: 15px 35px; border-radius: 30px; font-size: 18px; font-weight: bold; cursor: pointer; box-shadow: 0 8px 20px rgba(16,185,129,0.4); transition: all 0.3s ease; font-family: Tahoma, Arial;">
+                    🎁 استلام الجائزة
+                </button>
+                <button id="closeSurpriseModalBtn" style="background: rgba(255,255,255,0.15); color: white; border: 2px solid rgba(255,255,255,0.5); padding: 15px 35px; border-radius: 30px; font-size: 18px; font-weight: bold; cursor: pointer; backdrop-filter: blur(10px); transition: all 0.3s ease; font-family: Tahoma, Arial;">
+                    إغلاق
+                </button>
+            </div>
+        </div>
+    `;
+    
     document.body.appendChild(modalDiv);
-    document.getElementById('closeAutoSurpriseBtn').onclick = () => modalDiv.remove();
-    modalDiv.onclick = (e) => { if(e.target === modalDiv) modalDiv.remove(); };
+    
+    document.getElementById('acceptSurprisePrizeBtn').onclick = () => {
+        showPrizeReceivedMessage(student, prize);
+        modalDiv.remove();
+    };
+    
+    document.getElementById('closeSurpriseModalBtn').onclick = () => {
+        modalDiv.remove();
+    };
+    
+    modalDiv.onclick = (e) => { 
+        if(e.target === modalDiv) modalDiv.remove(); 
+    };
+}
+
+function showPrizeReceivedMessage(student, prize) {
+    createConfetti();
+    playWinnerSound();
+    
+    const msgDiv = document.createElement('div');
+    msgDiv.className = 'modal';
+    msgDiv.style.display = 'flex';
+    msgDiv.style.background = 'rgba(0,0,0,0.9)';
+    msgDiv.style.zIndex = '10003';
+    
+    msgDiv.innerHTML = `
+        <div style="max-width: 500px; width: 90%; background: linear-gradient(135deg, #fef9c3, #fef3c7); border-radius: 30px; padding: 40px 30px; text-align: center; border: 4px solid #facc15; box-shadow: 0 0 50px rgba(250, 204, 21, 0.5); animation: surprisePop 0.5s ease; direction: rtl;">
+            <div style="font-size: 100px; margin-bottom: 20px; animation: surpriseEmojiBounce 1s ease-in-out infinite;">🎉</div>
+            <h2 style="color: #16a34a; font-size: 32px; margin-bottom: 15px; font-family: Tahoma, Arial;">تم تسليم الجائزة بنجاح!</h2>
+            <div style="background: white; padding: 20px; border-radius: 20px; margin: 20px 0;">
+                <div style="font-size: 24px; font-weight: bold; color: #4338ca;">👨‍🎓 ${student.name}</div>
+                <div style="font-size: 20px; color: #e91e63; margin-top: 10px;">🎁 ${prize}</div>
+            </div>
+            <p style="color: #666; font-size: 16px; margin-top: 15px;">💐 مبروك مرة أخرى! نتمنى لك دوام التوفيق والنجاح</p>
+            <div style="margin-top: 20px; font-size: 40px;">🏆🌟🎊</div>
+            <button id="closePrizeReceivedBtn" style="background: #16a34a; color: white; border: none; padding: 15px 40px; border-radius: 30px; font-size: 18px; font-weight: bold; cursor: pointer; margin-top: 20px; font-family: Tahoma, Arial;">
+                ✅ حسناً، شكراً
+            </button>
+        </div>
+    `;
+    
+    document.body.appendChild(msgDiv);
+    
+    document.getElementById('closePrizeReceivedBtn').onclick = () => {
+        msgDiv.remove();
+        showRemainingRanking();
+    };
+    
+    msgDiv.onclick = (e) => { 
+        if(e.target === msgDiv) {
+            msgDiv.remove();
+            showRemainingRanking();
+        }
+    };
+}
+
+function showRemainingRanking() {
+    const students = getCurrentStudents();
+    const scoredStudents = students.map(student => ({ ...student, monthlyPoints: getMonthlyPoints(student.name) }));
+    scoredStudents.sort((a,b) => b.monthlyPoints - a.monthlyPoints);
+    
+    let rankingHtml = '<div style="text-align:right;"><strong>📊 ترتيب نقاط الشهر:</strong><br><br>';
+    scoredStudents.slice(0, 10).forEach((student, idx) => { 
+        const medal = idx === 0 ? '🥇' : idx === 1 ? '🥈' : idx === 2 ? '🥉' : `#${idx+1}`;
+        rankingHtml += `<div style="padding:8px; margin:5px 0; background:${idx < 3 ? '#fef3c7' : '#f1f5f9'}; border-radius:10px;">
+            ${medal} ${student.name} - ${student.monthlyPoints} نقطة
+        </div>`; 
+    });
+    rankingHtml += '</div>';
+    
+    const rankingDiv = document.createElement('div');
+    rankingDiv.className = 'modal';
+    rankingDiv.style.display = 'flex';
+    rankingDiv.style.background = 'rgba(0,0,0,0.85)';
+    
+    rankingDiv.innerHTML = `
+        <div class="modal-content" style="max-width: 500px;">
+            <h2 style="color: #4338ca; text-align: center;">🏆 لوحة شرف نقاط الشهر</h2>
+            ${rankingHtml}
+            <div style="display: flex; justify-content: center; margin-top: 20px;">
+                <button class="close-modal confirm-btn" id="closeRankingBtn">إغلاق</button>
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(rankingDiv);
+    
+    document.getElementById('closeRankingBtn').onclick = () => rankingDiv.remove();
+    rankingDiv.onclick = (e) => { if(e.target === rankingDiv) rankingDiv.remove(); };
 }
 
 function getTodayKey() {
@@ -5791,6 +6212,60 @@ function showDailyTrackerModal() {
     document.getElementById('clearTrackerSearch').style.display = 'none';
     document.getElementById('trackerSearchCount').innerText = '';
     document.getElementById('dailyTrackerModal').style.display = 'flex';
+    
+    setTimeout(() => {
+        addTrackerColumnSelectAll();
+    }, 150);
+}
+
+// دالة إضافة أزرار "تحديد الكل" لكل عمود في المتابعة اليومية
+function addTrackerColumnSelectAll() {
+    const thead = document.querySelector('#dailyTrackerModal .tracker-table thead tr');
+    if (!thead) return;
+    
+    thead.querySelectorAll('.select-all-col-btn').forEach(btn => btn.remove());
+    
+    const ths = thead.querySelectorAll('th');
+    ths.forEach((th, index) => {
+        if (index === 0) return;
+        
+        const itemIndex = index - 1;
+        if (itemIndex >= trackerItems.length) return;
+        
+        const item = trackerItems[itemIndex];
+        const btn = document.createElement('button');
+        btn.className = 'select-all-col-btn';
+        btn.setAttribute('data-item', item.id);
+        btn.style.cssText = 'display:block; width:100%; margin-top:5px; padding:3px 6px; font-size:10px; background:#0f766e; color:white; border:none; border-radius:8px; cursor:pointer;';
+        btn.textContent = 'تحديد الكل';
+        btn.title = `تحديد الكل لعمود ${item.name}`;
+        
+        btn.onclick = (e) => {
+            e.stopPropagation();
+            e.preventDefault();
+            const checkboxes = document.querySelectorAll(`.tracker-checkbox[data-item="${item.id}"]`);
+            const visibleCheckboxes = Array.from(checkboxes).filter(cb => {
+                const row = cb.closest('tr');
+                return row && row.style.display !== 'none';
+            });
+            const allChecked = visibleCheckboxes.every(cb => cb.checked);
+            
+            visibleCheckboxes.forEach(cb => {
+                cb.checked = !allChecked;
+                
+                const studentName = cb.getAttribute('data-student');
+                const todayKeyLocal = getTodayKey();
+                if (!dailyTrackerData[todayKeyLocal]) dailyTrackerData[todayKeyLocal] = {};
+                if (!dailyTrackerData[todayKeyLocal][studentName]) dailyTrackerData[todayKeyLocal][studentName] = {};
+                dailyTrackerData[todayKeyLocal][studentName][item.id] = cb.checked;
+            });
+            
+            btn.textContent = allChecked ? 'تحديد الكل' : 'إلغاء الكل';
+            btn.style.background = allChecked ? '#0f766e' : '#dc2626';
+        };
+        
+        th.appendChild(btn);
+    });
 }
 
 function closeDailyTrackerModal() { document.getElementById('dailyTrackerModal').style.display = 'none'; }
@@ -6239,12 +6714,57 @@ function showMultiSelectModal(title, action) {
     document.getElementById('multiSelectTitle').innerHTML = title;
     const container = document.getElementById('multiSelectList');
     container.innerHTML = '';
-    students.forEach((s,i)=>{ container.innerHTML += `<label class="multi-select-item" data-name="${s.name.toLowerCase()}"><input type="checkbox" value="${i}"><span class="student-name">${s.name}</span><span class="student-points">(${s.points} نقطة)</span></label>`; });
+    
+    const oldSelectAllDiv = document.getElementById('selectAllStudentsDiv');
+    if (oldSelectAllDiv) oldSelectAllDiv.remove();
+    
+    const selectAllDiv = document.createElement('div');
+    selectAllDiv.id = 'selectAllStudentsDiv';
+    selectAllDiv.style.cssText = 'display:flex; gap:10px; margin-bottom:15px; padding:12px; background:#f1f5f9; border-radius:12px; justify-content:center; flex-wrap:wrap; align-items:center;';
+    selectAllDiv.innerHTML = `
+        <button id="selectAllStudentsBtn" style="background:#16a34a; color:white; border:none; padding:10px 20px; border-radius:20px; cursor:pointer; font-weight:bold; font-size:14px;">✅ تحديد الكل</button>
+        <button id="deselectAllStudentsBtn" style="background:#dc2626; color:white; border:none; padding:10px 20px; border-radius:20px; cursor:pointer; font-weight:bold; font-size:14px;">❌ إلغاء تحديد الكل</button>
+        <span id="selectedCountDisplay" style="background:#4338ca; color:white; padding:10px 20px; border-radius:20px; font-weight:bold; font-size:14px;">المحدد: 0</span>
+    `;
+    container.parentNode.insertBefore(selectAllDiv, container);
+    
+    students.forEach((s,i)=>{ 
+        container.innerHTML += `<label class="multi-select-item" data-name="${s.name.toLowerCase()}"><input type="checkbox" value="${i}" class="student-checkbox"><span class="student-name">${s.name}</span><span class="student-points">(${s.points} نقطة)</span></label>`; 
+    });
+    
+    function updateSelectedCount() {
+        const count = document.querySelectorAll('#multiSelectList .student-checkbox:checked').length;
+        const display = document.getElementById('selectedCountDisplay');
+        if (display) display.textContent = `المحدد: ${count}`;
+    }
+    
+    document.getElementById('selectAllStudentsBtn').onclick = () => {
+        document.querySelectorAll('#multiSelectList .student-checkbox').forEach(cb => {
+            const item = cb.closest('.multi-select-item');
+            if (item && item.style.display !== 'none') {
+                cb.checked = true;
+            }
+        });
+        updateSelectedCount();
+    };
+    
+    document.getElementById('deselectAllStudentsBtn').onclick = () => {
+        document.querySelectorAll('#multiSelectList .student-checkbox').forEach(cb => cb.checked = false);
+        updateSelectedCount();
+    };
+    
+    document.querySelectorAll('#multiSelectList .student-checkbox').forEach(cb => {
+        cb.onchange = updateSelectedCount;
+    });
+    
     document.getElementById('multiSelectSearch').value = '';
     document.getElementById('clearMultiSearch').style.display = 'none';
     document.getElementById('multiSelectSearchCount').innerText = '';
     document.getElementById('multiSelectModal').style.display = 'flex';
+    
+    updateSelectedCount();
 }
+
 function closeMultiSelectModal() { document.getElementById('multiSelectModal').style.display = 'none'; }
 function getSelectedStudents() { const ids=[]; document.querySelectorAll('#multiSelectList input:checked').forEach(cb=>ids.push(parseInt(cb.value))); return ids; }
 
@@ -6316,7 +6836,7 @@ function handlePhotoUpload(inputId, photoKey, previewId) {
 function saveAllPhotos() { alert('✅ تم حفظ صور الصف ' + currentClass + ' بنجاح!'); closeUploadPhotosModal(); }
 
 function backupData() {
-    const backup = { allClassesData, classPrizes, parentContacts, studentLevels, groupScores, dailyTrackerData, violationsData, studentRewards, monthlyPoints, availablePrizesCount, medicalConditions, diagnosticData, version:"1.0", date:new Date().toLocaleString('ar-EG') };
+    const backup = { allClassesData, classPrizes, parentContacts, studentLevels, groupScores, dailyTrackerData, violationsData, studentRewards, monthlyPoints, availablePrizesCount, medicalConditions, diagnosticData, savedGroupings, version:"1.0", date:new Date().toLocaleString('ar-EG') };
     const blob = new Blob([JSON.stringify(backup,null,2)], {type:"application/json"});
     const a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
@@ -6344,6 +6864,7 @@ function restoreData(file) {
             if(d.monthlyPoints) monthlyPoints = d.monthlyPoints;
             if(d.availablePrizesCount) availablePrizesCount = d.availablePrizesCount;
             if(d.medicalConditions) medicalConditions = d.medicalConditions;
+            if(d.savedGroupings) { savedGroupings = d.savedGroupings; localStorage.setItem('savedGroupings', JSON.stringify(savedGroupings)); }
             if(d.diagnosticData) { diagnosticData = d.diagnosticData; saveDiagnosticData(); }
             classNames.forEach(c=>initializeClassData(c));
             saveAllData();
@@ -6383,8 +6904,10 @@ function fullSystemReset() {
         monthlyPoints = {};
         availablePrizesCount = 5;
         diagnosticData = {};
+        savedGroupings = {};
         currentGroupingForPoints = { groups: [], type: 'مجموعات', timestamp: null };
         saveDiagnosticData();
+        localStorage.setItem('savedGroupings', JSON.stringify(savedGroupings));
         saveAllData();
         renderStudents();
         alert('✅ تم إعادة ضبط النظام');
@@ -6720,7 +7243,6 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('sendWhatsAppReportBtn').onclick = sendReportViaWhatsApp;
     document.getElementById('sendEmailReportBtn').onclick = sendReportViaEmail;
     
-    // ==================== ربط أزرار إصدار جميع التقارير ====================
     document.getElementById('bulkReportsBtn').onclick = () => showBulkReportsSetup();
     document.getElementById('generateBulkReportsBtn').onclick = generateBulkReports;
     document.getElementById('cancelBulkReportsBtn').onclick = closeBulkReportsSetup;
@@ -6745,7 +7267,6 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('confirmRestoreBtn').onclick = () => { const f = document.getElementById('restoreFileInput'); if(f.files.length) restoreData(f.files[0]); else alert('❌ اختر ملف'); };
     document.getElementById('cancelRestoreBtn').onclick = closeRestoreModal;
     
-    // ==================== ربط أزرار نقاط المجموعات ====================
     document.getElementById('createGroupsForPointsBtn').onclick = createGroupsForPoints;
     document.getElementById('cancelGroupPointsSetupBtn').onclick = closeGroupPointsSetup;
     document.getElementById('selectGroupForPoints').onchange = updateGroupMembersPreview;
