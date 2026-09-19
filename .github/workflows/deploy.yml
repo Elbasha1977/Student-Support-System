@@ -1,0 +1,59 @@
+name: Deploy Hidden Site
+
+on:
+  push:
+    branches: ["main"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Prepare deployment folder
+        run: mkdir -p _site
+
+      - name: Rebuild index.html from parts
+        run: |
+          echo -n "${{ secrets.INDEX_PART_1 }}" > index_b64.txt
+          echo -n "${{ secrets.INDEX_PART_2 }}" >> index_b64.txt
+          base64 -d index_b64.txt > _site/index.html
+          echo "✅ تم بناء index.html"
+          echo "الحجم: $(wc -c < _site/index.html) بايت"
+
+      - name: Rebuild students.json from parts
+        run: |
+          echo -n "${{ secrets.STUDENTS_PART_1 }}" > students_b64.txt
+          echo -n "${{ secrets.STUDENTS_PART_2 }}" >> students_b64.txt
+          base64 -d students_b64.txt > _site/students.json
+          echo "✅ تم بناء students.json"
+          echo "الحجم: $(wc -c < _site/students.json) بايت"
+
+      - name: Verify files
+        run: |
+          echo "الملفات الجاهزة للنشر:"
+          ls -la _site/
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: '_site'
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
