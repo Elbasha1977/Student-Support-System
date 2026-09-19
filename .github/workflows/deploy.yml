@@ -26,17 +26,21 @@ jobs:
         run: mkdir -p _site
 
       - name: Rebuild index.html from parts
+        env:
+          PART_1: ${{ secrets.INDEX_PART_1 }}
+          PART_2: ${{ secrets.INDEX_PART_2 }}
         run: |
-          echo -n "${{ secrets.INDEX_PART_1 }}" > index_b64.txt
-          echo -n "${{ secrets.INDEX_PART_2 }}" >> index_b64.txt
+          printf "%s%s" "$PART_1" "$PART_2" > index_b64.txt
           base64 -d index_b64.txt > _site/index.html
           echo "✅ تم بناء index.html"
           echo "الحجم: $(wc -c < _site/index.html) بايت"
 
       - name: Rebuild students.json from parts
+        env:
+          PART_1: ${{ secrets.STUDENTS_PART_1 }}
+          PART_2: ${{ secrets.STUDENTS_PART_2 }}
         run: |
-          echo -n "${{ secrets.STUDENTS_PART_1 }}" > students_b64.txt
-          echo -n "${{ secrets.STUDENTS_PART_2 }}" >> students_b64.txt
+          printf "%s%s" "$PART_1" "$PART_2" > students_b64.txt
           base64 -d students_b64.txt > _site/students.json
           echo "✅ تم بناء students.json"
           echo "الحجم: $(wc -c < _site/students.json) بايت"
