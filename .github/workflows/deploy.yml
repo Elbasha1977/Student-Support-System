@@ -47,8 +47,17 @@ jobs:
           base64 -d index_b64.txt > _site/index.html
           echo "✅ تم بناء index.html"
           echo "الحجم: $(wc -c < _site/index.html) بايت"
+
+      - name: Build celebration.html from SECRET
+        env:
+          CELEBRATION_B64: ${{ secrets.CELEBRATION }}
+        run: |
+          echo "حجم Base64 للاحتفال: $(echo -n "$CELEBRATION_B64" | wc -c) بايت"
+          echo -n "$CELEBRATION_B64" | base64 -d > _site/celebration.html
+          echo "✅ تم بناء celebration.html"
+          echo "الحجم: $(wc -c < _site/celebration.html) بايت"
           echo "أول 200 حرف:"
-          head -c 200 _site/index.html
+          head -c 200 _site/celebration.html
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
