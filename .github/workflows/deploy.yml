@@ -38,7 +38,7 @@ jobs:
           P9: ${{ secrets.INDEX_PART_9 }}
           P10: ${{ secrets.INDEX_PART_10 }}
           P11: ${{ secrets.INDEX_PART_11 }}
-          P11: ${{ secrets.INDEX_PART_12 }}
+          P12: ${{ secrets.INDEX_PART_12 }}
         run: |
           printf "%s%s%s%s%s%s%s%s%s%s%s" \
             "$P1" "$P2" "$P3" "$P4" "$P5" "$P6" \
